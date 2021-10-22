@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Go dependencies
+  - package-ecosystem: "gomod"
+    # Where to look for the go.mod file
+    directory: "/"
+    # Use '0' to disable the opening of pull requests
+    open-pull-requests-limit: 5
+    # Add labels to pull requests
+    labels:
+      - "dependencies"
+    schedule:
+      # how often to look for updates
+      interval: "monthly"
+      # what day to use for opening new requests
+      day: "monday"
+      # check for npm updates at 0hrs UTC
+      time: "00:00"
+    # Only manage direct dependencies
+    allow:
+      - dependency-type: "direct"
+    # Ignore specific dependencies
+    ignore:
+      - dependency-name: "google.golang.org/genproto"
+    # Configure commit messages
+    commit-message:
+      # Prefix all commit messages with "dependencies"
+      prefix: "dependencies"
+  # Github Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

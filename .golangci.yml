@@ -1,0 +1,96 @@
+run:
+  deadline: 5m
+  issues-exit-code: 1
+  tests: true
+  build-tags: []
+  skip-dirs:
+    - tmp
+    - vendor
+    - third_party
+    - testdata$
+    - examples$
+    - Godeps$
+    - builtin$
+  skip-files:
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
+    - ".*\\.validator\\.pb\\.go$"
+  modules-download-mode: readonly
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - gofmt
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - varcheck
+    - gocyclo
+    - goconst
+    - depguard
+    - misspell
+    - lll
+    - nakedret
+    - prealloc
+    - gosec
+    - bodyclose
+    - stylecheck
+    - unparam
+    - deadcode
+    - gocognit
+    - goimports
+    - unused
+  disable:
+    - dupl
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - lll
+        - nakedret
+        - scopelint
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+  govet:
+    check-shadowing: false
+  golint:
+    min-confidence: 0.8
+    set-exit-status: true
+  gofmt:
+    simplify: true
+  gocyclo:
+    min-complexity: 18
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  depguard:
+    list-type: blacklist
+    include-go-root: false
+    packages: []
+  misspell:
+    locale: US
+    ignore-words: []
+  lll:
+    line-length: 120
+    tab-width: 2
+  nakedret:
+    max-func-lines: 30
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+  dupl:
+    threshold: 150

@@ -1,0 +1,183 @@
+# main project name value
+# https://goreleaser.com/customization/project/
+project_name: did-algo
+# produced artifacts are stored in this folder
+dist: dist
+# customize execution
+before:
+  hooks:
+    - go mod download
+    - go generate ./...
+    - docker login ghcr.io -u {{ .Env.GITHUB_USER }} -p {{ .Env.GITHUB_TOKEN }}
+# artifacts to produce
+# https://goreleaser.com/customization/build/
+builds:
+  # a single project can support/require several build targets
+  - id: did-algo
+    # main binary name
+    binary: algoid
+    # code entrypoint
+    main: ./client/cli/main.go
+    # CLI flags for the 'go build' command
+    flags:
+      - -v
+    ldflags:
+      - -s -w
+      - -X github.com/algorandfoundation/did-algo/info.CoreVersion={{.Version}}
+      - -X github.com/algorandfoundation/did-algo/info.BuildCode={{.Commit}}
+      - -X github.com/algorandfoundation/did-algo/info.BuildTimestamp={{.CommitDate}}
+    # set the modified timestamp on the output binary to ensure a
+    # reproducible build
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    # disable CGO since it's not supported
+    env:
+      - CGO_ENABLED=0
+    # supported OSs
+    goos:
+      - linux
+      - windows
+      - darwin
+    # supported architectures
+    goarch:
+      - 386
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: 386
+      - goos: windows
+        goarch: arm64
+# archives to produce
+# https://goreleaser.com/customization/archive/
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    builds:
+      # artifacts to pack
+      - did-algo
+    format_overrides:
+      # use zip file instead of 'tar.gz' on Windows systems
+      - goos: windows
+        format: zip
+    files:
+      # include documentation files in the package for distribution
+      - README.md
+      - LICENSE*
+      - src: '*.md'
+        dst: docs
+        strip_parent: true
+# generate integrity checksums
+# https://goreleaser.com/customization/checksum/
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+  algorithm: sha256
+# Include source code package on the release
+# https://goreleaser.com/customization/source/
+source:
+  enabled: true
+# produce test releases
+# https://goreleaser.com/customization/snapshots/
+snapshot:
+  name_template: "{{ .Version }}-next"
+# build and publish docker images
+# https://goreleaser.com/customization/docker/
+dockers:
+  -
+    # Build IDs to gather the binaries from
+    ids:
+      - did-algo
+    # GOOS of the built binary that should be used
+    goos: linux
+    # GOARCH of the built binary that should be used
+    goarch: amd64
+    # Dockerfile location
+    dockerfile: Dockerfile
+    # OCI image tags
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.created={{ .CommitDate }}"
+      - "--label=org.opencontainers.image.source=https://github.com/algorandfoundation/{{ .ProjectName }}"
+    # Registries to push the image to
+    image_templates:
+      - "ghcr.io/bryk-io/{{ .ProjectName }}:{{ .Version }}"
+      - "ghcr.io/bryk-io/{{ .ProjectName }}:latest"
+    # Skips the docker push if there is an indicator for prerelease
+    # in the tag e.g. v1.0.0-rc1 (auto)
+    skip_push: auto
+    # Additional files to add/copy into the container image
+    extra_files: []
+# configure the 'CHANGELOG.md' file produced
+# https://goreleaser.com/customization/release/#customize-the-changelog
+# linux packages
+# https://goreleaser.com/customization/nfpm/
+nfpms:
+  -
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    builds:
+      - did-algo
+    vendor: Algorand Foundation
+    homepage: https://github.com/algorandfoundation/did-algo
+    maintainer: Ben Cessa <ben@aid.technology>
+    description: Dencentralized Identifiers for the Algorand blockchain
+    license: BSD-3-Clause
+    formats:
+      # Alpine
+      - apk
+      # Debian based distributions
+      - deb
+      # RedHat based distributions
+      - rpm
+    # Binary location
+    bindir: /usr/local/bin
+    # Folders created and managed by the installer
+    empty_folders:
+      - /etc/algoid
+    # Additional files managed by the installer
+    contents:
+      - src: sample-config.yaml
+        dst: /etc/algoid/config.yaml
+        type: "config|noreplace"
+        file_info:
+          mode: 0644
+changelog:
+  sort: ''
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - typo
+# Produce homebrew formulas for the project artifacts
+# https://goreleaser.com/customization/homebrew/
+brews:
+  -
+    # Formula name
+    name: algoid
+    # Push the formula to the tap repository
+    skip_upload: true
+    # TAP repository
+    tap:
+      owner: bryk-io
+      name: homebrew-tap
+    # Use 'github-actions' as commit author
+    # https://github.community/t/github-actions-bot-email-address/17204
+    commit_author:
+      name: github-actions
+      email: 41898282+github-actions[bot]@users.noreply.github.com
+    # Project details
+    homepage: "https://github.com/algorandfoundation/did-algo"
+    description: |
+      Reference client implementation for the 'bryk' DID method. The platform allows
+      entities to fully manage Decentralized Identifiers as described on the version
+      v1.0 of the specification.
+    install: |
+      bin.install "algoid"
+      output = Utils.popen_read("#{bin}/algoid completion bash")
+      (bash_completion/"algoid").write output
+      output = Utils.popen_read("#{bin}/algoid completion zsh")
+      (zsh_completion/"algoid").write output
+      prefix.install_metafiles
+    test: |
+      system "#{bin}/algoid version"

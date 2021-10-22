@@ -1,0 +1,90 @@
+# Full configmap settings
+configuration:
+  agent:
+    pow: 24
+    http: true
+    tls:
+      enabled: false
+  resolver:
+    - method: bryk
+      endpoint: "https://did.bryk.io/v1/retrieve/{{.Method}}/{{.Subject}}"
+      protocol: http
+    - method: ccp
+      endpoint: https://did.baidu.com/v1/did/resolve/{{.DID}}
+      protocol: http
+    - method: stack
+      endpoint: https://core.blockstack.org/v1/dids/{{.DID}}
+      protocol: http
+
+# Specify an existing TLS secret to load the certificate from
+# when enabled.
+tlsSecretName: "tls-secret-name-goes-here"
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+persistence:
+  enabled: false
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  ## If not define the default storage provision mechanism will be used,
+  storageClass: "default"
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+
+nameOverride: ""
+fullnameOverride: ""
+replicaCount: 1
+restartPolicy: Always
+imagePullSecrets: []
+
+image:
+  repository: ghcr.io/bryk-io/did-algo
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: false
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 9090
+
+ingress:
+  enabled: false
+  annotations: {}
+#    kubernetes.io/ingress.class: "nginx"
+#    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+  hosts: []
+#    - host: chart-example.local
+#      paths:
+#        - "/"
+  tls: []
+#    - secretName: chart-example-tls
+#      hosts:
+#        - chart-example.local
+
+podSecurityContext: {}
+
+securityContext: {}
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
+# capabilities:
+#   drop:
+#   - ALL
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+# limits:
+#   cpu: 250m
+#   memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

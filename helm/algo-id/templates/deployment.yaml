@@ -1,0 +1,97 @@
+{{- $fullName := include "algo-id.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "algo-id.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "algo-id.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "algo-id.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      serviceAccountName: {{ include "algo-id.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "algo-id.fullname" . }}
+        {{- if .Values.configuration.agent.tls.enabled }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.tlsSecretName }}
+        {{- end }}
+        {{- if .Values.persistence.enabled }}
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-storage" $fullName }}
+        {{- end }}
+      containers:
+        - name: main
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/algoid
+            {{- if .Values.configuration.agent.tls.enabled }}
+            - name: tls
+              mountPath: /etc/algoid/agent
+              readOnly: true
+            {{- end }}
+            {{- if .Values.persistence.enabled }}
+            - name: storage
+              mountPath: /etc/algoid/agent/data
+            {{- end }}
+          args:
+            - "agent"
+            - "--config"
+            - "/etc/algoid/config.yaml"
+          ports:
+            - name: rpc
+              containerPort: 9090
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              {{- if .Values.configuration.agent.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
+              path: /v1/ping
+              port: rpc
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              {{- if .Values.configuration.agent.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
+              path: /v1/ping
+              port: rpc
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}

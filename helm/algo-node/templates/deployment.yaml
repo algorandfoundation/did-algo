@@ -1,0 +1,113 @@
+{{- $fullName := include "algo-node.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "algo-node.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "algo-node.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "algo-node.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "algo-node.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        {{- if .Values.persistence.enabled }}
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ include "algo-node.storage" . }}
+        {{- end }}
+      initContainers:
+        {{- if .Values.persistence.enabled }}
+        - name: node-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+          - name: storage
+            mountPath: /data
+        {{- end }}
+      containers:
+        - name: node
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: storage
+              mountPath: /var/lib/algorand/data
+          {{- end }}
+          args:
+            {{- if eq .Values.config.mode "archival" }}
+            - "--archival"
+            {{- end }}
+            {{- if eq .Values.config.mode "indexed" }}
+            - "--indexed"
+            {{- end }}
+            {{- if .Values.config.relay }}
+            - "--relay"
+            {{- end }}
+          env:
+            - name: NETWORK
+              value: {{ .Values.config.network }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-token" $fullName }}
+                  key: token
+          ports:
+            - name: rpc
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: rpc
+          readinessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: rpc
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            readOnlyRootFilesystem: false
+            runAsUser: 105 # algorand user
+            runAsGroup: 106 # algorand gorup
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

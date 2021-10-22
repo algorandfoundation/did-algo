@@ -1,0 +1,17 @@
+apiVersion: v2
+name: algo-node
+description: Algorand Node
+type: application
+version: 0.1.0
+appVersion: "2.10.1"
+home: https://github.com/algorandfoundation/did-algo
+icon: https://raw.githubusercontent.com/algorandfoundation/did-algo/main/helm/algo-node/icon.png
+sources:
+  - https://github.com/algorandfoundation/did-algo
+keywords:
+  - algorand
+  - node
+maintainers:
+  - name: Ben Cessa
+    email: ben@aid.technology
+    url: https://github.com/bcessa

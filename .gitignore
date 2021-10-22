@@ -1,0 +1,41 @@
+# Generals
+.DS_Store
+.idea
+*.iml
+
+# Deps
+vendor/**
+
+# Temporary files
+tmp/
+
+# Build releases
+dist
+*.tgz
+
+# PKI
+*.bin
+*.crt
+*.csr
+*.cer
+*.pem
+*.key
+!**/testdata/*.cer
+!**/testdata/*.pem
+
+# Secret data
+secret*
+!helm/**/secret.yaml
+
+# protobuf / RPC
+# *.swagger.json
+
+# Build
+/algoid
+/algoid-*
+
+# Sample config file
+config.yaml
+
+# Code coverage reports
+coverage.*

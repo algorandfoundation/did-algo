@@ -1,0 +1,72 @@
+# Database specific settings
+config:
+  # Creates the specified user with superuser power.
+  user: postgres
+  # Superuser password.
+  password: postgres
+  # Default database that is created when the release is first started.
+  database: sample-db
+  # Space separated string of arguments as `postgres initdb` would expect them.
+  # This is useful for adding functionality like data page checksums.
+  initdb: ""
+
+image:
+  repository: postgres
+  pullPolicy: IfNotPresent
+  tag: "13.4-alpine"
+  pullSecrets: []
+    # - name: "my-pull-secret"
+
+# Enable persistence using Persistent Volume Claims
+# ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  # Indexed or relay nodes usually require just enough space to store
+  # the latest 1000 blocks in the networks. Archival nodes require enough
+  # space to store the whole ledger.
+  size: 2Gi
+  # If not define the default storage provision mechanism will be used.
+  storageClass: ""
+  # A manually managed Persistent Volume and Claim. If defined, PVC must
+  # be created manually before volume will be bound.
+  existingClaim: "" 
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5432
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

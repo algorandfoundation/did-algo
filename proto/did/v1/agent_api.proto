@@ -1,0 +1,225 @@
+syntax = "proto3";
+
+package did.v1;
+
+option csharp_namespace = "AlgorandFoundation.Did.Proto.V1";
+option go_package = "did/v1;protov1";
+option java_multiple_files = true;
+option java_outer_classname = "AgentApiProto";
+option java_package = "org.algorandfoundation.did.proto.v1";
+option objc_class_prefix = "BDP";
+option php_namespace = "AlgorandFoundation\\Did\\Proto\\V1";
+
+import "google/protobuf/empty.proto";
+import "third_party/google/api/annotations.proto";
+
+// AgentAPI defines the network protocol as detailed in the DID Method specification.
+service AgentAPI {
+  // Reachability test.
+  rpc Ping (google.protobuf.Empty) returns (PingResponse) {
+    option (google.api.http) = {
+      get: "/v1/ping"
+    };
+  }
+
+  // Process an incoming request ticket.
+  rpc Process (ProcessRequest) returns (ProcessResponse) {
+    option (google.api.http) = {
+      post: "/v1/process"
+      body: "*"
+    };
+  }
+
+  // Return the current state of a DID subject.
+  rpc Query (QueryRequest) returns (QueryResponse) {
+    option (google.api.http) = {
+      get: "/v1/retrieve/{method}/{subject}"
+    };
+  }
+
+  // Provide near real-time notifications for account activity.
+  rpc AccountActivity (AccountActivityRequest) returns (stream AccountActivityResponse);
+
+  // Request information about an Algorand account.
+  rpc AccountInformation (AccountInformationRequest) returns (AccountInformationResponse) {
+    option (google.api.http) = {
+      post: "/v1/algo/accountInformation"
+      body: "*"
+    };
+  }
+
+  // Return the current transaction parameters for the network.
+  rpc TxParameters (google.protobuf.Empty) returns (TxParametersResponse) {
+    option (google.api.http) = {
+      get: "/v1/algo/tx/params"
+    };
+  }
+
+  // Submit a raw signed transaction to the network for processing.
+  rpc TxSubmit (TxSubmitRequest) returns (TxSubmitResponse) {
+    option (google.api.http) = {
+      post: "/v1/algo/tx/submit"
+      body: "*"
+    };
+  }
+}
+
+// Ticket required for write operations.
+message Ticket {
+  // UNIX timestamp (in UTC) when the ticket was generated.
+  // All ticket automatically expire after 5 minutes to
+  // prevent replay attacks.
+  int64 timestamp = 1;
+  // Nonce selected to solve the PoW challenge.
+  int64 nonce_value = 2;
+  // Cryptographic key identifier. Must be a valid 'authentication' method
+  // on the DID document. The key will be used to generate the DID proof
+  // and to sign the ticket itself.
+  string key_id = 3;
+  // JSON encoded DID document.
+  bytes document = 4;
+  // JSON encoded Proof document.
+  bytes proof = 5;
+  // Digital signature for the ticket, it's calculated using the
+  // PoW solution as input.
+  bytes signature = 6;
+}
+
+// Details about a transaction on the Algorand network.
+message AlgoTransaction {
+  // Amount included in the transaction.
+  uint64 amount = 1;
+  // Additional contextual metadata.
+  bytes note = 2;
+  // Destination address of the funds.
+  string receiver = 3;
+  // Origination address of the funds.
+  string sender = 4;
+  // Fees applicable.
+  uint64 fee = 5;
+  // Round when the transaction was confirmed. The value is set to '0'
+  // in the case of pending transactions.
+  uint64 confirmed_round = 6;
+}
+
+// Basic reachability test response.
+message PingResponse {
+  // Responsiveness result.
+  bool ok = 1;
+}
+
+// Mutation request, either to publish or deactivate a DID record.
+message ProcessRequest {
+  // Available mutations.
+  enum Task {
+    // Invalid task selected.
+    TASK_INVALID = 0;
+
+    // Publish a DID document. This same operation covers publishing
+    // a completely new identifier or updating an existing one.
+    TASK_PUBLISH = 1;
+
+    // Mark an existing DID as inactive. Inactive identifiers can still
+    // be resolved but are no longer in use.
+    TASK_DEACTIVATE = 2;
+  }
+
+  // Mutation type.
+  Task task = 1;
+  // Request ticket.
+  Ticket ticket = 2;
+}
+
+// Mutation result.
+message ProcessResponse {
+  // Processing result, must be 'true' if the mutation was
+  // properly applied.
+  bool ok = 1;
+
+  // Contextual transaction identifier.
+  string identifier = 2;
+}
+
+// Queries allow to resolve a previously registered DID document.
+message QueryRequest {
+  // DID method.
+  string method = 1;
+  // DID subject.
+  string subject = 2;
+}
+
+// Query response.
+message QueryResponse {
+  // JSON-encoded DID document.
+  bytes document = 1;
+  // JSON-encoded DID proof.
+  bytes proof = 2;
+}
+
+// Request information about a given cyrpto account.
+message AccountInformationRequest {
+  // L1 protocol.
+  string protocol = 1;
+  // Network identifier.
+  string network = 2;
+  // Account address.
+  string address = 3;
+}
+
+// Latest information available for a specified crypto account.
+message AccountInformationResponse {
+  // Delegation status of the account.
+  string status = 1;
+  // Current balance in the account, without the pending rewards.
+  uint64 balance = 2;
+  // Amount pending for rewards in this account.
+  uint64 pending_rewards = 3;
+  // Total rewards the account has received, including pending rewards.
+  uint64 total_rewards = 4;
+  // Transactions submitted by this account that are yet to be processed
+  // by the network.
+  repeated AlgoTransaction pending_transactions = 5;
+}
+
+// Current transaction parameters for the network.
+message TxParametersResponse {
+  // JSON-encoded parameters
+  bytes params = 1;
+}
+
+// Submit a raw signed transaction to the network.
+message TxSubmitRequest {
+  // Raw signed transaction ready to be submitted to the network.
+  bytes stx = 1;
+}
+
+// Transaction submit result and additional details.
+message TxSubmitResponse {
+  // Transaction ID generated by the network as part of the successful
+  // submit operation.
+  string id = 1;
+}
+
+// Open a channel for notifications about account activity.
+message AccountActivityRequest {
+  // L1 protocol.
+  string protocol = 1;
+  // Network identifier.
+  string network = 2;
+  // Account address.
+  string address = 3;
+}
+
+// Provide near real-time details of account activity. Useful when
+// requiring activity notifications. 
+message AccountActivityResponse {
+  // Consensus round at which the results were computed.
+  uint64 current_round = 1;
+
+  // Used for pagination, when making another request provide this token
+  // with the next parameter.
+  string next_token = 2;
+
+  // Transaction details.
+  repeated AlgoTransaction transactions = 3;
+}

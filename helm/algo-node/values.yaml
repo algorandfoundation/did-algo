@@ -1,0 +1,91 @@
+# App specific settings
+config:
+  # Algorand network to use. The public networks are:
+  # mainnet, testnet and betanet.
+  network: testnet
+  # Set the node in archival mode. Valid values are:
+  #   - archival
+  #   - indexed
+  # On `archival` the node will store all ledger data.
+  # This is required when using the node for an indexer
+  # in `writer` mode.
+  mode: indexed
+  # Use the node as a relay. Relay nodes cannot participate in
+  # consensus rounds and simply forward messages to non-relay nodes.
+  relay: false
+  # API access token. If no value is provided a random token will be generated.
+  # This token is used to access the RPC and admin API.
+  token: ""
+
+# Docker image details.
+image:
+  repository: algod
+  pullPolicy: IfNotPresent
+  # If not specified, the chart `appVersion` value will be used
+  tag: ""
+
+imagePullSecrets: []
+# - name: "my-pull-secret"
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+# Enable persistence using Persistent Volume Claims
+# ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  # Indexed or relay nodes usually require just enough space to store
+  # the latest 1000 blocks in the networks. Archival nodes require enough
+  # space to store the whole ledger.
+  size: 2Gi
+  # If not define the default storage provision mechanism will be used.
+  storageClass: ""
+  # A manually managed Persistent Volume and Claim. If defined, PVC must
+  # be created manually before volume will be bound.
+  existingClaim: ""
+
+# System resources for the node instance.
+resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 1024Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: "my-load-balancer"
+  annotations: {}
+    # nginx.ingress.kubernetes.io/backend-protocol: "http"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: chart.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+    # - secretName: my-cert
+    #   hosts:
+    #     - chart.local
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

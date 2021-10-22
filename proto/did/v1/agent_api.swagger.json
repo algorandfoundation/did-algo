@@ -1,0 +1,496 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "did/v1/agent_api.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/algo/accountInformation": {
+      "post": {
+        "summary": "Request information about an Algorand account.",
+        "operationId": "AgentAPI_AccountInformation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccountInformationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AccountInformationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AgentAPI"
+        ]
+      }
+    },
+    "/v1/algo/tx/params": {
+      "get": {
+        "summary": "Return the current transaction parameters for the network.",
+        "operationId": "AgentAPI_TxParameters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1TxParametersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "tags": [
+          "AgentAPI"
+        ]
+      }
+    },
+    "/v1/algo/tx/submit": {
+      "post": {
+        "summary": "Submit a raw signed transaction to the network for processing.",
+        "operationId": "AgentAPI_TxSubmit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1TxSubmitResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1TxSubmitRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AgentAPI"
+        ]
+      }
+    },
+    "/v1/ping": {
+      "get": {
+        "summary": "Reachability test.",
+        "operationId": "AgentAPI_Ping",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "tags": [
+          "AgentAPI"
+        ]
+      }
+    },
+    "/v1/process": {
+      "post": {
+        "summary": "Process an incoming request ticket.",
+        "operationId": "AgentAPI_Process",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProcessResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ProcessRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AgentAPI"
+        ]
+      }
+    },
+    "/v1/retrieve/{method}/{subject}": {
+      "get": {
+        "summary": "Return the current state of a DID subject.",
+        "operationId": "AgentAPI_Query",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1QueryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "method",
+            "description": "DID method.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "subject",
+            "description": "DID subject.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AgentAPI"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ProcessRequestTask": {
+      "type": "string",
+      "enum": [
+        "TASK_INVALID",
+        "TASK_PUBLISH",
+        "TASK_DEACTIVATE"
+      ],
+      "default": "TASK_INVALID",
+      "description": "Available mutations.\n\n - TASK_INVALID: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one.\n - TASK_DEACTIVATE: Mark an existing DID as inactive. Inactive identifiers can still\nbe resolved but are no longer in use."
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AccountActivityResponse": {
+      "type": "object",
+      "properties": {
+        "current_round": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Consensus round at which the results were computed."
+        },
+        "next_token": {
+          "type": "string",
+          "description": "Used for pagination, when making another request provide this token\nwith the next parameter."
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AlgoTransaction"
+          },
+          "description": "Transaction details."
+        }
+      },
+      "description": "Provide near real-time details of account activity. Useful when\nrequiring activity notifications."
+    },
+    "v1AccountInformationRequest": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "description": "L1 protocol."
+        },
+        "network": {
+          "type": "string",
+          "description": "Network identifier."
+        },
+        "address": {
+          "type": "string",
+          "description": "Account address."
+        }
+      },
+      "description": "Request information about a given cyrpto account."
+    },
+    "v1AccountInformationResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Delegation status of the account."
+        },
+        "balance": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Current balance in the account, without the pending rewards."
+        },
+        "pending_rewards": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Amount pending for rewards in this account."
+        },
+        "total_rewards": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Total rewards the account has received, including pending rewards."
+        },
+        "pending_transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AlgoTransaction"
+          },
+          "description": "Transactions submitted by this account that are yet to be processed\nby the network."
+        }
+      },
+      "description": "Latest information available for a specified crypto account."
+    },
+    "v1AlgoTransaction": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Amount included in the transaction."
+        },
+        "note": {
+          "type": "string",
+          "format": "byte",
+          "description": "Additional contextual metadata."
+        },
+        "receiver": {
+          "type": "string",
+          "description": "Destination address of the funds."
+        },
+        "sender": {
+          "type": "string",
+          "description": "Origination address of the funds."
+        },
+        "fee": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Fees applicable."
+        },
+        "confirmed_round": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Round when the transaction was confirmed. The value is set to '0'\nin the case of pending transactions."
+        }
+      },
+      "description": "Details about a transaction on the Algorand network."
+    },
+    "v1PingResponse": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean",
+          "description": "Responsiveness result."
+        }
+      },
+      "description": "Basic reachability test response."
+    },
+    "v1ProcessRequest": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/ProcessRequestTask",
+          "description": "Mutation type."
+        },
+        "ticket": {
+          "$ref": "#/definitions/v1Ticket",
+          "description": "Request ticket."
+        }
+      },
+      "description": "Mutation request, either to publish or deactivate a DID record."
+    },
+    "v1ProcessResponse": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean",
+          "description": "Processing result, must be 'true' if the mutation was\nproperly applied."
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Contextual transaction identifier."
+        }
+      },
+      "description": "Mutation result."
+    },
+    "v1QueryResponse": {
+      "type": "object",
+      "properties": {
+        "document": {
+          "type": "string",
+          "format": "byte",
+          "description": "JSON-encoded DID document."
+        },
+        "proof": {
+          "type": "string",
+          "format": "byte",
+          "description": "JSON-encoded DID proof."
+        }
+      },
+      "description": "Query response."
+    },
+    "v1Ticket": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "int64",
+          "description": "UNIX timestamp (in UTC) when the ticket was generated.\nAll ticket automatically expire after 5 minutes to\nprevent replay attacks."
+        },
+        "nonce_value": {
+          "type": "string",
+          "format": "int64",
+          "description": "Nonce selected to solve the PoW challenge."
+        },
+        "key_id": {
+          "type": "string",
+          "description": "Cryptographic key identifier. Must be a valid 'authentication' method\non the DID document. The key will be used to generate the DID proof\nand to sign the ticket itself."
+        },
+        "document": {
+          "type": "string",
+          "format": "byte",
+          "description": "JSON encoded DID document."
+        },
+        "proof": {
+          "type": "string",
+          "format": "byte",
+          "description": "JSON encoded Proof document."
+        },
+        "signature": {
+          "type": "string",
+          "format": "byte",
+          "description": "Digital signature for the ticket, it's calculated using the\nPoW solution as input."
+        }
+      },
+      "description": "Ticket required for write operations."
+    },
+    "v1TxParametersResponse": {
+      "type": "object",
+      "properties": {
+        "params": {
+          "type": "string",
+          "format": "byte",
+          "title": "JSON-encoded parameters"
+        }
+      },
+      "description": "Current transaction parameters for the network."
+    },
+    "v1TxSubmitRequest": {
+      "type": "object",
+      "properties": {
+        "stx": {
+          "type": "string",
+          "format": "byte",
+          "description": "Raw signed transaction ready to be submitted to the network."
+        }
+      },
+      "description": "Submit a raw signed transaction to the network."
+    },
+    "v1TxSubmitResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Transaction ID generated by the network as part of the successful\nsubmit operation."
+        }
+      },
+      "description": "Transaction submit result and additional details."
+    }
+  }
+}

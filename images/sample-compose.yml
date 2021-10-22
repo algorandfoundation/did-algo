@@ -1,0 +1,47 @@
+version: "3.1"
+services:
+  # Algo node
+  algod:
+    container_name: node
+    image: algod:2.10.1
+    command:
+      - "--archival"
+    environment:
+      NETWORK: testnet
+      TOKEN: 9e873e44b9c4d35e129393698f3cb880c3f421caf85adf1d5264610194739f03
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:8080/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  # PostgreSQL database
+  db:
+    container_name: db
+    image: postgres:13-alpine
+    user: postgres
+    environment:
+      POSTGRES_USER: algorand
+      POSTGRES_PASSWORD: algorand
+      POSTGRES_DB: indexer_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d indexer_db -U algorand"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  # Indexer
+  indexer:
+    container_name: indexer
+    image: algod-indexer:2.6.1
+    command:
+      - "daemon"
+    ports:
+      - "9090:8980"
+    environment:
+      INDEXER_ALGOD_ADDRESS: "algod:8080"
+      INDEXER_ALGOD_TOKEN: 9e873e44b9c4d35e129393698f3cb880c3f421caf85adf1d5264610194739f03
+      INDEXER_POSTGRES_CONNECTION_STRING: "host=db port=5432 user=algorand password=algorand dbname=indexer_db sslmode=disable"
+    depends_on:
+      algod:
+        condition: service_healthy
+      db:
+        condition: service_healthy
