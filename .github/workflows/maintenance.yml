@@ -1,13 +1,14 @@
 name: "maintenance"
 on:
   schedule:
-    - cron: "0 0 * * *"
+    # Run every Monday at 00:00
+    - cron: "0 0 * * 1"
 jobs:
   stale:
     name: "close stale issues and pull requests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v3.0.19
+      - uses: actions/stale@v4
         with:
           # On the 'debug' mode the action will not perform any operation.
           # Add the secret ACTIONS_STEP_DEBUG with a value of 'true' in the repository.
