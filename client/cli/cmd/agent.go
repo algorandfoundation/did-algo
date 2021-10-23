@@ -114,18 +114,11 @@ func init() {
 func runMethodServer(_ *cobra.Command, _ []string) error {
 	// CPU profile
 	if viper.GetBool("agent.debug") {
-		cpu, err := ioutil.TempFile("", "algoid_cpu_")
+		cpuProfileHook, err := cpuProfile()
 		if err != nil {
 			return err
 		}
-		if err := pprof.StartCPUProfile(cpu); err != nil {
-			return err
-		}
-		defer func() {
-			log.Infof("CPU profile saved at %s", cpu.Name())
-			pprof.StopCPUProfile()
-			_ = cpu.Close()
-		}()
+		defer cpuProfileHook()
 	}
 
 	// Observability operator
@@ -208,17 +201,9 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 
 	// Dump memory profile and exit
 	if viper.GetBool("agent.debug") {
-		// Memory profile
-		mem, err := ioutil.TempFile("", "algoid_mem_")
-		if err != nil {
+		if err := memoryProfile(); err != nil {
 			return err
 		}
-		runtime.GC()
-		if err := pprof.WriteHeapProfile(mem); err != nil {
-			return err
-		}
-		log.Infof("memory profile saved at %s", mem.Name())
-		_ = mem.Close()
 	}
 	return nil
 }
@@ -309,6 +294,34 @@ func getAgentGateway(handler *agent.Handler) (*rpc.HTTPGateway, error) {
 		return nil, fmt.Errorf("failed to initialize HTTP gateway: %s", err)
 	}
 	return gw, nil
+}
+
+func cpuProfile() (func(), error) {
+	cpu, err := ioutil.TempFile("", "algoid_cpu_")
+	if err != nil {
+		return nil, err
+	}
+	if err := pprof.StartCPUProfile(cpu); err != nil {
+		return nil, err
+	}
+	return func() {
+		log.Infof("CPU profile saved at %s", cpu.Name())
+		pprof.StopCPUProfile()
+		_ = cpu.Close()
+	}, nil
+}
+
+func memoryProfile() error {
+	mem, err := ioutil.TempFile("", "algoid_mem_")
+	if err != nil {
+		return err
+	}
+	runtime.GC()
+	if err := pprof.WriteHeapProfile(mem); err != nil {
+		return err
+	}
+	log.Infof("memory profile saved at %s", mem.Name())
+	return mem.Close()
 }
 
 // Return the proper storage handler instance based on the connection

@@ -19,11 +19,15 @@ import (
 // Default DNS link used for the did-algo index
 const indexDNSLink = "did-algo.aidtech.network"
 
+// IPFS provides an integration with the "InterPlanetary File System",
+// a decentralized global storage mechanism.
 type IPFS struct {
 	cl    *ipfs.Shell
+	addr  string
 	index string
 }
 
+// Open a connection with provided IPFS deamon instance.
 func (c *IPFS) Open(addr string) error {
 	sh := ipfs.NewShell(addr)
 	_, _, err := sh.Version()
@@ -32,15 +36,18 @@ func (c *IPFS) Open(addr string) error {
 	}
 	c.cl = sh
 	c.cl.SetTimeout(time.Duration(5) * time.Second)
+	c.addr = addr
 	return nil
 }
 
+// Close the storage instance and free any resources in use.
 func (c *IPFS) Close() error {
 	return nil
 }
 
+// Description of the storage instance.
 func (c *IPFS) Description() string {
-	return "IPFS data store"
+	return fmt.Sprintf("IPFS data store [%s]", c.addr)
 }
 
 // Exists will check if a record exists for the specified DID.

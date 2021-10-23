@@ -72,7 +72,7 @@ linters-settings:
   gofmt:
     simplify: true
   gocyclo:
-    min-complexity: 18
+    min-complexity: 15
   goconst:
     min-len: 3
     min-occurrences: 3
