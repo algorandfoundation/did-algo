@@ -114,6 +114,9 @@ func runWalletConnectCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// Register custom context
+	id.RegisterContext("https://did-ns.aidtech.network/v1")
+
 	// Update record
 	log.Info("updating local DID record")
 	return store.Update(didName, id)
