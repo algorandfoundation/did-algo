@@ -11,7 +11,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
-	go.bryk.io/pkg v0.0.0-20211109164409-6e16bec3c13a
+	go.bryk.io/pkg v0.0.0-20211109191306-f7fc81593ee9
 	go.mongodb.org/mongo-driver v1.7.4
 	go.opentelemetry.io/otel v1.1.0
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa

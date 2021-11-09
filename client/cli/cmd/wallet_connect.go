@@ -125,7 +125,7 @@ func runWalletConnectCmd(cmd *cobra.Command, args []string) error {
 func getServiceEntry() *did.ServiceEndpoint {
 	return &did.ServiceEndpoint{
 		ID:       "algo-connect",
-		Type:     "did.algorand.foundation.ExternalService",
+		Type:     "AlgorandExternalService",
 		Endpoint: "https://did.algorand.foundation",
 		Extensions: []did.Extension{
 			{
