@@ -9,5 +9,5 @@ help:
 deployment-images:
 	docker build -t ghcr.io/bryk-io/algod:stable -f algod/Dockerfile algod/.
 	docker build -t ghcr.io/bryk-io/algod:beta -f algod/Dockerfile --build-arg channel=beta algod/.
-	docker build -t ghcr.io/bryk-io/algod-indexer:2.6.4 -f algod-indexer/Dockerfile algod-indexer/.
+	docker build -t ghcr.io/bryk-io/algod-indexer:2.6.5 -f algod-indexer/Dockerfile algod-indexer/.
 	docker build -t ghcr.io/bryk-io/ipfs:0.10.0 -f ipfs/Dockerfile ipfs/.

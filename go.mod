@@ -11,12 +11,12 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
-	go.bryk.io/pkg v0.0.0-20211109191306-f7fc81593ee9
+	go.bryk.io/pkg v0.0.0-20211114002254-3eaea3a8eb52
 	go.mongodb.org/mongo-driver v1.7.4
 	go.opentelemetry.io/otel v1.1.0
-	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
+	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871
 	golang.org/x/sys v0.0.0-20210909193231-528a39cd75f3 // indirect
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71
-	google.golang.org/grpc v1.41.0
+	google.golang.org/grpc v1.42.0
 	google.golang.org/protobuf v1.27.1
 )
