@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"runtime"
 	"runtime/pprof"
@@ -288,6 +289,7 @@ func getAgentGateway(handler *agent.Handler) (*rpc.HTTPGateway, error) {
 	gwOpts := []rpc.HTTPGatewayOption{
 		rpc.WithClientOptions(gwCl),
 		rpc.WithFilter(handler.QueryResponseFilter()),
+		rpc.WithGatewayMiddleware(customGatewayHeaders()),
 	}
 	gw, err := rpc.NewHTTPGateway(gwOpts...)
 	if err != nil {
@@ -322,6 +324,19 @@ func memoryProfile() error {
 	}
 	log.Infof("memory profile saved at %s", mem.Name())
 	return mem.Close()
+}
+
+// Add version details as custom headers to all responses from the
+// agent's HTTP gateway.
+func customGatewayHeaders() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		fn := func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Add("x-agent-version", info.CoreVersion)
+			w.Header().Add("x-agent-build-code", info.BuildCode)
+			next.ServeHTTP(w, r)
+		}
+		return http.HandlerFunc(fn)
+	}
 }
 
 // Return the proper storage handler instance based on the connection
