@@ -17,6 +17,6 @@ require (
 	golang.org/x/crypto v0.0.0-20211202192323-5770296d904e
 	golang.org/x/sys v0.0.0-20210909193231-528a39cd75f3 // indirect
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
 )
