@@ -2,13 +2,7 @@ syntax = "proto3";
 
 package did.v1;
 
-option csharp_namespace = "AlgorandFoundation.Did.Proto.V1";
 option go_package = "did/v1;protov1";
-option java_multiple_files = true;
-option java_outer_classname = "AgentApiProto";
-option java_package = "org.algorandfoundation.did.proto.v1";
-option objc_class_prefix = "BDP";
-option php_namespace = "AlgorandFoundation\\Did\\Proto\\V1";
 
 import "google/protobuf/empty.proto";
 import "third_party/google/api/annotations.proto";

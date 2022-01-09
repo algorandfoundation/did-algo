@@ -4,6 +4,11 @@
     "title": "did/v1/agent_api.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "AgentAPI"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
@@ -25,7 +30,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -58,7 +63,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -81,7 +86,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -114,7 +119,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -137,7 +142,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -170,7 +175,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -210,21 +215,15 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "@type": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
-      }
+      },
+      "additionalProperties": {}
     },
-    "runtimeError": {
+    "rpcStatus": {
       "type": "object",
       "properties": {
-        "error": {
-          "type": "string"
-        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -240,40 +239,15 @@
         }
       }
     },
-    "runtimeStreamError": {
-      "type": "object",
-      "properties": {
-        "grpc_code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "http_code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "http_status": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
-    },
     "v1AccountActivityResponse": {
       "type": "object",
       "properties": {
-        "current_round": {
+        "currentRound": {
           "type": "string",
           "format": "uint64",
           "description": "Consensus round at which the results were computed."
         },
-        "next_token": {
+        "nextToken": {
           "type": "string",
           "description": "Used for pagination, when making another request provide this token\nwith the next parameter."
         },
@@ -317,17 +291,17 @@
           "format": "uint64",
           "description": "Current balance in the account, without the pending rewards."
         },
-        "pending_rewards": {
+        "pendingRewards": {
           "type": "string",
           "format": "uint64",
           "description": "Amount pending for rewards in this account."
         },
-        "total_rewards": {
+        "totalRewards": {
           "type": "string",
           "format": "uint64",
           "description": "Total rewards the account has received, including pending rewards."
         },
-        "pending_transactions": {
+        "pendingTransactions": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1AlgoTransaction"
@@ -363,7 +337,7 @@
           "format": "uint64",
           "description": "Fees applicable."
         },
-        "confirmed_round": {
+        "confirmedRound": {
           "type": "string",
           "format": "uint64",
           "description": "Round when the transaction was confirmed. The value is set to '0'\nin the case of pending transactions."
@@ -433,12 +407,12 @@
           "format": "int64",
           "description": "UNIX timestamp (in UTC) when the ticket was generated.\nAll ticket automatically expire after 5 minutes to\nprevent replay attacks."
         },
-        "nonce_value": {
+        "nonceValue": {
           "type": "string",
           "format": "int64",
           "description": "Nonce selected to solve the PoW challenge."
         },
-        "key_id": {
+        "keyId": {
           "type": "string",
           "description": "Cryptographic key identifier. Must be a valid 'authentication' method\non the DID document. The key will be used to generate the DID proof\nand to sign the ticket itself."
         },
