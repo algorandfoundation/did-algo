@@ -2,7 +2,7 @@ FROM debian:10
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG version=0.10.0
+ARG version=0.11.0
 
 # Install node tools
 RUN \
