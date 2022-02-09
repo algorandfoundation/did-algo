@@ -46,7 +46,7 @@ jobs:
       # Use goreleaser to create the new release
       # https://github.com/goreleaser/goreleaser-action
       - name: Create release
-        uses: goreleaser/goreleaser-action@v2.8.0
+        uses: goreleaser/goreleaser-action@v2.8.1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           version: latest
