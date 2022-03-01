@@ -3,7 +3,7 @@ module github.com/algorandfoundation/did-algo
 go 1.13
 
 require (
-	github.com/algorand/go-algorand-sdk v1.11.0
+	github.com/algorand/go-algorand-sdk v1.12.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.2
 	github.com/ipfs/go-ipfs-api v0.3.0
 	github.com/kennygrant/sanitize v1.2.4
