@@ -28,6 +28,8 @@ type identifierRecord struct {
 
 	// DID proof.
 	Proof string `bson:"proof"`
+
+	Metadata string `bson:"metadata"`
 }
 
 func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
@@ -50,6 +52,22 @@ func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
 		return nil, nil, err
 	}
 
+	if ir.Metadata != "" {
+		d3, err := b64.DecodeString(ir.Metadata)
+		if err != nil {
+			return nil, nil, errors.New("invalid record contents")
+		}
+
+		metadata := &did.DocumentMetadata{}
+		if err := json.Unmarshal(d3, metadata); err != nil {
+			return nil, nil, errors.New("invalid record contents")
+
+		}
+		if err := id.AddMetadata(metadata); err != nil {
+			return nil, nil, err
+		}
+	}
+
 	// Restore proof
 	proof := &did.ProofLD{}
 	if err = json.Unmarshal(d2, proof); err != nil {
@@ -61,10 +79,12 @@ func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
 func (ir *identifierRecord) encode(id *did.Identifier, proof *did.ProofLD) {
 	data, _ := json.Marshal(id.Document(true))
 	pp, _ := json.Marshal(proof)
+	metadata, _ := json.Marshal(id.GetMetadata())
 	ir.Method = id.Method()
 	ir.Subject = id.Subject()
 	ir.Document = b64.EncodeToString(data)
 	ir.Proof = b64.EncodeToString(pp)
+	ir.Metadata = b64.EncodeToString(metadata)
 }
 
 // MongoStore provides a storage handler utilizing MongoDB as underlying

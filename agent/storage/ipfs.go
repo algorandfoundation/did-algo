@@ -27,7 +27,7 @@ type IPFS struct {
 	index string
 }
 
-// Open a connection with provided IPFS deamon instance.
+// Open a connection with provided IPFS daemon instance.
 func (c *IPFS) Open(addr string) error {
 	sh := ipfs.NewShell(addr)
 	_, _, err := sh.Version()
@@ -103,6 +103,17 @@ func (c *IPFS) Get(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, er
 		return nil, nil, errors.New("invalid record contents on 'proof'")
 	}
 
+	if _, ok := dec["metadata"]; ok {
+		metadata := &did.DocumentMetadata{}
+		metadataData, _ := json.Marshal(dec["metadata"])
+		if err = json.Unmarshal(metadataData, metadata); err != nil {
+			return nil, nil, errors.New("invalid record contents on 'metadata'")
+		}
+		if err := id.AddMetadata(metadata); err != nil {
+			return nil, nil, err
+		}
+	}
+
 	// Return final results
 	return id, proof, nil
 }
@@ -114,6 +125,7 @@ func (c *IPFS) Save(id *did.Identifier, proof *did.ProofLD) (string, error) {
 	record := map[string]interface{}{
 		"document": id.Document(true),
 		"proof":    proof,
+		"metadata": id.GetMetadata(),
 	}
 	data, err := json.Marshal(record)
 	if err != nil {
@@ -136,7 +148,7 @@ func (c *IPFS) Save(id *did.Identifier, proof *did.ProofLD) (string, error) {
 }
 
 // Delete any existing records for the given DID instance.
-func (c *IPFS) Delete(id *did.Identifier) error {
+func (c *IPFS) Delete(_ *did.Identifier) error {
 	return errors.New("IPFS entries cannot be removed")
 }
 

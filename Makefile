@@ -97,8 +97,8 @@ lint:
 	# Helm charts
 	helm lint helm/*
 
-## proto: Compile all protobuf definitions and RPC services
-proto:
+## protos: Compile all protobuf definitions and RPC services
+protos:
 	# Verify PB definitions
 	make proto-test
 

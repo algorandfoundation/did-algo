@@ -31,9 +31,6 @@ service AgentAPI {
     };
   }
 
-  // Provide near real-time notifications for account activity.
-  rpc AccountActivity (AccountActivityRequest) returns (stream AccountActivityResponse);
-
   // Request information about an Algorand account.
   rpc AccountInformation (AccountInformationRequest) returns (AccountInformationResponse) {
     option (google.api.http) = {
@@ -56,6 +53,9 @@ service AgentAPI {
       body: "*"
     };
   }
+
+  // Provide near real-time notifications for account activity.
+  rpc AccountActivity (AccountActivityRequest) returns (stream AccountActivityResponse);
 }
 
 // Ticket required for write operations.
@@ -77,6 +77,8 @@ message Ticket {
   // Digital signature for the ticket, it's calculated using the
   // PoW solution as input.
   bytes signature = 6;
+  // JSON encoded DocumentMedata document
+  bytes document_metadata = 7;
 }
 
 // Details about a transaction on the Algorand network.
@@ -150,7 +152,7 @@ message QueryResponse {
   bytes proof = 2;
 }
 
-// Request information about a given cyrpto account.
+// Request information about a given crypto account.
 message AccountInformationRequest {
   // L1 protocol.
   string protocol = 1;

@@ -18,6 +18,13 @@ type LocalStore struct {
 	home string
 }
 
+// IdentifierRecord holds the identifier data, Document and DocumentMetadata,
+// and is used to store the identifier locally.
+type IdentifierRecord struct {
+	Document         *did.Document         `json:"document"`
+	DocumentMetadata *did.DocumentMetadata `json:"documentMetadata"`
+}
+
 // NewLocalStore returns a local store handler.
 func NewLocalStore(home string) (*LocalStore, error) {
 	h := filepath.Clean(home)
@@ -36,7 +43,10 @@ func NewLocalStore(home string) (*LocalStore, error) {
 
 // Save add a new entry to the store.
 func (ls *LocalStore) Save(name string, id *did.Identifier) error {
-	data, err := json.Marshal(id.Document(false))
+	data, err := json.Marshal(&IdentifierRecord{
+		Document:         id.Document(false),
+		DocumentMetadata: id.GetMetadata(),
+	})
 	if err != nil {
 		return err
 	}
@@ -49,11 +59,30 @@ func (ls *LocalStore) Get(name string) (*did.Identifier, error) {
 	if err != nil {
 		return nil, err
 	}
-	doc := &did.Document{}
-	if err := json.Unmarshal(data, doc); err != nil {
+	doc := IdentifierRecord{}
+	if err := json.Unmarshal(data, &doc); err != nil {
 		return nil, err
 	}
-	return did.FromDocument(doc)
+
+	if doc.Document == nil {
+		doc.Document = &did.Document{}
+		if err := json.Unmarshal(data, doc.Document); err != nil {
+			return nil, err
+		}
+	}
+
+	id, err := did.FromDocument(doc.Document)
+	if err != nil {
+		return nil, err
+	}
+
+	if doc.DocumentMetadata != nil {
+		if err := id.AddMetadata(doc.DocumentMetadata); err != nil {
+			return nil, err
+		}
+	}
+
+	return id, nil
 }
 
 // List currently registered entries.

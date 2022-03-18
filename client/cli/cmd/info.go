@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/algorandfoundation/did-algo/client/store"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
 )
@@ -40,7 +41,10 @@ func runDidDetailsCmd(_ *cobra.Command, args []string) error {
 	}
 
 	// Present its LD document as output
-	info, _ := json.MarshalIndent(id.Document(true), "", "  ")
+	info, _ := json.MarshalIndent(store.IdentifierRecord{
+		Document:         id.Document(true),
+		DocumentMetadata: id.GetMetadata(),
+	}, "", "  ")
 	fmt.Printf("%s\n", info)
 	return nil
 }

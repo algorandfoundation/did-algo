@@ -277,7 +277,7 @@
           "description": "Account address."
         }
       },
-      "description": "Request information about a given cyrpto account."
+      "description": "Request information about a given crypto account."
     },
     "v1AccountInformationResponse": {
       "type": "object",
@@ -430,6 +430,11 @@
           "type": "string",
           "format": "byte",
           "description": "Digital signature for the ticket, it's calculated using the\nPoW solution as input."
+        },
+        "documentMetadata": {
+          "type": "string",
+          "format": "byte",
+          "title": "JSON encoded DocumentMedata document"
         }
       },
       "description": "Ticket required for write operations."
