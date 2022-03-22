@@ -395,6 +395,11 @@
           "type": "string",
           "format": "byte",
           "description": "JSON-encoded DID proof."
+        },
+        "documentMetadata": {
+          "type": "string",
+          "format": "byte",
+          "title": "JSON-encoded DocumentMedata document"
         }
       },
       "description": "Query response."

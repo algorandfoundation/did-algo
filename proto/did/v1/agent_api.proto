@@ -150,6 +150,8 @@ message QueryResponse {
   bytes document = 1;
   // JSON-encoded DID proof.
   bytes proof = 2;
+  // JSON-encoded DocumentMedata document
+  bytes document_metadata = 3;
 }
 
 // Request information about a given crypto account.
