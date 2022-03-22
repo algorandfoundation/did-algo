@@ -289,6 +289,7 @@ func (h *Handler) QueryResponseFilter() rpc.HTTPGatewayFilter {
 			response, _ = json.MarshalIndent(map[string]interface{}{
 				"document": id.Document(true),
 				"proof":    proof,
+				"metadata": id.GetMetadata(),
 			}, "", "  ")
 			status = http.StatusOK
 			res.Header().Set("Etag", fmt.Sprintf("W/%x", sha256.Sum256(response)))
