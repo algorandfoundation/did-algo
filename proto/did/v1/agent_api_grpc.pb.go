@@ -30,14 +30,14 @@ type AgentAPIClient interface {
 	Process(ctx context.Context, in *ProcessRequest, opts ...grpc.CallOption) (*ProcessResponse, error)
 	// Return the current state of a DID subject.
 	Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	// Provide near real-time notifications for account activity.
-	AccountActivity(ctx context.Context, in *AccountActivityRequest, opts ...grpc.CallOption) (AgentAPI_AccountActivityClient, error)
 	// Request information about an Algorand account.
 	AccountInformation(ctx context.Context, in *AccountInformationRequest, opts ...grpc.CallOption) (*AccountInformationResponse, error)
 	// Return the current transaction parameters for the network.
 	TxParameters(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TxParametersResponse, error)
 	// Submit a raw signed transaction to the network for processing.
 	TxSubmit(ctx context.Context, in *TxSubmitRequest, opts ...grpc.CallOption) (*TxSubmitResponse, error)
+	// Provide near real-time notifications for account activity.
+	AccountActivity(ctx context.Context, in *AccountActivityRequest, opts ...grpc.CallOption) (AgentAPI_AccountActivityClient, error)
 }
 
 type agentAPIClient struct {
@@ -69,6 +69,33 @@ func (c *agentAPIClient) Process(ctx context.Context, in *ProcessRequest, opts .
 func (c *agentAPIClient) Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
 	out := new(QueryResponse)
 	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/Query", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentAPIClient) AccountInformation(ctx context.Context, in *AccountInformationRequest, opts ...grpc.CallOption) (*AccountInformationResponse, error) {
+	out := new(AccountInformationResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/AccountInformation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentAPIClient) TxParameters(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TxParametersResponse, error) {
+	out := new(TxParametersResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/TxParameters", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentAPIClient) TxSubmit(ctx context.Context, in *TxSubmitRequest, opts ...grpc.CallOption) (*TxSubmitResponse, error) {
+	out := new(TxSubmitResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/TxSubmit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -107,33 +134,6 @@ func (x *agentAPIAccountActivityClient) Recv() (*AccountActivityResponse, error)
 	return m, nil
 }
 
-func (c *agentAPIClient) AccountInformation(ctx context.Context, in *AccountInformationRequest, opts ...grpc.CallOption) (*AccountInformationResponse, error) {
-	out := new(AccountInformationResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/AccountInformation", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *agentAPIClient) TxParameters(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*TxParametersResponse, error) {
-	out := new(TxParametersResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/TxParameters", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *agentAPIClient) TxSubmit(ctx context.Context, in *TxSubmitRequest, opts ...grpc.CallOption) (*TxSubmitResponse, error) {
-	out := new(TxSubmitResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.AgentAPI/TxSubmit", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // AgentAPIServer is the server API for AgentAPI service.
 // All implementations must embed UnimplementedAgentAPIServer
 // for forward compatibility
@@ -144,14 +144,14 @@ type AgentAPIServer interface {
 	Process(context.Context, *ProcessRequest) (*ProcessResponse, error)
 	// Return the current state of a DID subject.
 	Query(context.Context, *QueryRequest) (*QueryResponse, error)
-	// Provide near real-time notifications for account activity.
-	AccountActivity(*AccountActivityRequest, AgentAPI_AccountActivityServer) error
 	// Request information about an Algorand account.
 	AccountInformation(context.Context, *AccountInformationRequest) (*AccountInformationResponse, error)
 	// Return the current transaction parameters for the network.
 	TxParameters(context.Context, *emptypb.Empty) (*TxParametersResponse, error)
 	// Submit a raw signed transaction to the network for processing.
 	TxSubmit(context.Context, *TxSubmitRequest) (*TxSubmitResponse, error)
+	// Provide near real-time notifications for account activity.
+	AccountActivity(*AccountActivityRequest, AgentAPI_AccountActivityServer) error
 	mustEmbedUnimplementedAgentAPIServer()
 }
 
@@ -168,9 +168,6 @@ func (UnimplementedAgentAPIServer) Process(context.Context, *ProcessRequest) (*P
 func (UnimplementedAgentAPIServer) Query(context.Context, *QueryRequest) (*QueryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
 }
-func (UnimplementedAgentAPIServer) AccountActivity(*AccountActivityRequest, AgentAPI_AccountActivityServer) error {
-	return status.Errorf(codes.Unimplemented, "method AccountActivity not implemented")
-}
 func (UnimplementedAgentAPIServer) AccountInformation(context.Context, *AccountInformationRequest) (*AccountInformationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountInformation not implemented")
 }
@@ -179,6 +176,9 @@ func (UnimplementedAgentAPIServer) TxParameters(context.Context, *emptypb.Empty)
 }
 func (UnimplementedAgentAPIServer) TxSubmit(context.Context, *TxSubmitRequest) (*TxSubmitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TxSubmit not implemented")
+}
+func (UnimplementedAgentAPIServer) AccountActivity(*AccountActivityRequest, AgentAPI_AccountActivityServer) error {
+	return status.Errorf(codes.Unimplemented, "method AccountActivity not implemented")
 }
 func (UnimplementedAgentAPIServer) mustEmbedUnimplementedAgentAPIServer() {}
 
@@ -247,27 +247,6 @@ func _AgentAPI_Query_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AgentAPI_AccountActivity_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(AccountActivityRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(AgentAPIServer).AccountActivity(m, &agentAPIAccountActivityServer{stream})
-}
-
-type AgentAPI_AccountActivityServer interface {
-	Send(*AccountActivityResponse) error
-	grpc.ServerStream
-}
-
-type agentAPIAccountActivityServer struct {
-	grpc.ServerStream
-}
-
-func (x *agentAPIAccountActivityServer) Send(m *AccountActivityResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 func _AgentAPI_AccountInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AccountInformationRequest)
 	if err := dec(in); err != nil {
@@ -320,6 +299,27 @@ func _AgentAPI_TxSubmit_Handler(srv interface{}, ctx context.Context, dec func(i
 		return srv.(AgentAPIServer).TxSubmit(ctx, req.(*TxSubmitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentAPI_AccountActivity_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(AccountActivityRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AgentAPIServer).AccountActivity(m, &agentAPIAccountActivityServer{stream})
+}
+
+type AgentAPI_AccountActivityServer interface {
+	Send(*AccountActivityResponse) error
+	grpc.ServerStream
+}
+
+type agentAPIAccountActivityServer struct {
+	grpc.ServerStream
+}
+
+func (x *agentAPIAccountActivityServer) Send(m *AccountActivityResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // AgentAPI_ServiceDesc is the grpc.ServiceDesc for AgentAPI service.

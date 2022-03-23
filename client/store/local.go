@@ -13,12 +13,25 @@ import (
 	"go.bryk.io/pkg/did"
 )
 
+// Local storage version
+const currentVersion = "0.1.0"
+
 // LocalStore provides a filesystem-backed store.
 type LocalStore struct {
 	home string
 }
 
-// NewLocalStore returns a local store handler.
+// IdentifierRecord holds the identifier data, Document and DocumentMetadata,
+// and is used to store the identifier locally.
+type IdentifierRecord struct {
+	Version  string                `json:"version,omitempty"`
+	Document *did.Document         `json:"document"`
+	Metadata *did.DocumentMetadata `json:"metadata,omitempty"`
+	Proof    *did.ProofLD          `json:"proof,omitempty"`
+}
+
+// NewLocalStore returns a local store handler. If the specified
+// 'home' directory doesn't exist it will be created.
 func NewLocalStore(home string) (*LocalStore, error) {
 	h := filepath.Clean(home)
 	if !dirExist(h) {
@@ -36,7 +49,11 @@ func NewLocalStore(home string) (*LocalStore, error) {
 
 // Save add a new entry to the store.
 func (ls *LocalStore) Save(name string, id *did.Identifier) error {
-	data, err := json.Marshal(id.Document(false))
+	data, err := json.Marshal(&IdentifierRecord{
+		Version:  currentVersion,
+		Document: id.Document(false),
+		Metadata: id.GetMetadata(),
+	})
 	if err != nil {
 		return err
 	}
@@ -49,11 +66,23 @@ func (ls *LocalStore) Get(name string) (*did.Identifier, error) {
 	if err != nil {
 		return nil, err
 	}
-	doc := &did.Document{}
-	if err := json.Unmarshal(data, doc); err != nil {
+	ir := new(IdentifierRecord)
+	if err := json.Unmarshal(data, ir); err != nil {
 		return nil, err
 	}
-	return did.FromDocument(doc)
+
+	id, err := did.FromDocument(ir.Document)
+	if err != nil {
+		return nil, err
+	}
+
+	if ir.Metadata != nil {
+		if err := id.AddMetadata(ir.Metadata); err != nil {
+			return nil, err
+		}
+	}
+
+	return id, nil
 }
 
 // List currently registered entries.
@@ -175,6 +204,8 @@ func dirExist(name string) bool {
 	return err == nil && info.IsDir()
 }
 
+// Create a new TRED worker with the provided secret key. The worker
+// instance can be used to secure data at-rest.
 func tredWorker(key []byte) (*tred.Worker, error) {
 	conf, err := tred.DefaultConfig(key)
 	if err != nil {

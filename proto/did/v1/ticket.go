@@ -19,7 +19,7 @@ const defaultTicketDifficultyLevel = 24
 
 // NewTicket returns a properly initialized new ticket instance
 func NewTicket(id *did.Identifier, keyID string) (*Ticket, error) {
-	// Get safe DID contents
+	// Get safe DID document
 	contents, err := json.Marshal(id.Document(true))
 	if err != nil {
 		return nil, err
@@ -35,23 +35,51 @@ func NewTicket(id *did.Identifier, keyID string) (*Ticket, error) {
 		return nil, err
 	}
 
-	return &Ticket{
+	// Create new ticket
+	t := &Ticket{
 		Timestamp:  time.Now().UTC().Unix(),
 		NonceValue: 0,
 		KeyId:      keyID,
 		Document:   contents,
 		Proof:      proofBytes,
 		Signature:  nil,
-	}, nil
+	}
+
+	// Add metadata, if available
+	if metadata := id.GetMetadata(); metadata != nil {
+		metadataBytes, err := json.Marshal(metadata)
+		if err != nil {
+			return nil, err
+		}
+		t.DocumentMetadata = metadataBytes
+	}
+
+	return t, nil
 }
 
 // GetDID retrieve the DID instance from the ticket contents
 func (t *Ticket) GetDID() (*did.Identifier, error) {
+	// Restore id instance from document
 	doc := &did.Document{}
 	if err := json.Unmarshal(t.Document, doc); err != nil {
 		return nil, errors.New("invalid ticket contents")
 	}
-	return did.FromDocument(doc)
+	id, err := did.FromDocument(doc)
+	if err != nil {
+		return nil, err
+	}
+
+	// Restore metadata, if available
+	if t.DocumentMetadata != nil {
+		metadata := &did.DocumentMetadata{}
+		if err := json.Unmarshal(t.DocumentMetadata, metadata); err != nil {
+			return nil, errors.New("invalid ticket contents")
+		}
+		if err := id.AddMetadata(metadata); err != nil {
+			return nil, err
+		}
+	}
+	return id, nil
 }
 
 // GetProofLD returns the decoded proof document contained in the ticket
@@ -80,7 +108,7 @@ func (t *Ticket) Nonce() int64 {
 
 // MarshalBinary returns a deterministic binary encoding for the ticket
 // instance using a byte concatenation of the form:
-// 'timestamp | nonce | key_id | document | proof'
+// 'timestamp | nonce | key_id | document | proof | document_metadata'
 // where timestamp and nonce are individually encoded using little endian
 // byte order.
 func (t *Ticket) MarshalBinary() ([]byte, error) {
@@ -100,6 +128,7 @@ func (t *Ticket) MarshalBinary() ([]byte, error) {
 	tc = append(tc, kb...)
 	tc = append(tc, t.Document...)
 	tc = append(tc, t.Proof...)
+	tc = append(tc, t.DocumentMetadata...)
 	return tc, nil
 
 	// A simpler encoding mechanism using the standard protobuf encoder.

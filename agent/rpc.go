@@ -75,9 +75,11 @@ func (rh *rpcHandler) Query(ctx context.Context, req *protov1.QueryRequest) (*pr
 	}
 	doc, _ := json.Marshal(id.Document(true))
 	pp, _ := json.Marshal(proof)
+	documentMetadata, _ := json.Marshal(id.GetMetadata())
 	return &protov1.QueryResponse{
-		Document: doc,
-		Proof:    pp,
+		Document:         doc,
+		Proof:            pp,
+		DocumentMetadata: documentMetadata,
 	}, nil
 }
 

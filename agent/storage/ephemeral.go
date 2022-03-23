@@ -34,6 +34,7 @@ func (e *Ephemeral) Close() error {
 		delete(e.entries, k)
 	}
 	e.mu.Unlock()
+	e.entries = nil
 	return nil
 }
 

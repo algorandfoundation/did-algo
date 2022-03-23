@@ -31,9 +31,6 @@ service AgentAPI {
     };
   }
 
-  // Provide near real-time notifications for account activity.
-  rpc AccountActivity (AccountActivityRequest) returns (stream AccountActivityResponse);
-
   // Request information about an Algorand account.
   rpc AccountInformation (AccountInformationRequest) returns (AccountInformationResponse) {
     option (google.api.http) = {
@@ -56,6 +53,9 @@ service AgentAPI {
       body: "*"
     };
   }
+
+  // Provide near real-time notifications for account activity.
+  rpc AccountActivity (AccountActivityRequest) returns (stream AccountActivityResponse);
 }
 
 // Ticket required for write operations.
@@ -77,6 +77,8 @@ message Ticket {
   // Digital signature for the ticket, it's calculated using the
   // PoW solution as input.
   bytes signature = 6;
+  // JSON-encoded DID document metadata.
+  bytes document_metadata = 7;
 }
 
 // Details about a transaction on the Algorand network.
@@ -112,10 +114,6 @@ message ProcessRequest {
     // Publish a DID document. This same operation covers publishing
     // a completely new identifier or updating an existing one.
     TASK_PUBLISH = 1;
-
-    // Mark an existing DID as inactive. Inactive identifiers can still
-    // be resolved but are no longer in use.
-    TASK_DEACTIVATE = 2;
   }
 
   // Mutation type.
@@ -148,9 +146,11 @@ message QueryResponse {
   bytes document = 1;
   // JSON-encoded DID proof.
   bytes proof = 2;
+  // JSON-encoded DID document metadata.
+  bytes document_metadata = 3;
 }
 
-// Request information about a given cyrpto account.
+// Request information about a given crypto account.
 message AccountInformationRequest {
   // L1 protocol.
   string protocol = 1;

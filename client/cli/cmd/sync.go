@@ -33,17 +33,10 @@ func init() {
 			ByDefault: "master",
 			Short:     "k",
 		},
-		// {
-		// 	Name:      "deactivate",
-		// 	Usage:     "instruct the network agent to deactivate the identifier",
-		// 	FlagKey:   "sync.deactivate",
-		// 	ByDefault: false,
-		// 	Short:     "d",
-		// },
 		{
 			Name:      "pow",
 			Usage:     "set the required request ticket difficulty level",
-			FlagKey:   "sync.pow",
+			FlagKey:   "client.sync.pow",
 			ByDefault: 24,
 			Short:     "p",
 		},
@@ -97,12 +90,8 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 
 	// Build request
 	req := &protov1.ProcessRequest{
-		Task:   protov1.ProcessRequest_TASK_PUBLISH,
 		Ticket: ticket,
 	}
-	// if viper.GetBool("sync.deactivate") {
-	// 	req.Task = protov1.ProcessRequest_TASK_DEACTIVATE
-	// }
 
 	// Submit request
 	log.Info("submitting request to the network")
@@ -112,7 +101,9 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("network return an error: %s", err)
 	}
 	log.Debugf("request status: %v", res.Ok)
-	log.Info("identifier: ", res.Identifier)
+	if res.Identifier != "" {
+		log.Info("identifier: ", res.Identifier)
+	}
 	if !res.Ok {
 		return nil
 	}
@@ -122,7 +113,7 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 }
 
 func getRequestTicket(id *did.Identifier, key *did.PublicKey) (*protov1.Ticket, error) {
-	diff := uint(viper.GetInt("sync.pow"))
+	diff := uint(viper.GetInt("client.sync.pow"))
 	log.WithFields(xlog.Fields{"pow": diff}).Info("generating request ticket")
 
 	// Create new ticket

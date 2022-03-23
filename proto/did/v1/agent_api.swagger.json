@@ -206,11 +206,10 @@
       "type": "string",
       "enum": [
         "TASK_INVALID",
-        "TASK_PUBLISH",
-        "TASK_DEACTIVATE"
+        "TASK_PUBLISH"
       ],
       "default": "TASK_INVALID",
-      "description": "Available mutations.\n\n - TASK_INVALID: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one.\n - TASK_DEACTIVATE: Mark an existing DID as inactive. Inactive identifiers can still\nbe resolved but are no longer in use."
+      "description": "Available mutations.\n\n - TASK_INVALID: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one."
     },
     "protobufAny": {
       "type": "object",
@@ -277,7 +276,7 @@
           "description": "Account address."
         }
       },
-      "description": "Request information about a given cyrpto account."
+      "description": "Request information about a given crypto account."
     },
     "v1AccountInformationResponse": {
       "type": "object",
@@ -395,6 +394,11 @@
           "type": "string",
           "format": "byte",
           "description": "JSON-encoded DID proof."
+        },
+        "documentMetadata": {
+          "type": "string",
+          "format": "byte",
+          "description": "JSON-encoded DID document metadata."
         }
       },
       "description": "Query response."
@@ -430,6 +434,11 @@
           "type": "string",
           "format": "byte",
           "description": "Digital signature for the ticket, it's calculated using the\nPoW solution as input."
+        },
+        "documentMetadata": {
+          "type": "string",
+          "format": "byte",
+          "description": "JSON-encoded DID document metadata."
         }
       },
       "description": "Ticket required for write operations."

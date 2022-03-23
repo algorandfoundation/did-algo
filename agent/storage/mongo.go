@@ -28,6 +28,9 @@ type identifierRecord struct {
 
 	// DID proof.
 	Proof string `bson:"proof"`
+
+	// DID Document metadata.
+	Metadata string `bson:"metadata"`
 }
 
 func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
@@ -50,6 +53,22 @@ func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
 		return nil, nil, err
 	}
 
+	// Restore DID metadata
+	if ir.Metadata != "" {
+		d3, err := b64.DecodeString(ir.Metadata)
+		if err != nil {
+			return nil, nil, errors.New("invalid record contents")
+		}
+		metadata := &did.DocumentMetadata{}
+		if err := json.Unmarshal(d3, metadata); err != nil {
+			return nil, nil, errors.New("invalid record contents")
+
+		}
+		if err := id.AddMetadata(metadata); err != nil {
+			return nil, nil, err
+		}
+	}
+
 	// Restore proof
 	proof := &did.ProofLD{}
 	if err = json.Unmarshal(d2, proof); err != nil {
@@ -61,22 +80,25 @@ func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
 func (ir *identifierRecord) encode(id *did.Identifier, proof *did.ProofLD) {
 	data, _ := json.Marshal(id.Document(true))
 	pp, _ := json.Marshal(proof)
+	metadata, _ := json.Marshal(id.GetMetadata())
 	ir.Method = id.Method()
 	ir.Subject = id.Subject()
 	ir.Document = b64.EncodeToString(data)
 	ir.Proof = b64.EncodeToString(pp)
+	ir.Metadata = b64.EncodeToString(metadata)
 }
 
 // MongoStore provides a storage handler utilizing MongoDB as underlying
-// database. The connection strings must be of the form "mongodb://...";
-// for example: "mongodb://localhost:27017"
+// database.
 type MongoStore struct {
 	op  *orm.Operator
 	did *orm.Model
 }
 
 // Open establish the connection and database selection for the instance.
-// Must be called before any further operations.
+// Must be called before any further operations. 'info' must be a valid
+// connection string of the form "mongodb://...";
+// for example: "mongodb://localhost:27017"
 func (ms *MongoStore) Open(info string) error {
 	var err error
 	opts := options.Client()
@@ -104,16 +126,16 @@ func (ms *MongoStore) Exists(id *did.Identifier) bool {
 // Get a previously stored DID instance.
 func (ms *MongoStore) Get(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
 	// Run query
-	var res identifierRecord
+	rec := new(identifierRecord)
 	filter := orm.Filter()
 	filter["method"] = req.Method
 	filter["subject"] = req.Subject
-	if err := ms.did.First(filter, &res); err != nil {
+	if err := ms.did.First(filter, rec); err != nil {
 		return nil, nil, errors.New("no information available")
 	}
 
 	// Decode result
-	return res.decode()
+	return rec.decode()
 }
 
 // Save will create or update an entry for the provided DID instance.
