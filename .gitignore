@@ -14,7 +14,6 @@ dist
 *.tgz
 
 # PKI
-*.bin
 *.crt
 *.csr
 *.cer
