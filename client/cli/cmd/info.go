@@ -41,9 +41,14 @@ func runDidDetailsCmd(_ *cobra.Command, args []string) error {
 	}
 
 	// Present its LD document as output
+	md := id.GetMetadata()
+	if md != nil {
+		log.Infof("created: %s", md.Created)
+		log.Infof("updated: %s", md.Updated)
+		log.Infof("active: %v", !md.Deactivated)
+	}
 	info, _ := json.MarshalIndent(store.IdentifierRecord{
-		Document:         id.Document(true),
-		DocumentMetadata: id.GetMetadata(),
+		Document: id.Document(true),
 	}, "", "  ")
 	fmt.Printf("%s\n", info)
 	return nil

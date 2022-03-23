@@ -206,11 +206,10 @@
       "type": "string",
       "enum": [
         "TASK_INVALID",
-        "TASK_PUBLISH",
-        "TASK_DEACTIVATE"
+        "TASK_PUBLISH"
       ],
       "default": "TASK_INVALID",
-      "description": "Available mutations.\n\n - TASK_INVALID: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one.\n - TASK_DEACTIVATE: Mark an existing DID as inactive. Inactive identifiers can still\nbe resolved but are no longer in use."
+      "description": "Available mutations.\n\n - TASK_INVALID: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one."
     },
     "protobufAny": {
       "type": "object",
@@ -399,7 +398,7 @@
         "documentMetadata": {
           "type": "string",
           "format": "byte",
-          "title": "JSON-encoded DocumentMetadata document"
+          "description": "JSON-encoded DID document metadata."
         }
       },
       "description": "Query response."
@@ -439,7 +438,7 @@
         "documentMetadata": {
           "type": "string",
           "format": "byte",
-          "title": "JSON encoded DocumentMetadata document"
+          "description": "JSON-encoded DID document metadata."
         }
       },
       "description": "Ticket required for write operations."

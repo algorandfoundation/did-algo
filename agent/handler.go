@@ -135,15 +135,13 @@ func (h *Handler) Process(req *protov1.ProcessRequest) (string, error) {
 		}
 	}
 
+	// Store record
 	h.oop.WithFields(xlog.Fields{
 		"subject": id.Subject(),
 		"update":  isUpdate,
 		"task":    req.Task,
 	}).Debug("write operation")
-	cid := ""
-	cid, err = h.store.Save(id, proof)
-
-	return cid, err
+	return h.store.Save(id, proof)
 }
 
 // AccountInformation returns details about the crypto account specified.

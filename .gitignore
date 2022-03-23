@@ -34,8 +34,9 @@ secret*
 /algoid
 /algoid-*
 
-# Sample config file
+# Sample config files
 config.yaml
+config-*.yaml
 
 # Code coverage reports
 coverage.*

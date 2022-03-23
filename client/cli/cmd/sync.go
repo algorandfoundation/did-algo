@@ -34,20 +34,6 @@ func init() {
 			Short:     "k",
 		},
 		{
-			Name:      "activate",
-			Usage:     "instruct the network agent to activate the identifier",
-			FlagKey:   "sync.activate",
-			ByDefault: false,
-			Short:     "a",
-		},
-		{
-			Name:      "deactivate",
-			Usage:     "instruct the network agent to deactivate the identifier",
-			FlagKey:   "sync.deactivate",
-			ByDefault: false,
-			Short:     "d",
-		},
-		{
 			Name:      "pow",
 			Usage:     "set the required request ticket difficulty level",
 			FlagKey:   "client.sync.pow",
@@ -86,20 +72,6 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	}
 	log.Debugf("key selected for the operation: %s", key.ID)
 
-	if viper.GetBool("sync.activate") {
-		metadata := id.GetMetadata()
-		metadata.Deactivated = false
-		if err := id.AddMetadata(metadata); err != nil {
-			return err
-		}
-	} else if viper.GetBool("sync.deactivate") {
-		metadata := id.GetMetadata()
-		metadata.Deactivated = true
-		if err := id.AddMetadata(metadata); err != nil {
-			return err
-		}
-	}
-
 	// Generate request ticket
 	log.Infof("publishing: %s", name)
 	ticket, err := getRequestTicket(id, key)
@@ -129,7 +101,9 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("network return an error: %s", err)
 	}
 	log.Debugf("request status: %v", res.Ok)
-	log.Info("identifier: ", res.Identifier)
+	if res.Identifier != "" {
+		log.Info("identifier: ", res.Identifier)
+	}
 	if !res.Ok {
 		return nil
 	}

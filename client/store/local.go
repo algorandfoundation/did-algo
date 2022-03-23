@@ -13,6 +13,9 @@ import (
 	"go.bryk.io/pkg/did"
 )
 
+// Local storage version
+const currentVersion = "0.1.0"
+
 // LocalStore provides a filesystem-backed store.
 type LocalStore struct {
 	home string
@@ -21,8 +24,9 @@ type LocalStore struct {
 // IdentifierRecord holds the identifier data, Document and DocumentMetadata,
 // and is used to store the identifier locally.
 type IdentifierRecord struct {
-	Document         *did.Document         `json:"document"`
-	DocumentMetadata *did.DocumentMetadata `json:"documentMetadata"`
+	Version  string                `json:"version,omitempty"`
+	Document *did.Document         `json:"document"`
+	Metadata *did.DocumentMetadata `json:"metadata,omitempty"`
 }
 
 // NewLocalStore returns a local store handler. If the specified
@@ -45,8 +49,9 @@ func NewLocalStore(home string) (*LocalStore, error) {
 // Save add a new entry to the store.
 func (ls *LocalStore) Save(name string, id *did.Identifier) error {
 	data, err := json.Marshal(&IdentifierRecord{
-		Document:         id.Document(false),
-		DocumentMetadata: id.GetMetadata(),
+		Version:  currentVersion,
+		Document: id.Document(false),
+		Metadata: id.GetMetadata(),
 	})
 	if err != nil {
 		return err
@@ -60,25 +65,18 @@ func (ls *LocalStore) Get(name string) (*did.Identifier, error) {
 	if err != nil {
 		return nil, err
 	}
-	doc := IdentifierRecord{}
-	if err := json.Unmarshal(data, &doc); err != nil {
+	ir := new(IdentifierRecord)
+	if err := json.Unmarshal(data, ir); err != nil {
 		return nil, err
 	}
 
-	if doc.Document == nil {
-		doc.Document = &did.Document{}
-		if err := json.Unmarshal(data, doc.Document); err != nil {
-			return nil, err
-		}
-	}
-
-	id, err := did.FromDocument(doc.Document)
+	id, err := did.FromDocument(ir.Document)
 	if err != nil {
 		return nil, err
 	}
 
-	if doc.DocumentMetadata != nil {
-		if err := id.AddMetadata(doc.DocumentMetadata); err != nil {
+	if ir.Metadata != nil {
+		if err := id.AddMetadata(ir.Metadata); err != nil {
 			return nil, err
 		}
 	}
