@@ -39,12 +39,12 @@ builds:
       - darwin
     # supported architectures
     goarch:
-      - 386
+      - "386"
       - amd64
       - arm64
     ignore:
       - goos: darwin
-        goarch: 386
+        goarch: "386"
       - goos: windows
         goarch: arm64
 # archives to produce
@@ -139,8 +139,6 @@ nfpms:
       - src: sample-config.yaml
         dst: /etc/algoid/config.yaml
         type: "config|noreplace"
-        file_info:
-          mode: 0644
 changelog:
   sort: ''
   filters:
@@ -156,7 +154,7 @@ brews:
     # Formula name
     name: algoid
     # Push the formula to the tap repository
-    skip_upload: true
+    skip_upload: "true"
     # TAP repository
     tap:
       owner: bryk-io
