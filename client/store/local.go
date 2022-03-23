@@ -27,6 +27,7 @@ type IdentifierRecord struct {
 	Version  string                `json:"version,omitempty"`
 	Document *did.Document         `json:"document"`
 	Metadata *did.DocumentMetadata `json:"metadata,omitempty"`
+	Proof    *did.ProofLD          `json:"proof,omitempty"`
 }
 
 // NewLocalStore returns a local store handler. If the specified
