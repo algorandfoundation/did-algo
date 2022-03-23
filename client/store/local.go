@@ -25,7 +25,8 @@ type IdentifierRecord struct {
 	DocumentMetadata *did.DocumentMetadata `json:"documentMetadata"`
 }
 
-// NewLocalStore returns a local store handler.
+// NewLocalStore returns a local store handler. If the specified
+// 'home' directory doesn't exist it will be created.
 func NewLocalStore(home string) (*LocalStore, error) {
 	h := filepath.Clean(home)
 	if !dirExist(h) {
@@ -204,6 +205,8 @@ func dirExist(name string) bool {
 	return err == nil && info.IsDir()
 }
 
+// Create a new TRED worker with the provided secret key. The worker
+// instance can be used to secure data at-rest.
 func tredWorker(key []byte) (*tred.Worker, error) {
 	conf, err := tred.DefaultConfig(key)
 	if err != nil {

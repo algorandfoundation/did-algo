@@ -34,43 +34,51 @@ func NewTicket(id *did.Identifier, keyID string) (*Ticket, error) {
 	if err != nil {
 		return nil, err
 	}
-	documentMetadataBytes, err := json.Marshal(id.GetMetadata())
-	if err != nil {
-		return nil, err
+
+	// Create new ticket
+	t := &Ticket{
+		Timestamp:  time.Now().UTC().Unix(),
+		NonceValue: 0,
+		KeyId:      keyID,
+		Document:   contents,
+		Proof:      proofBytes,
+		Signature:  nil,
 	}
 
-	return &Ticket{
-		Timestamp:        time.Now().UTC().Unix(),
-		NonceValue:       0,
-		KeyId:            keyID,
-		Document:         contents,
-		Proof:            proofBytes,
-		Signature:        nil,
-		DocumentMetadata: documentMetadataBytes,
-	}, nil
+	// Add metadata, if available
+	if metadata := id.GetMetadata(); metadata != nil {
+		metadataBytes, err := json.Marshal(metadata)
+		if err != nil {
+			return nil, err
+		}
+		t.DocumentMetadata = metadataBytes
+	}
+
+	return t, nil
 }
 
 // GetDID retrieve the DID instance from the ticket contents
 func (t *Ticket) GetDID() (*did.Identifier, error) {
+	// Restore id instance from document
 	doc := &did.Document{}
 	if err := json.Unmarshal(t.Document, doc); err != nil {
 		return nil, errors.New("invalid ticket contents")
 	}
-
-	metadata := &did.DocumentMetadata{}
-	if err := json.Unmarshal(t.DocumentMetadata, metadata); err != nil {
-		return nil, errors.New("invalid ticket contents")
-	}
-
 	id, err := did.FromDocument(doc)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := id.AddMetadata(metadata); err != nil {
-		return nil, err
+	// Restore metadata, if available
+	if t.DocumentMetadata != nil {
+		metadata := &did.DocumentMetadata{}
+		if err := json.Unmarshal(t.DocumentMetadata, metadata); err != nil {
+			return nil, errors.New("invalid ticket contents")
+		}
+		if err := id.AddMetadata(metadata); err != nil {
+			return nil, err
+		}
 	}
-
 	return id, nil
 }
 

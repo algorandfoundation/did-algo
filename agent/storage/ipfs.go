@@ -30,8 +30,7 @@ type IPFS struct {
 // Open a connection with provided IPFS daemon instance.
 func (c *IPFS) Open(addr string) error {
 	sh := ipfs.NewShell(addr)
-	_, _, err := sh.Version()
-	if err != nil {
+	if _, _, err := sh.Version(); err != nil {
 		return fmt.Errorf("failed to connect to IPFS server: %w", err)
 	}
 	c.cl = sh
@@ -256,10 +255,12 @@ func (c *IPFS) getIndexEntry(subject string) string {
 }
 
 func (c *IPFS) getIndexHandler() (io.ReadCloser, error) {
-	var err error
-	c.index, err = c.cl.Resolve(indexDNSLink)
-	if err != nil {
-		return nil, fmt.Errorf("failed to resolve index entry: %w", err)
+	if c.index == "" {
+		var err error
+		c.index, err = c.cl.Resolve(indexDNSLink)
+		if err != nil {
+			return nil, fmt.Errorf("failed to resolve index entry: %w", err)
+		}
 	}
 	return c.cl.Cat(c.index)
 }

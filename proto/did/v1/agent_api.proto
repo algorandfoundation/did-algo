@@ -77,7 +77,7 @@ message Ticket {
   // Digital signature for the ticket, it's calculated using the
   // PoW solution as input.
   bytes signature = 6;
-  // JSON encoded DocumentMedata document
+  // JSON encoded DocumentMetadata document
   bytes document_metadata = 7;
 }
 
@@ -150,7 +150,7 @@ message QueryResponse {
   bytes document = 1;
   // JSON-encoded DID proof.
   bytes proof = 2;
-  // JSON-encoded DocumentMedata document
+  // JSON-encoded DocumentMetadata document
   bytes document_metadata = 3;
 }
 

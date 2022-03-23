@@ -7,12 +7,13 @@
 package protov1
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -100,7 +101,7 @@ type Ticket struct {
 	// Digital signature for the ticket, it's calculated using the
 	// PoW solution as input.
 	Signature []byte `protobuf:"bytes,6,opt,name=signature,proto3" json:"signature,omitempty"`
-	// JSON encoded DocumentMedata document
+	// JSON encoded DocumentMetadata document
 	DocumentMetadata []byte `protobuf:"bytes,7,opt,name=document_metadata,json=documentMetadata,proto3" json:"document_metadata,omitempty"`
 }
 
@@ -514,7 +515,7 @@ type QueryResponse struct {
 	Document []byte `protobuf:"bytes,1,opt,name=document,proto3" json:"document,omitempty"`
 	// JSON-encoded DID proof.
 	Proof []byte `protobuf:"bytes,2,opt,name=proof,proto3" json:"proof,omitempty"`
-	// JSON-encoded DocumentMedata document
+	// JSON-encoded DocumentMetadata document
 	DocumentMetadata []byte `protobuf:"bytes,3,opt,name=document_metadata,json=documentMetadata,proto3" json:"document_metadata,omitempty"`
 }
 

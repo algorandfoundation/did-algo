@@ -399,7 +399,7 @@
         "documentMetadata": {
           "type": "string",
           "format": "byte",
-          "title": "JSON-encoded DocumentMedata document"
+          "title": "JSON-encoded DocumentMetadata document"
         }
       },
       "description": "Query response."
@@ -439,7 +439,7 @@
         "documentMetadata": {
           "type": "string",
           "format": "byte",
-          "title": "JSON encoded DocumentMedata document"
+          "title": "JSON encoded DocumentMetadata document"
         }
       },
       "description": "Ticket required for write operations."

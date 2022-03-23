@@ -50,7 +50,7 @@ func init() {
 		{
 			Name:      "pow",
 			Usage:     "set the required request ticket difficulty level",
-			FlagKey:   "sync.pow",
+			FlagKey:   "client.sync.pow",
 			ByDefault: 24,
 			Short:     "p",
 		},
@@ -139,7 +139,7 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 }
 
 func getRequestTicket(id *did.Identifier, key *did.PublicKey) (*protov1.Ticket, error) {
-	diff := uint(viper.GetInt("sync.pow"))
+	diff := uint(viper.GetInt("client.sync.pow"))
 	log.WithFields(xlog.Fields{"pow": diff}).Info("generating request ticket")
 
 	// Create new ticket
