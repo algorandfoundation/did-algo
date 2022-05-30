@@ -24,7 +24,7 @@ assets protected by it.
 The mnemonic will be automatically saved to a text file
 with the name "[wallet-name]-mnemonic.txt".
 
-Keep in mind that missplacing or sharing the mnemonic can
+Keep in mind that misplacing or sharing the mnemonic can
 result in catastrophic security issues and permanent loss
 of funds.`,
 	RunE: func(cmd *cobra.Command, args []string) error {

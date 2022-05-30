@@ -44,7 +44,7 @@ func init() {
 			Short:     "e",
 		},
 	}
-	if err := cli.SetupCommandParams(addServiceCmd, params); err != nil {
+	if err := cli.SetupCommandParams(addServiceCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	serviceCmd.AddCommand(addServiceCmd)

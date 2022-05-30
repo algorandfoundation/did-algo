@@ -1,7 +1,7 @@
 package agent
 
 import (
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"go.bryk.io/pkg/did"
 )
 
@@ -21,7 +21,7 @@ type Storage interface {
 	Exists(id *did.Identifier) bool
 
 	// Return a previously stored DID instance.
-	Get(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, error)
+	Get(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, error)
 
 	// Create or update the record for the given DID instance.
 	Save(id *did.Identifier, proof *did.ProofLD) (string, error)

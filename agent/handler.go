@@ -14,9 +14,9 @@ import (
 	"github.com/algorand/go-algorand-sdk/client/v2/algod"
 	"github.com/algorand/go-algorand-sdk/client/v2/indexer"
 	"github.com/algorandfoundation/did-algo/info"
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"go.bryk.io/pkg/did"
-	xlog "go.bryk.io/pkg/log"
+	"go.bryk.io/pkg/log"
 	"go.bryk.io/pkg/net/rpc"
 	"go.bryk.io/pkg/otel"
 	"google.golang.org/grpc"
@@ -73,8 +73,8 @@ func (h *Handler) Close() error {
 }
 
 // Retrieve an existing DID instance based on its subject string
-func (h *Handler) Retrieve(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
-	logFields := xlog.Fields{
+func (h *Handler) Retrieve(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
+	logFields := log.Fields{
 		"method":  req.Method,
 		"subject": req.Subject,
 	}
@@ -96,7 +96,7 @@ func (h *Handler) Retrieve(req *protov1.QueryRequest) (*did.Identifier, *did.Pro
 }
 
 // Process an incoming request ticket
-func (h *Handler) Process(req *protov1.ProcessRequest) (string, error) {
+func (h *Handler) Process(req *protoV1.ProcessRequest) (string, error) {
 	// Empty request
 	if req == nil {
 		return "", errors.New("empty request")
@@ -104,25 +104,25 @@ func (h *Handler) Process(req *protov1.ProcessRequest) (string, error) {
 
 	// Validate ticket
 	if err := req.Ticket.Verify(h.difficulty); err != nil {
-		h.oop.WithFields(xlog.Fields{"error": err.Error()}).Error("invalid ticket")
+		h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid ticket")
 		return "", err
 	}
 
 	// Load DID document and proof
 	id, err := req.Ticket.GetDID()
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{"error": err.Error()}).Error("invalid DID contents")
+		h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid DID contents")
 		return "", err
 	}
 	proof, err := req.Ticket.GetProofLD()
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{"error": err.Error()}).Error("invalid DID proof")
+		h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid DID proof")
 		return "", err
 	}
 
 	// Verify method is supported
 	if !h.isSupported(id.Method()) {
-		h.oop.WithFields(xlog.Fields{"method": id.Method()}).Warning("non supported method")
+		h.oop.WithFields(log.Fields{"method": id.Method()}).Warning("non supported method")
 		return "", errors.New("non supported method")
 	}
 
@@ -130,13 +130,13 @@ func (h *Handler) Process(req *protov1.ProcessRequest) (string, error) {
 	isUpdate := h.store.Exists(id)
 	if isUpdate {
 		if err := req.Ticket.Verify(h.difficulty); err != nil {
-			h.oop.WithFields(xlog.Fields{"error": err.Error()}).Error("invalid ticket")
+			h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid ticket")
 			return "", err
 		}
 	}
 
 	// Store record
-	h.oop.WithFields(xlog.Fields{
+	h.oop.WithFields(log.Fields{
 		"subject": id.Subject(),
 		"update":  isUpdate,
 		"task":    req.Task,
@@ -147,10 +147,10 @@ func (h *Handler) Process(req *protov1.ProcessRequest) (string, error) {
 // AccountInformation returns details about the crypto account specified.
 func (h *Handler) AccountInformation(
 	ctx context.Context,
-	req *protov1.AccountInformationRequest) (*protov1.AccountInformationResponse, error) {
+	req *protoV1.AccountInformationRequest) (*protoV1.AccountInformationResponse, error) {
 	ai, err := h.algoNode.AccountInformation(req.Address).Do(ctx)
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{
+		h.oop.WithFields(log.Fields{
 			"error":   err.Error(),
 			"address": req.Address,
 		}).Error("failed to get account information")
@@ -158,21 +158,21 @@ func (h *Handler) AccountInformation(
 	}
 	_, ptList, err := h.algoNode.PendingTransactionsByAddress(req.Address).Do(ctx)
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{
+		h.oop.WithFields(log.Fields{
 			"error":   err.Error(),
 			"address": req.Address,
 		}).Error("failed to get pending transactions")
 		return nil, err
 	}
-	resp := &protov1.AccountInformationResponse{
+	resp := &protoV1.AccountInformationResponse{
 		Status:              ai.Status,
 		Balance:             ai.AmountWithoutPendingRewards,
 		TotalRewards:        ai.Rewards,
 		PendingRewards:      ai.PendingRewards,
-		PendingTransactions: []*protov1.AlgoTransaction{},
+		PendingTransactions: []*protoV1.AlgoTransaction{},
 	}
 	for _, pt := range ptList {
-		resp.PendingTransactions = append(resp.PendingTransactions, &protov1.AlgoTransaction{
+		resp.PendingTransactions = append(resp.PendingTransactions, &protoV1.AlgoTransaction{
 			Amount:   uint64(pt.Txn.Amount),
 			Receiver: pt.Txn.Receiver.String(),
 			Note:     pt.Txn.Note,
@@ -185,9 +185,9 @@ func (h *Handler) AccountInformation(
 // The channel must be closed using the provided context when no longer needed.
 func (h *Handler) AccountActivity(
 	ctx context.Context,
-	req *protov1.AccountActivityRequest) (<-chan *protov1.AccountActivityResponse, error) {
+	req *protoV1.AccountActivityRequest) (<-chan *protoV1.AccountActivityResponse, error) {
 	check := time.NewTicker(time.Duration(5) * time.Second)
-	sink := make(chan *protov1.AccountActivityResponse)
+	sink := make(chan *protoV1.AccountActivityResponse)
 	go func() {
 		for {
 			select {
@@ -200,12 +200,12 @@ func (h *Handler) AccountActivity(
 				query := h.algoIndexer.LookupAccountTransactions(req.Address)
 				resp, err := query.Do(ctx)
 				if err != nil {
-					h.oop.WithFields(xlog.Fields{
+					h.oop.WithFields(log.Fields{
 						"error":   err.Error(),
 						"address": req.Address,
 					}).Error("failed to get account activity")
 				} else {
-					sink <- &protov1.AccountActivityResponse{
+					sink <- &protoV1.AccountActivityResponse{
 						CurrentRound: resp.CurrentRound,
 						NextToken:    resp.NextToken,
 					}
@@ -218,49 +218,51 @@ func (h *Handler) AccountActivity(
 
 // TxParameters return the latest network parameters suggested for processing
 // new transactions.
-func (h *Handler) TxParameters(ctx context.Context) (*protov1.TxParametersResponse, error) {
+func (h *Handler) TxParameters(ctx context.Context) (*protoV1.TxParametersResponse, error) {
 	params, err := h.algoNode.SuggestedParams().Do(ctx)
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{
+		h.oop.WithFields(log.Fields{
 			"error": err.Error(),
 		}).Error("failed to get transaction parameters")
 		return nil, err
 	}
 	data, err := json.Marshal(params)
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{
+		h.oop.WithFields(log.Fields{
 			"error": err.Error(),
 		}).Error("failed to encode transaction parameters")
 		return nil, err
 	}
-	return &protov1.TxParametersResponse{Params: data}, nil
+	return &protoV1.TxParametersResponse{Params: data}, nil
 }
 
 // TxSubmit will send a signed raw transaction to the network for processing.
-func (h *Handler) TxSubmit(ctx context.Context, req *protov1.TxSubmitRequest) (*protov1.TxSubmitResponse, error) {
+func (h *Handler) TxSubmit(ctx context.Context, req *protoV1.TxSubmitRequest) (*protoV1.TxSubmitResponse, error) {
 	tid, err := h.algoNode.SendRawTransaction(req.Stx).Do(ctx)
 	if err != nil {
-		h.oop.WithFields(xlog.Fields{
+		h.oop.WithFields(log.Fields{
 			"error": err.Error(),
 			"tx":    base64.StdEncoding.EncodeToString(req.Stx),
 		}).Error("failed to submit raw transaction")
 		return nil, err
 	}
-	return &protov1.TxSubmitResponse{Id: tid}, nil
+	return &protoV1.TxSubmitResponse{Id: tid}, nil
 }
 
-// ServiceDefinition allows the handler instance to be exposed using an RPC server
-func (h *Handler) ServiceDefinition() *rpc.Service {
-	return &rpc.Service{
-		GatewaySetup: protov1.RegisterAgentAPIHandlerFromEndpoint,
-		ServerSetup: func(s *grpc.Server) {
-			protov1.RegisterAgentAPIServer(s, &rpcHandler{handler: h})
-		},
-	}
+// ServerSetup performs all initialization requirements for the
+// handler instance to be exposed through the provided gRPC server.
+func (h *Handler) ServerSetup(server *grpc.Server) {
+	protoV1.RegisterAgentAPIServer(server, &rpcHandler{handler: h})
+}
+
+// GatewaySetup return the HTTP setup method to allow exposing the
+// handler's functionality through an HTTP gateway.
+func (h *Handler) GatewaySetup() rpc.GatewayRegister {
+	return protoV1.RegisterAgentAPIHandler
 }
 
 // QueryResponseFilter provides custom encoding of HTTP query results.
-func (h *Handler) QueryResponseFilter() rpc.HTTPGatewayFilter {
+func (h *Handler) QueryResponseFilter() rpc.GatewayInterceptor {
 	return func(res http.ResponseWriter, req *http.Request) error {
 		// Filter query requests
 		if !strings.HasPrefix(req.URL.Path, "/v1/retrieve/") {
@@ -276,7 +278,7 @@ func (h *Handler) QueryResponseFilter() rpc.HTTPGatewayFilter {
 			status   = http.StatusNotFound
 			response []byte
 		)
-		rr := &protov1.QueryRequest{
+		rr := &protoV1.QueryRequest{
 			Method:  seg[0],
 			Subject: seg[1],
 		}

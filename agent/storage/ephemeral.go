@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/pkg/errors"
 	"go.bryk.io/pkg/did"
 )
@@ -49,7 +49,7 @@ func (e *Ephemeral) Exists(id *did.Identifier) bool {
 }
 
 // Get a previously stored DID instance.
-func (e *Ephemeral) Get(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
+func (e *Ephemeral) Get(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
 	key := fmt.Sprintf("%s:%s", req.Method, req.Subject)
 	e.mu.Lock()
 	r, ok := e.entries[key]

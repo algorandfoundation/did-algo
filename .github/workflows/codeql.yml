@@ -8,6 +8,9 @@ on:
       - main
   workflow_dispatch: {}
 jobs:
+  # Semantic code analysis to discover vulnerabilities in the codebase
+  # using GitHub's CodeQL.
+  # https://codeql.github.com/docs/
   analyze:
     name: analyze
     runs-on: ubuntu-latest
@@ -18,7 +21,7 @@ jobs:
     steps:
       # Checkout code
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       # Prepare runner environment
       - name: Set up runner environment
@@ -29,7 +32,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -37,11 +40,11 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
           # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
+      # Auto build attempts to build any compiled languages  (C/C++, C#, or Java).
+      - name: Auto build
+        uses: github/codeql-action/autobuild@v2
 
-      # Run manual build only if autobuild fails
+      # Run manual build only if auto-build fails
       - name: Manual build
         if: ${{ failure() }}
         run: |
@@ -50,4 +53,4 @@ jobs:
 
       # Run analysis
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2

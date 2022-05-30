@@ -11,7 +11,7 @@ import (
 	"github.com/algorand/go-algorand-sdk/future"
 	"github.com/algorand/go-algorand-sdk/mnemonic"
 	at "github.com/algorand/go-algorand-sdk/types"
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -51,7 +51,7 @@ func init() {
 			Short:     "s",
 		},
 	}
-	if err := cli.SetupCommandParams(walletPayCmd, params); err != nil {
+	if err := cli.SetupCommandParams(walletPayCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	walletCmd.AddCommand(walletPayCmd)
@@ -98,7 +98,7 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	cl := protov1.NewAgentAPIClient(conn)
+	cl := protoV1.NewAgentAPIClient(conn)
 
 	// Get transaction parameters
 	txParams, err := cl.TxParameters(context.TODO(), &emptypb.Empty{})
@@ -134,7 +134,7 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 
 	// Submit transaction
 	log.Debug("submitting signed transaction")
-	tr, err := cl.TxSubmit(context.TODO(), &protov1.TxSubmitRequest{
+	tr, err := cl.TxSubmit(context.TODO(), &protoV1.TxSubmitRequest{
 		Stx: stx,
 	})
 	if err != nil {

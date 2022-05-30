@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/pkg/errors"
 	"go.bryk.io/pkg/did"
 	"go.bryk.io/pkg/storage/orm"
@@ -124,7 +124,7 @@ func (ms *MongoStore) Exists(id *did.Identifier) bool {
 }
 
 // Get a previously stored DID instance.
-func (ms *MongoStore) Get(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
+func (ms *MongoStore) Get(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
 	// Run query
 	rec := new(identifierRecord)
 	filter := orm.Filter()

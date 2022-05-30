@@ -30,7 +30,7 @@ func init() {
 			Short:     "v",
 		},
 	}
-	if err := cli.SetupCommandParams(retrieveCmd, params); err != nil {
+	if err := cli.SetupCommandParams(retrieveCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	rootCmd.AddCommand(retrieveCmd)

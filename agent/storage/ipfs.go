@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	ipfs "github.com/ipfs/go-ipfs-api"
 	"go.bryk.io/pkg/did"
 )
@@ -55,7 +55,7 @@ func (c *IPFS) Exists(id *did.Identifier) bool {
 }
 
 // Get a previously stored DID instance.
-func (c *IPFS) Get(req *protov1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
+func (c *IPFS) Get(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
 	// Get CID from index
 	cid := c.getIndexEntry(req.Subject)
 	if cid == "" {

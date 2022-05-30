@@ -56,7 +56,7 @@ func init() {
 			Short:     "m",
 		},
 	}
-	if err := cli.SetupCommandParams(registerCmd, params); err != nil {
+	if err := cli.SetupCommandParams(registerCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	rootCmd.AddCommand(registerCmd)

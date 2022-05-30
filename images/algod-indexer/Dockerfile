@@ -2,7 +2,7 @@ FROM debian:10
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG version=2.6.6
+ARG version=2.10.0
 
 # Install base tools
 RUN \

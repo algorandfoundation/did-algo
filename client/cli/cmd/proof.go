@@ -50,7 +50,7 @@ func init() {
 			Short:     "p",
 		},
 	}
-	if err := cli.SetupCommandParams(proofCmd, params); err != nil {
+	if err := cli.SetupCommandParams(proofCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	rootCmd.AddCommand(proofCmd)

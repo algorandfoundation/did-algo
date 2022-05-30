@@ -45,13 +45,13 @@ func init() {
 			Short:     "a",
 		},
 	}
-	if err := cli.SetupCommandParams(walletConnectCmd, params); err != nil {
+	if err := cli.SetupCommandParams(walletConnectCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	walletCmd.AddCommand(walletConnectCmd)
 }
 
-func runWalletConnectCmd(cmd *cobra.Command, args []string) error {
+func runWalletConnectCmd(_ *cobra.Command, args []string) error {
 	if len(args) != 2 {
 		return errors.New("missing required parameters")
 	}
@@ -87,7 +87,7 @@ func runWalletConnectCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Retrieve existing address list and add new one
-	addresses := []algoDestination{}
+	var addresses []algoDestination
 	ext := did.Extension{
 		ID:      "algo-address",
 		Version: "0.1.0",

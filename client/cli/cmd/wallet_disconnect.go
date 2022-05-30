@@ -40,7 +40,7 @@ var walletDisconnectCmd = &cobra.Command{
 		}
 
 		// Get list of linked address
-		oldList := []algoDestination{}
+		var oldList []algoDestination
 		ext := did.Extension{
 			ID:      "algo-address",
 			Version: "0.1.0",
@@ -50,7 +50,7 @@ var walletDisconnectCmd = &cobra.Command{
 		}
 
 		// Filter out provided address
-		newList := []algoDestination{}
+		var newList []algoDestination
 		for _, entry := range oldList {
 			if entry.Address != addr {
 				newList = append(newList, entry)

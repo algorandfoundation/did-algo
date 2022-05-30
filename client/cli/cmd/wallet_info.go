@@ -7,7 +7,7 @@ import (
 
 	ac "github.com/algorand/go-algorand-sdk/crypto"
 	"github.com/algorand/go-algorand-sdk/mnemonic"
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
 )
@@ -58,10 +58,10 @@ var walletInfoCmd = &cobra.Command{
 		defer func() {
 			_ = conn.Close()
 		}()
-		cl := protov1.NewAgentAPIClient(conn)
+		cl := protoV1.NewAgentAPIClient(conn)
 
 		// Get account info
-		info, err := cl.AccountInformation(context.TODO(), &protov1.AccountInformationRequest{
+		info, err := cl.AccountInformation(context.TODO(), &protoV1.AccountInformationRequest{
 			Address:  account.Address.String(),
 			Protocol: "algorand",
 			Network:  "testnet",

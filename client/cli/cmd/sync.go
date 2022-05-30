@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	protov1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -41,7 +41,7 @@ func init() {
 			Short:     "p",
 		},
 	}
-	if err := cli.SetupCommandParams(syncCmd, params); err != nil {
+	if err := cli.SetupCommandParams(syncCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
 	rootCmd.AddCommand(syncCmd)
@@ -89,13 +89,13 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	}()
 
 	// Build request
-	req := &protov1.ProcessRequest{
+	req := &protoV1.ProcessRequest{
 		Ticket: ticket,
 	}
 
 	// Submit request
 	log.Info("submitting request to the network")
-	client := protov1.NewAgentAPIClient(conn)
+	client := protoV1.NewAgentAPIClient(conn)
 	res, err := client.Process(context.TODO(), req)
 	if err != nil {
 		return fmt.Errorf("network return an error: %s", err)
@@ -112,12 +112,12 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	return st.Update(name, id)
 }
 
-func getRequestTicket(id *did.Identifier, key *did.PublicKey) (*protov1.Ticket, error) {
+func getRequestTicket(id *did.Identifier, key *did.PublicKey) (*protoV1.Ticket, error) {
 	diff := uint(viper.GetInt("client.sync.pow"))
 	log.WithFields(xlog.Fields{"pow": diff}).Info("generating request ticket")
 
 	// Create new ticket
-	ticket, err := protov1.NewTicket(id, key.ID)
+	ticket, err := protoV1.NewTicket(id, key.ID)
 	if err != nil {
 		return nil, err
 	}
