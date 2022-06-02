@@ -1,6 +1,7 @@
 # Generals
 .DS_Store
 .idea
+.vscode
 *.iml
 
 # Deps
