@@ -2,7 +2,7 @@ FROM debian:10
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG version=0.11.0
+ARG version=0.12.2
 
 # Install node tools
 RUN \
@@ -28,7 +28,7 @@ COPY run.sh /var/run/ipfs.sh
 #   curl https://ipfs.io/api/v0/get/${CID} | tar -xf -
 # Install locally:
 #   ipfs add -r --cid-version=1 build
-COPY webui-v2.13.0.zip /root/webui.zip
+COPY webui-v2.15.0.zip /root/webui.zip
 
 # Node storage
 VOLUME /var/lib/ipfs
