@@ -12,7 +12,7 @@ require (
 	github.com/spf13/viper v1.12.0
 	go.bryk.io/pkg v0.0.0-20220602140014-24ee54f864bf
 	go.mongodb.org/mongo-driver v1.9.1
-	go.opentelemetry.io/otel v1.7.0
+	go.opentelemetry.io/otel v1.8.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd
 	google.golang.org/grpc v1.47.0
