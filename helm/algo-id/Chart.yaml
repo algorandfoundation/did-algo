@@ -3,7 +3,7 @@ name: algo-id
 description: Network agent deployment for the "algo" DID method
 type: application
 version: 0.2.0
-appVersion: 0.1.1
+appVersion: 0.2.0
 home: https://github.com/algorandfoundation/did-algo
 icon: https://raw.githubusercontent.com/algorandfoundation/did-algo/main/helm/algo-id/icon.png
 sources:

@@ -65,8 +65,9 @@ ca-roots:
 ## deps: Verify dependencies and remove intermediary products
 deps:
 	@-rm -rf vendor
+	go clean
 	go mod tidy
-	go mod verify
+	GOWORK=off go mod verify
 	go mod download
 	go mod vendor
 
@@ -151,4 +152,4 @@ test:
 ## updates: List available updates for direct dependencies
 # https://github.com/golang/go/wiki/Modules#how-to-upgrade-and-downgrade-dependencies
 updates:
-	@go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -mod=mod -m all 2> /dev/null
+	@GOWORK=off go list -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -mod=mod -m all 2> /dev/null
