@@ -22,6 +22,7 @@ updates:
     # Ignore specific dependencies
     ignore:
       - dependency-name: "google.golang.org/genproto"
+      - dependency-name: "go.bryk.io/pkg"
     # Configure commit messages
     commit-message:
       # Prefix all commit messages with "dependencies"
