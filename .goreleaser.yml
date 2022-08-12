@@ -120,7 +120,7 @@ nfpms:
     vendor: Algorand Foundation
     homepage: https://github.com/algorandfoundation/did-algo
     maintainer: Ben Cessa <ben@aid.technology>
-    description: Dencentralized Identifiers for the Algorand blockchain
+    description: Decentralized Identifiers for the Algorand blockchain
     license: BSD-3-Clause
     formats:
       # Alpine
@@ -131,22 +131,23 @@ nfpms:
       - rpm
     # Binary location
     bindir: /usr/local/bin
-    # Folders created and managed by the installer
-    empty_folders:
-      - /etc/algoid
     # Additional files managed by the installer
     contents:
       - src: sample-config.yaml
         dst: /etc/algoid/config.yaml
         type: "config|noreplace"
 changelog:
+  # Sorts the changelog commit messages (asc, desc or '')
   sort: ''
+  # Remove certain commit messages from the changelog
   filters:
+    # Standard commit messages can help to produce better changelogs
+    # https://www.conventionalcommits.org/en/v1.0.0/
     exclude:
       - "^docs:"
       - "^test:"
       - "^chore:"
-      - typo
+      - "^typo:"
 # Produce homebrew formulas for the project artifacts
 # https://goreleaser.com/customization/homebrew/
 brews:
@@ -167,7 +168,7 @@ brews:
     # Project details
     homepage: "https://github.com/algorandfoundation/did-algo"
     description: |
-      Reference client implementation for the 'bryk' DID method. The platform allows
+      Reference client implementation for the 'algo' DID method. The platform allows
       entities to fully manage Decentralized Identifiers as described on the version
       v1.0 of the specification.
     install: |

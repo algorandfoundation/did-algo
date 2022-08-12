@@ -14,6 +14,8 @@ spec:
       {{- include "algo-id.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
         {{- include "algo-id.selectorLabels" . | nindent 8 }}
     spec:
@@ -50,7 +52,7 @@ spec:
               mountPath: /etc/algoid
             {{- if .Values.configuration.agent.tls.enabled }}
             - name: tls
-              mountPath: /etc/algoid/agent
+              mountPath: /etc/algoid/tls
               readOnly: true
             {{- end }}
             {{- if .Values.persistence.enabled }}

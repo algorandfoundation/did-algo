@@ -147,12 +147,12 @@ func (t *Ticket) Solve(ctx context.Context, difficulty uint) string {
 
 // Verify perform all the required validations to ensure the request ticket is
 // ready for further processing
-// - Challenge is valid
-// - Contents are a properly encoded DID instance
-// - Contents don’t include any private key, for security reasons no private keys should
-//   ever be published on the network
-// - DID proof is valid
-// - Ticket signature is valid.
+//   - Challenge is valid
+//   - Contents are a properly encoded DID instance
+//   - Contents don’t include any private key, for security reasons no private keys should
+//     ever be published on the network
+//   - DID proof is valid
+//   - Ticket signature is valid.
 func (t *Ticket) Verify(difficulty uint) error {
 	// Challenge is valid
 	if difficulty == 0 {

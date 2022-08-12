@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"runtime"
-	"runtime/pprof"
-	"strings"
 	"syscall"
+	"time"
 
 	"github.com/algorandfoundation/did-algo/agent"
 	"github.com/algorandfoundation/did-algo/agent/storage"
@@ -16,6 +14,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.bryk.io/pkg/cli"
+	mw "go.bryk.io/pkg/net/middleware"
 	"go.bryk.io/pkg/net/rpc"
 	"go.bryk.io/pkg/otel"
 )
@@ -44,22 +43,24 @@ func init() {
 			ByDefault: 24,
 		},
 		{
+			Name:      "proxy-protocol",
+			Usage:     "enable support for PROXY protocol",
+			FlagKey:   "agent.proxy_protocol",
+			ByDefault: false,
+			Short:     "P",
+		},
+		{
 			Name:      "http",
 			Usage:     "enable the HTTP interface",
 			FlagKey:   "agent.http",
 			ByDefault: false,
 		},
 		{
-			Name:      "monitoring",
-			Usage:     "publish metrics for instrumentation and monitoring",
-			FlagKey:   "agent.monitoring",
-			ByDefault: false,
-		},
-		{
-			Name:      "debug",
-			Usage:     "run agent in debug mode to generate profiling information",
-			FlagKey:   "agent.debug",
-			ByDefault: false,
+			Name:      "env",
+			Usage:     "agent environment identifier",
+			FlagKey:   "agent.env",
+			ByDefault: "dev",
+			Short:     "e",
 		},
 		{
 			Name:      "tls",
@@ -77,13 +78,13 @@ func init() {
 			Name:      "tls-cert",
 			Usage:     "TLS certificate (path to PEM file)",
 			FlagKey:   "agent.tls.cert",
-			ByDefault: "/etc/algoid/agent/tls.crt",
+			ByDefault: "/etc/algoid/tls/tls.crt",
 		},
 		{
 			Name:      "tls-key",
 			Usage:     "TLS private key (path to PEM file)",
 			FlagKey:   "agent.tls.key",
-			ByDefault: "/etc/algoid/agent/tls.key",
+			ByDefault: "/etc/algoid/tls/tls.key",
 		},
 		{
 			Name:      "method",
@@ -112,20 +113,16 @@ func init() {
 }
 
 func runMethodServer(_ *cobra.Command, _ []string) error {
-	// CPU profile
-	if viper.GetBool("agent.debug") {
-		cpuProfileHook, err := cpuProfile()
-		if err != nil {
-			return err
-		}
-		defer cpuProfileHook()
-	}
-
 	// Observability operator
 	oop, err := otel.NewOperator([]otel.OperatorOption{
 		otel.WithLogger(log),
 		otel.WithServiceName("algoid"),
 		otel.WithServiceVersion(info.CoreVersion),
+		otel.WithHostMetrics(),
+		otel.WithRuntimeMetrics(5 * time.Second),
+		otel.WithResourceAttributes(otel.Attributes{
+			"environment": viper.GetString("agent.env"),
+		}),
 	}...)
 	if err != nil {
 		return err
@@ -144,11 +141,16 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 		rpc.WithNetworkInterface(rpc.NetworkInterfaceAll),
 		rpc.WithServiceProvider(handler),
 		rpc.WithObservability(oop),
+		rpc.WithResourceLimits(rpc.ResourceLimits{
+			Connections: 1000,
+			Requests:    10,
+			Rate:        10000,
+		}),
 	}
 
 	// TLS configuration
 	if viper.GetBool("agent.tls.enabled") {
-		log.Info("TLS enabled")
+		log.Debug("TLS enabled")
 		opt, err := loadAgentCredentials()
 		if err != nil {
 			return err
@@ -158,7 +160,7 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 
 	// Initialize HTTP gateway
 	if viper.GetBool("agent.http") {
-		log.Info("HTTP gateway available")
+		log.Debug("HTTP gateway available")
 		gw, err := getAgentGateway(handler)
 		if err != nil {
 			return err
@@ -167,12 +169,12 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 	}
 
 	// Start server and wait for it to be ready
-	log.Infof("difficulty level: %d", viper.GetInt("agent.pow"))
-	log.Infof("TCP port: %d", viper.GetInt("agent.port"))
+	log.Debugf("difficulty level: %d", viper.GetInt("agent.pow"))
+	log.Debugf("TCP port: %d", viper.GetInt("agent.port"))
 	log.Info("starting network agent")
 	if viper.GetBool("agent.tls.enabled") {
-		log.Infof("certificate: %s", viper.GetString("agent.tls.cert"))
-		log.Infof("private key: %s", viper.GetString("agent.tls.key"))
+		log.Debugf("certificate: %s", viper.GetString("agent.tls.cert"))
+		log.Debugf("private key: %s", viper.GetString("agent.tls.key"))
 	}
 	server, err := rpc.NewServer(opts...)
 	if err != nil {
@@ -195,31 +197,23 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 
 	// Close handler
 	log.Info("preparing to exit")
-	if err = handler.Close(); err != nil && !strings.Contains(err.Error(), "closed network connection") {
-		return err
+	if err := server.Stop(true); err != nil {
+		log.WithField("error", err).Warning("error stopping server")
 	}
-
-	// Dump memory profile and exit
-	if viper.GetBool("agent.debug") {
-		if err := memoryProfile(); err != nil {
-			return err
-		}
-	}
-	return nil
+	return handler.Close()
 }
 
 func getAgentHandler(oop *otel.Operator) (*agent.Handler, error) {
-	// Get handler settings
+	// Storage
 	ss := &storageSettings{}
 	if err := viper.UnmarshalKey("agent.storage", ss); err != nil {
 		return nil, err
 	}
-	methods := viper.GetStringSlice("agent.method")
-	pow := uint(viper.GetInt("agent.pow"))
 	store, err := getStorage(ss)
 	if err != nil {
 		return nil, err
 	}
+	log.Infof("storage: %s", store.Description())
 
 	// Network clients
 	algodClient, err := algodClient()
@@ -233,17 +227,16 @@ func getAgentHandler(oop *otel.Operator) (*agent.Handler, error) {
 
 	// Prepare API handler
 	handler, err := agent.NewHandler(agent.HandlerOptions{
-		Methods:     methods,
-		Difficulty:  pow,
+		Methods:     viper.GetStringSlice("agent.method"),
+		Difficulty:  uint(viper.GetInt("agent.pow")),
 		Store:       store,
 		OOP:         oop,
 		AlgoNode:    algodClient,
 		AlgoIndexer: indexerClient,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to start method handler: %w", err)
+		return nil, fmt.Errorf("failed to start service handler: %w", err)
 	}
-	log.Infof("storage: %s", store.Description())
 	return handler, nil
 }
 
@@ -290,39 +283,15 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 		rpc.WithInterceptor(handler.QueryResponseFilter()),
 		rpc.WithGatewayMiddleware(customGatewayHeaders()),
 	}
+	if viper.GetBool("agent.proxy_protocol") {
+		log.Debug("enable PROXY protocol support")
+		gwOpts = append(gwOpts, rpc.WithGatewayMiddleware(mw.ProxyHeaders()))
+	}
 	gw, err := rpc.NewGateway(gwOpts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize HTTP gateway: %w", err)
 	}
 	return gw, nil
-}
-
-func cpuProfile() (func(), error) {
-	cpu, err := os.CreateTemp("", "algoid_cpu_")
-	if err != nil {
-		return nil, err
-	}
-	if err := pprof.StartCPUProfile(cpu); err != nil {
-		return nil, err
-	}
-	return func() {
-		log.Infof("CPU profile saved at %s", cpu.Name())
-		pprof.StopCPUProfile()
-		_ = cpu.Close()
-	}, nil
-}
-
-func memoryProfile() error {
-	mem, err := os.CreateTemp("", "algoid_mem_")
-	if err != nil {
-		return err
-	}
-	runtime.GC()
-	if err := pprof.WriteHeapProfile(mem); err != nil {
-		return err
-	}
-	log.Infof("memory profile saved at %s", mem.Name())
-	return mem.Close()
 }
 
 // Add version details as custom headers to all responses from the
@@ -332,6 +301,8 @@ func customGatewayHeaders() func(http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("x-agent-version", info.CoreVersion)
 			w.Header().Add("x-agent-build-code", info.BuildCode)
+			w.Header().Add("x-agent-release", releaseCode())
+			w.Header().Add("x-content-type-options", "nosniff")
 			next.ServeHTTP(w, r)
 		}
 		return http.HandlerFunc(fn)
