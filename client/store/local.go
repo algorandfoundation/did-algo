@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,7 +12,7 @@ import (
 	"go.bryk.io/pkg/did"
 )
 
-// Local storage version
+// Local storage version.
 const currentVersion = "0.1.0"
 
 // LocalStore provides a filesystem-backed store.
@@ -36,12 +35,12 @@ func NewLocalStore(home string) (*LocalStore, error) {
 	h := filepath.Clean(home)
 	if !dirExist(h) {
 		if err := os.Mkdir(h, 0700); err != nil {
-			return nil, fmt.Errorf("failed to create new home directory: %s", err)
+			return nil, fmt.Errorf("failed to create new home directory: %w", err)
 		}
 	}
 	if !dirExist(filepath.Join(h, "wallets")) {
 		if err := os.Mkdir(filepath.Join(h, "wallets"), 0700); err != nil {
-			return nil, fmt.Errorf("failed to create new wallets directory: %s", err)
+			return nil, fmt.Errorf("failed to create new wallets directory: %w", err)
 		}
 	}
 	return &LocalStore{home: h}, nil
@@ -57,12 +56,12 @@ func (ls *LocalStore) Save(name string, id *did.Identifier) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filepath.Join(ls.home, name), data, 0600)
+	return os.WriteFile(filepath.Join(ls.home, name), data, 0600)
 }
 
 // Get an existing entry based on its reference name.
 func (ls *LocalStore) Get(name string) (*did.Identifier, error) {
-	data, err := ioutil.ReadFile(filepath.Clean(filepath.Join(ls.home, name)))
+	data, err := os.ReadFile(filepath.Clean(filepath.Join(ls.home, name)))
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +138,7 @@ func (ls *LocalStore) SaveWallet(name, mnemonic, passphrase string) error {
 		return err
 	}
 	wf := filepath.Join("wallets", fmt.Sprintf("%s.wal", name))
-	return ioutil.WriteFile(filepath.Join(ls.home, wf), enc.Bytes(), 0400)
+	return os.WriteFile(filepath.Join(ls.home, wf), enc.Bytes(), 0400)
 }
 
 // OpenWallet locates the wallet file and decrypts it using `passphrase`;
@@ -147,7 +146,7 @@ func (ls *LocalStore) SaveWallet(name, mnemonic, passphrase string) error {
 func (ls *LocalStore) OpenWallet(name, passphrase string) (string, error) {
 	// Open encrypted wallet file
 	wf := filepath.Join("wallets", fmt.Sprintf("%s.wal", name))
-	contents, err := ioutil.ReadFile(filepath.Clean(filepath.Join(ls.home, wf)))
+	contents, err := os.ReadFile(filepath.Clean(filepath.Join(ls.home, wf)))
 	if err != nil {
 		return "", err
 	}
@@ -185,9 +184,9 @@ func (ls *LocalStore) ListWallets() (list []string) {
 
 // RenameWallet will securely adjust the alias associated with a locally
 // store wallet.
-func (ls *LocalStore) RenameWallet(old, new string) error {
+func (ls *LocalStore) RenameWallet(old, nw string) error {
 	wf := filepath.Join(ls.home, "wallets", fmt.Sprintf("%s.wal", old))
-	nf := filepath.Join(ls.home, "wallets", fmt.Sprintf("%s.wal", new))
+	nf := filepath.Join(ls.home, "wallets", fmt.Sprintf("%s.wal", nw))
 	return os.Rename(wf, nf)
 }
 
@@ -198,7 +197,7 @@ func (ls *LocalStore) DeleteWallet(name string) error {
 	return os.Remove(wf)
 }
 
-// Verify the provided path exists and is a directory
+// Verify the provided path exists and is a directory.
 func dirExist(name string) bool {
 	info, err := os.Stat(name)
 	return err == nil && info.IsDir()

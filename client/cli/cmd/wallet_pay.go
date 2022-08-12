@@ -93,7 +93,7 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 	// Get client connection
 	conn, err := getClientConnection()
 	if err != nil {
-		return fmt.Errorf("failed to establish connection: %s", err)
+		return fmt.Errorf("failed to establish connection: %w", err)
 	}
 	defer func() {
 		_ = conn.Close()

@@ -94,11 +94,11 @@ func runProofCmd(_ *cobra.Command, args []string) error {
 	domain := viper.GetString("proof.domain")
 	pld, err := key.ProduceProof(input, purpose, domain)
 	if err != nil {
-		return fmt.Errorf("failed to produce proof: %s", err)
+		return fmt.Errorf("failed to produce proof: %w", err)
 	}
 	js, err := json.MarshalIndent(pld, "", "  ")
 	if err != nil {
-		return fmt.Errorf("failed to produce proof: %s", err)
+		return fmt.Errorf("failed to produce proof: %w", err)
 	}
 	fmt.Printf("%s\n", js)
 	return nil

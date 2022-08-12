@@ -14,7 +14,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-// Wrapper to enable RPC access to an underlying method handler instance
+// Wrapper to enable RPC access to an underlying method handler instance.
 type rpcHandler struct {
 	protoV1.UnimplementedAgentAPIServer
 	handler *Handler

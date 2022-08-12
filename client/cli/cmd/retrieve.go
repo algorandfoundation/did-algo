@@ -52,7 +52,7 @@ func runRetrieveCmd(_ *cobra.Command, args []string) error {
 	log.Info("retrieving record")
 	response, err := resolve(args[0])
 	if err != nil {
-		return fmt.Errorf("failed to resolve DID: %s", err)
+		return fmt.Errorf("failed to resolve DID: %w", err)
 	}
 
 	// If no validation is required/supported, print response as-is

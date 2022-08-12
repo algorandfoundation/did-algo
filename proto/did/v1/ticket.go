@@ -17,7 +17,7 @@ import (
 
 const defaultTicketDifficultyLevel = 24
 
-// NewTicket returns a properly initialized new ticket instance
+// NewTicket returns a properly initialized new ticket instance.
 func NewTicket(id *did.Identifier, keyID string) (*Ticket, error) {
 	// Get safe DID document
 	contents, err := json.Marshal(id.Document(true))
@@ -57,7 +57,7 @@ func NewTicket(id *did.Identifier, keyID string) (*Ticket, error) {
 	return t, nil
 }
 
-// GetDID retrieve the DID instance from the ticket contents
+// GetDID retrieve the DID instance from the ticket contents.
 func (t *Ticket) GetDID() (*did.Identifier, error) {
 	// Restore id instance from document
 	doc := &did.Document{}
@@ -82,7 +82,7 @@ func (t *Ticket) GetDID() (*did.Identifier, error) {
 	return id, nil
 }
 
-// GetProofLD returns the decoded proof document contained in the ticket
+// GetProofLD returns the decoded proof document contained in the ticket.
 func (t *Ticket) GetProofLD() (*did.ProofLD, error) {
 	proof := &did.ProofLD{}
 	if err := json.Unmarshal(t.Proof, proof); err != nil {
@@ -91,17 +91,17 @@ func (t *Ticket) GetProofLD() (*did.ProofLD, error) {
 	return proof, nil
 }
 
-// ResetNonce returns the internal nonce value back to 0
+// ResetNonce returns the internal nonce value back to 0.
 func (t *Ticket) ResetNonce() {
 	t.NonceValue = 0
 }
 
-// IncrementNonce will adjust the internal nonce value by 1
+// IncrementNonce will adjust the internal nonce value by 1.
 func (t *Ticket) IncrementNonce() {
 	t.NonceValue++
 }
 
-// Nonce returns the current value set on the nonce attribute
+// Nonce returns the current value set on the nonce attribute.
 func (t *Ticket) Nonce() int64 {
 	return t.NonceValue
 }
@@ -117,10 +117,10 @@ func (t *Ticket) MarshalBinary() ([]byte, error) {
 	tb := bytes.NewBuffer(nil)
 	kb := make([]byte, hex.EncodedLen(len([]byte(t.KeyId))))
 	if err := binary.Write(nb, binary.LittleEndian, t.Nonce()); err != nil {
-		return nil, fmt.Errorf("failed to encode nonce value: %s", err)
+		return nil, fmt.Errorf("failed to encode nonce value: %w", err)
 	}
 	if err := binary.Write(tb, binary.LittleEndian, t.GetTimestamp()); err != nil {
-		return nil, fmt.Errorf("failed to encode nonce value: %s", err)
+		return nil, fmt.Errorf("failed to encode nonce value: %w", err)
 	}
 	hex.Encode(kb, []byte(t.KeyId))
 	tc = append(tc, tb.Bytes()...)
@@ -137,7 +137,7 @@ func (t *Ticket) MarshalBinary() ([]byte, error) {
 	// return proto.MarshalOptions{Deterministic: true}.Marshal(tc)
 }
 
-// Solve the ticket challenge using the proof-of-work mechanism
+// Solve the ticket challenge using the proof-of-work mechanism.
 func (t *Ticket) Solve(ctx context.Context, difficulty uint) string {
 	if difficulty == 0 {
 		difficulty = defaultTicketDifficultyLevel
@@ -152,7 +152,7 @@ func (t *Ticket) Solve(ctx context.Context, difficulty uint) string {
 // - Contents don’t include any private key, for security reasons no private keys should
 //   ever be published on the network
 // - DID proof is valid
-// - Ticket signature is valid
+// - Ticket signature is valid.
 func (t *Ticket) Verify(difficulty uint) error {
 	// Challenge is valid
 	if difficulty == 0 {

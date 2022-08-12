@@ -18,6 +18,7 @@ var versionCmd = &cobra.Command{
 			"Build code": info.BuildCode,
 			"OS/Arch":    fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH),
 			"Go version": runtime.Version(),
+			"Release":    fmt.Sprintf("algoid@%s+%s", info.CoreVersion, info.BuildCode),
 		}
 		if info.BuildTimestamp != "" {
 			rd, err := time.Parse(time.RFC3339, info.BuildTimestamp)

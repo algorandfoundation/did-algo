@@ -4,9 +4,8 @@ run:
   tests: true
   build-tags: []
   skip-dirs:
-    - tmp
-    - vendor
-    - third_party
+    - vendor$
+    - third_party$
     - testdata$
     - examples$
     - Godeps$
@@ -25,6 +24,7 @@ linters:
     - errcheck
     - gosimple
     - govet
+    - revive
     - gofmt
     - ineffassign
     - staticcheck
@@ -42,11 +42,25 @@ linters:
     - bodyclose
     - stylecheck
     - unparam
-    - deadcode
-    - gocognit
-    - goimports
-    - unused
+    - durationcheck
+    - unconvert
+    - asciicheck
+    - errorlint
+    - exhaustive
+    - forcetypeassert
+    - godot
+    - noctx
+    - predeclared
+    - exportloopref
+    - wastedassign
+    - whitespace
+    #- wrapcheck
+    #- nestif
+    #- funlen
+    #- ifshort
   disable:
+    - deadcode
+    - unused
     - dupl
 issues:
   exclude-use-default: false
@@ -59,23 +73,40 @@ issues:
         - gosec
         - lll
         - nakedret
-        - scopelint
+        - funlen
+        - nestif
+        - noctx
 linters-settings:
   errcheck:
     check-type-assertions: true
     check-blank: false
   govet:
     check-shadowing: false
-  golint:
-    min-confidence: 0.8
-    set-exit-status: true
+    enable:
+      - atomic
+      - atomicalign
+      - buildtag
+      - cgocall
+      - composites
+      - copylocks
+      - httpresponse
+      - loopclosure
+      - lostcancel
+      - nilfunc
+      - shift
+      - structtag
+      - unmarshal
+      - unreachable
+      - unusedresult
+      - tests
+      #- fieldalignment
   gofmt:
     simplify: true
   gocyclo:
-    min-complexity: 15
+    min-complexity: 18
   goconst:
     min-len: 3
-    min-occurrences: 3
+    min-occurrences: 5
   depguard:
     list-type: blacklist
     include-go-root: false
@@ -94,3 +125,8 @@ linters-settings:
     for-loops: false
   dupl:
     threshold: 150
+  exhaustive:
+    default-signifies-exhaustive: true
+  funlen:
+    lines: 90
+    statements: 70

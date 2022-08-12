@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"runtime"
@@ -177,7 +176,7 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 	}
 	server, err := rpc.NewServer(opts...)
 	if err != nil {
-		return fmt.Errorf("failed to start node: %s", err)
+		return fmt.Errorf("failed to start node: %w", err)
 	}
 	ready := make(chan bool)
 	go func() {
@@ -242,7 +241,7 @@ func getAgentHandler(oop *otel.Operator) (*agent.Handler, error) {
 		AlgoIndexer: indexerClient,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to start method handler: %s", err)
+		return nil, fmt.Errorf("failed to start method handler: %w", err)
 	}
 	log.Infof("storage: %s", store.Description())
 	return handler, nil
@@ -253,18 +252,18 @@ func loadAgentCredentials() (rpc.ServerOption, error) {
 	tlsConf := rpc.ServerTLSConfig{
 		IncludeSystemCAs: true,
 	}
-	tlsConf.Cert, err = ioutil.ReadFile(viper.GetString("agent.tls.cert"))
+	tlsConf.Cert, err = os.ReadFile(viper.GetString("agent.tls.cert"))
 	if err != nil {
-		return nil, fmt.Errorf("failed to load certificate file: %s", err)
+		return nil, fmt.Errorf("failed to load certificate file: %w", err)
 	}
-	tlsConf.PrivateKey, err = ioutil.ReadFile(viper.GetString("agent.tls.key"))
+	tlsConf.PrivateKey, err = os.ReadFile(viper.GetString("agent.tls.key"))
 	if err != nil {
-		return nil, fmt.Errorf("failed to load private key file: %s", err)
+		return nil, fmt.Errorf("failed to load private key file: %w", err)
 	}
 	if viper.GetString("agent.tls.ca") != "" {
-		caPEM, err := ioutil.ReadFile(viper.GetString("agent.tls.ca"))
+		caPEM, err := os.ReadFile(viper.GetString("agent.tls.ca"))
 		if err != nil {
-			return nil, fmt.Errorf("failed to load CA file: %s", err)
+			return nil, fmt.Errorf("failed to load CA file: %w", err)
 		}
 		tlsConf.CustomCAs = append(tlsConf.CustomCAs, caPEM)
 	}
@@ -276,9 +275,9 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 	if viper.GetBool("agent.tls.enabled") {
 		tlsConf := rpc.ClientTLSConfig{IncludeSystemCAs: true}
 		if viper.GetString("agent.tls.ca") != "" {
-			caPEM, err := ioutil.ReadFile(viper.GetString("agent.tls.ca"))
+			caPEM, err := os.ReadFile(viper.GetString("agent.tls.ca"))
 			if err != nil {
-				return nil, fmt.Errorf("failed to load CA file: %s", err)
+				return nil, fmt.Errorf("failed to load CA file: %w", err)
 			}
 			tlsConf.CustomCAs = append(tlsConf.CustomCAs, caPEM)
 		}
@@ -293,13 +292,13 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 	}
 	gw, err := rpc.NewGateway(gwOpts...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize HTTP gateway: %s", err)
+		return nil, fmt.Errorf("failed to initialize HTTP gateway: %w", err)
 	}
 	return gw, nil
 }
 
 func cpuProfile() (func(), error) {
-	cpu, err := ioutil.TempFile("", "algoid_cpu_")
+	cpu, err := os.CreateTemp("", "algoid_cpu_")
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +313,7 @@ func cpuProfile() (func(), error) {
 }
 
 func memoryProfile() error {
-	mem, err := ioutil.TempFile("", "algoid_mem_")
+	mem, err := os.CreateTemp("", "algoid_mem_")
 	if err != nil {
 		return err
 	}

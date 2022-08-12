@@ -37,6 +37,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "Request information about a given crypto account.",
             "in": "body",
             "required": true,
             "schema": {
@@ -93,6 +94,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "Submit a raw signed transaction to the network.",
             "in": "body",
             "required": true,
             "schema": {
@@ -149,6 +151,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "Mutation request, either to publish or deactivate a DID record.",
             "in": "body",
             "required": true,
             "schema": {

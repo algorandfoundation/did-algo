@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	ac "github.com/algorand/go-algorand-sdk/crypto"
@@ -25,7 +25,7 @@ var walletRestoreCmd = &cobra.Command{
 		}
 
 		// Verify mnemonic file corresponds to a valid private key
-		wp, err := ioutil.ReadFile(filepath.Clean(args[0]))
+		wp, err := os.ReadFile(filepath.Clean(args[0]))
 		if err != nil {
 			return fmt.Errorf("failed to read mnemonic file: %w", err)
 		}

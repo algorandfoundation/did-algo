@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
@@ -52,7 +52,7 @@ of funds.`,
 
 		// Save export file
 		fileName := fmt.Sprintf("%s-mnemonic.txt", name)
-		err = ioutil.WriteFile(fileName, []byte(seed), 0400)
+		err = os.WriteFile(fileName, []byte(seed), 0400)
 		if err != nil {
 			return err
 		}

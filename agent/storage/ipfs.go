@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"strings"
 	"time"
 
@@ -16,7 +15,7 @@ import (
 	"go.bryk.io/pkg/did"
 )
 
-// Default DNS link used for the did-algo index
+// Default DNS link used for the did-algo index.
 const indexDNSLink = "did-algo.aidtech.network"
 
 // IPFS provides an integration with the "InterPlanetary File System",
@@ -67,7 +66,7 @@ func (c *IPFS) Get(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, er
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to read record from IPFS: %w", err)
 	}
-	contents, err := ioutil.ReadAll(ptr)
+	contents, err := io.ReadAll(ptr)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to read record from IPFS: %w", err)
 	}
@@ -162,7 +161,7 @@ func (c *IPFS) updateIndex(subject, cid string) (err error) {
 	}()
 
 	// Load index contents
-	line := ""
+	var line string
 	list := map[string]string{}
 	scanner := bufio.NewScanner(index)
 	for scanner.Scan() {
@@ -210,8 +209,8 @@ func (c *IPFS) existsInIndex(subject string) bool {
 	}()
 
 	// Perform lookup operation
+	var line string
 	result := false
-	line := ""
 	scanner := bufio.NewScanner(index)
 	for scanner.Scan() {
 		line = scanner.Text()
@@ -237,7 +236,7 @@ func (c *IPFS) getIndexEntry(subject string) string {
 	}()
 
 	// Perform lookup operation
-	line := ""
+	var line string
 	scanner := bufio.NewScanner(index)
 	for scanner.Scan() {
 		line = scanner.Text()

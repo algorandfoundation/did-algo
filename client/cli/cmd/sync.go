@@ -82,7 +82,7 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	// Get client connection
 	conn, err := getClientConnection()
 	if err != nil {
-		return fmt.Errorf("failed to establish connection: %s", err)
+		return fmt.Errorf("failed to establish connection: %w", err)
 	}
 	defer func() {
 		_ = conn.Close()
@@ -98,7 +98,7 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	client := protoV1.NewAgentAPIClient(conn)
 	res, err := client.Process(context.TODO(), req)
 	if err != nil {
-		return fmt.Errorf("network return an error: %s", err)
+		return fmt.Errorf("network return an error: %w", err)
 	}
 	log.Debugf("request status: %v", res.Ok)
 	if res.Identifier != "" {
@@ -131,12 +131,12 @@ func getRequestTicket(id *did.Identifier, key *did.PublicKey) (*protoV1.Ticket, 
 
 	// Sign ticket
 	if ticket.Signature, err = key.Sign(ch); err != nil {
-		return nil, fmt.Errorf("failed to generate request ticket: %s", err)
+		return nil, fmt.Errorf("failed to generate request ticket: %w", err)
 	}
 
 	// Verify on client's side
 	if err = ticket.Verify(diff); err != nil {
-		return nil, fmt.Errorf("failed to verify ticket: %s", err)
+		return nil, fmt.Errorf("failed to verify ticket: %w", err)
 	}
 
 	return ticket, nil

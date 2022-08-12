@@ -22,7 +22,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Handler provides the required functionality for the DID method
+// Handler provides the required functionality for the DID method.
 type Handler struct {
 	oop         *otel.Operator
 	methods     []string
@@ -54,7 +54,7 @@ type HandlerOptions struct {
 	AlgoIndexer *indexer.Client
 }
 
-// NewHandler starts a new DID method handler instance
+// NewHandler starts a new DID method handler instance.
 func NewHandler(options HandlerOptions) (*Handler, error) {
 	return &Handler{
 		oop:         options.OOP,
@@ -66,13 +66,13 @@ func NewHandler(options HandlerOptions) (*Handler, error) {
 	}, nil
 }
 
-// Close the instance and safely terminate any internal processing
+// Close the instance and safely terminate any internal processing.
 func (h *Handler) Close() error {
 	h.oop.Info("closing agent handler")
 	return h.store.Close()
 }
 
-// Retrieve an existing DID instance based on its subject string
+// Retrieve an existing DID instance based on its subject string.
 func (h *Handler) Retrieve(req *protoV1.QueryRequest) (*did.Identifier, *did.ProofLD, error) {
 	logFields := log.Fields{
 		"method":  req.Method,
@@ -95,7 +95,7 @@ func (h *Handler) Retrieve(req *protoV1.QueryRequest) (*did.Identifier, *did.Pro
 	return id, proof, nil
 }
 
-// Process an incoming request ticket
+// Process an incoming request ticket.
 func (h *Handler) Process(req *protoV1.ProcessRequest) (string, error) {
 	// Empty request
 	if req == nil {
@@ -307,7 +307,7 @@ func (h *Handler) QueryResponseFilter() rpc.GatewayInterceptor {
 	}
 }
 
-// Verify a specific method is supported
+// Verify a specific method is supported.
 func (h *Handler) isSupported(method string) bool {
 	for _, m := range h.methods {
 		if method == m {

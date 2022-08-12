@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 
@@ -151,8 +151,8 @@ func getSecret(name string) ([]byte, error) {
 	}
 	for i, k := range shares {
 		share := fmt.Sprintf("%s.share_%d.bin", name, i+1)
-		if err := ioutil.WriteFile(share, k, 0400); err != nil {
-			return nil, fmt.Errorf("failed to save share '%s': %s", share, err)
+		if err := os.WriteFile(share, k, 0400); err != nil {
+			return nil, fmt.Errorf("failed to save share '%s': %w", share, err)
 		}
 	}
 	return secret, nil

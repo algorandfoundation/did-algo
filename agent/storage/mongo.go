@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Base64 encoding used
+// Base64 encoding used.
 var b64 = base64.RawStdEncoding
 
 // Data structure to store DID entries.
@@ -62,7 +62,6 @@ func (ir *identifierRecord) decode() (*did.Identifier, *did.ProofLD, error) {
 		metadata := &did.DocumentMetadata{}
 		if err := json.Unmarshal(d3, metadata); err != nil {
 			return nil, nil, errors.New("invalid record contents")
-
 		}
 		if err := id.AddMetadata(metadata); err != nil {
 			return nil, nil, err

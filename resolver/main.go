@@ -2,13 +2,25 @@ package resolver
 
 import (
 	"bytes"
-	"io/ioutil"
+	"context"
+	"io"
 	"net/http"
 	"text/template"
+	"time"
 
 	"github.com/pkg/errors"
 	"go.bryk.io/pkg/did"
 )
+
+// Default resolver HTTP client.
+var client *http.Client
+
+func init() {
+	client = &http.Client{
+		Transport: http.DefaultTransport,
+		Timeout:   5 * time.Second,
+	}
+}
 
 // Provider represents an external system able to return DID
 // Documents on demand.
@@ -22,7 +34,7 @@ type Provider struct {
 	// https://did.baidu.com/v1/did/resolve/{{.DID}}
 	Endpoint string
 
-	// Protocol used to communicate with the endpoint. Currently HTTP(S)
+	// Protocol used to communicate with the endpoint. Currently, HTTP(S)
 	// is supported by submitting GET requests.
 	Protocol string
 
@@ -72,7 +84,11 @@ func (p *Provider) resolve(id *did.Identifier) ([]byte, error) {
 	}
 
 	// Submit request
-	res, err := http.Get(buf.String())
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, buf.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +97,7 @@ func (p *Provider) resolve(id *did.Identifier) ([]byte, error) {
 	}()
 
 	// Return response
-	return ioutil.ReadAll(res.Body)
+	return io.ReadAll(res.Body)
 }
 
 func (p *Provider) data(id *did.Identifier) map[string]string {

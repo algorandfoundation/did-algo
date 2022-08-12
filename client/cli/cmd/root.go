@@ -46,7 +46,7 @@ For more information:
 https://github.com/algorandfoundation/did-algo`,
 }
 
-// Execute will process the CLI invocation
+// Execute will process the CLI invocation.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Error(err)
