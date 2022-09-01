@@ -3,8 +3,7 @@ module github.com/algorandfoundation/did-algo
 go 1.13
 
 require (
-	github.com/algorand/go-algorand-sdk v1.18.0
-	github.com/aws/aws-sdk-go v1.43.16 // indirect
+	github.com/algorand/go-algorand-sdk v1.19.0
 	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.2
 	github.com/ipfs/go-ipfs-api v0.3.0
