@@ -23,6 +23,7 @@ updates:
     ignore:
       - dependency-name: "google.golang.org/genproto"
       - dependency-name: "go.bryk.io/pkg"
+      - dependency-name: "go.opentelemetry.io/*"
     # Configure commit messages
     commit-message:
       # Prefix all commit messages with "dependencies"
