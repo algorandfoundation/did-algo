@@ -194,6 +194,11 @@ func (c *IPFS) updateIndex(subject, cid string) (err error) {
 		if err != nil {
 			fmt.Printf("publish error: %s", err)
 		}
+
+		// Update agent's index handler
+		if c.index, err = c.cl.Resolve(indexDNSLink); err != nil {
+			fmt.Printf("update index error: %s", err)
+		}
 	}()
 	return nil
 }
