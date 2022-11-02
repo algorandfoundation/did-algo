@@ -361,12 +361,10 @@
       "type": "object",
       "properties": {
         "task": {
-          "$ref": "#/definitions/ProcessRequestTask",
-          "description": "Mutation type."
+          "$ref": "#/definitions/ProcessRequestTask"
         },
         "ticket": {
-          "$ref": "#/definitions/v1Ticket",
-          "description": "Request ticket."
+          "$ref": "#/definitions/v1Ticket"
         }
       },
       "description": "Mutation request, either to publish or deactivate a DID record."
