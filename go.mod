@@ -3,7 +3,7 @@ module github.com/algorandfoundation/did-algo
 go 1.18
 
 require (
-	github.com/algorand/go-algorand-sdk v1.23.0
+	github.com/algorand/go-algorand-sdk v1.24.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0
 	github.com/ipfs/go-ipfs-api v0.3.0
 	github.com/kennygrant/sanitize v1.2.4
@@ -20,7 +20,7 @@ require (
 )
 
 require (
-	github.com/algorand/avm-abi v0.1.0 // indirect
+	github.com/algorand/avm-abi v0.1.1 // indirect
 	github.com/algorand/go-codec/codec v1.1.8 // indirect
 	github.com/awnumar/memcall v0.1.2 // indirect
 	github.com/awnumar/memguard v0.22.3 // indirect
