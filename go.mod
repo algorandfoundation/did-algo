@@ -11,7 +11,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 	go.bryk.io/pkg v0.0.0-20221205162008-49c0665c09b1
-	go.mongodb.org/mongo-driver v1.11.0
+	go.mongodb.org/mongo-driver v1.11.1
 	go.opentelemetry.io/otel v1.11.1
 	golang.org/x/crypto v0.3.0
 	google.golang.org/genproto v0.0.0-20221114212237-e4508ebdbee1
