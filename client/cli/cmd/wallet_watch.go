@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/algorandfoundation/did-algo/client/internal"
 	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -48,7 +49,14 @@ func runWalletWatchCmd(_ *cobra.Command, args []string) (err error) {
 	address := args[0]
 
 	// Get client connection
-	conn, err := getClientConnection()
+	conf := new(internal.ClientSettings)
+	if err := viper.UnmarshalKey("client", conf); err != nil {
+		return err
+	}
+	if err := conf.Validate(); err != nil {
+		return err
+	}
+	conn, err := getClientConnection(conf)
 	if err != nil {
 		return fmt.Errorf("failed to establish connection: %w", err)
 	}

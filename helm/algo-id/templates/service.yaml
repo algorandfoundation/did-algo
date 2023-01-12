@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "algo-id.fullname" . }}
+  name: {{ include "cc.fullname" . }}
   labels:
-    {{- include "algo-id.labels" . | nindent 4 }}
+    {{- include "cc.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.access.serviceType }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.access.port }}
       targetPort: rpc
       protocol: TCP
       name: rpc
   selector:
-    {{- include "algo-id.selectorLabels" . | nindent 4 }}
+    {{- include "cc.selectorLabels" . | nindent 4 }}

@@ -1,27 +1,42 @@
-{{- $fullName := include "algo-id.fullname" . -}}
-Release name: {{ $fullName }}
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-   {{- range .paths }}
-   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ . }}
-   {{- end }}
+{{- $fullName := include "cc.fullname" . -}}
+{{- $svcPort := .Values.access.port -}}
+{{- $namespace := .Release.Namespace -}}
+- Cluster internal address: {{ printf "%s.%s:%.0f" $fullName $namespace $svcPort }}
+- Public access enabled: {{ .Values.access.ingress.enabled }}
+{{- if .Values.access.ingress.enabled }}
+- Public URL: {{ .Values.access.ingress.host }}
+- TLS termination at ingress: {{ .Values.access.ingress.tls }}
+{{- if .Values.tlsSecretName }}
+- TLS credentials used: {{ .Values.tlsSecretName }}
+- TLS passthrough: {{ .Values.access.ingress.tlsPassthrough }}
 {{- end }}
-{{- else if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "algo-id.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-   echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "algo-id.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "algo-id.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "algo-id.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
+{{- if .Values.access.ingress.className }}
+- Ingress class: {{ .Values.access.ingress.className }}
 {{- end }}
-{{- if .Values.persistence.enabled }}
-2. Persistent storage is enabled. The PVC "{{ printf "%s-storage" $fullName }}" wont be deleted when
-   uninstalling the release.
+{{- if .Values.access.ingress.annotations }}
+- Additional ingress settings:
+  {{- with .Values.access.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+- HTTP access:
+    Enabled: {{ .Values.access.ingress.http.enabled }}
+    Secure backend: {{ .Values.access.ingress.http.secureBackend }}
+    Paths:
+    {{- with .Values.access.ingress.http.paths }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+- gRPC access:
+    Enabled: {{ .Values.access.ingress.grpc.enabled }}
+    Secure backend: {{ .Values.access.ingress.grpc.secureBackend }}
+    Services:
+    {{- with .Values.access.ingress.grpc.services }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- if .Values.configuration }}
+- Application settings:
+  {{- with .Values.configuration }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}

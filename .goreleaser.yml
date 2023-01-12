@@ -65,6 +65,7 @@ archives:
       - src: '*.md'
         dst: docs
         strip_parent: true
+    rlcp: true
 # generate integrity checksums
 # https://goreleaser.com/customization/checksum/
 checksum:
@@ -74,6 +75,7 @@ checksum:
 # https://goreleaser.com/customization/source/
 source:
   enabled: true
+  rlcp: true
 # produce test releases
 # https://goreleaser.com/customization/snapshots/
 snapshot:

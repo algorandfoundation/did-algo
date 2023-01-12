@@ -6,29 +6,17 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/algorandfoundation/did-algo/resolver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"go.bryk.io/pkg/errors"
 	xlog "go.bryk.io/pkg/log"
 )
 
 var (
-	log              xlog.Logger
-	cfgFile          = ""
-	homeDir          = ""
-	didDomainValue   = "did.algorand.foundation"
-	defaultProviders = []*resolver.Provider{
-		{
-			Method:   "algo",
-			Endpoint: "https://did-agent.aidtech.network/v1/retrieve/{{.Method}}/{{.Subject}}",
-			Protocol: "http",
-		},
-		{
-			Method:   "bryk",
-			Endpoint: "https://did.bryk.io/v1/retrieve/{{.Method}}/{{.Subject}}",
-			Protocol: "http",
-		},
-	}
+	log            xlog.Logger
+	cfgFile        = ""
+	homeDir        = ""
+	didDomainValue = "did.algorand.foundation"
 )
 
 var rootCmd = &cobra.Command{
@@ -48,17 +36,27 @@ https://github.com/algorandfoundation/did-algo`,
 
 // Execute will process the CLI invocation.
 func Execute() {
+	// catch any panics
+	defer func() {
+		if err := errors.FromRecover(recover()); err != nil {
+			log.Warning("recovered panic")
+			fmt.Printf("%+v", err)
+			os.Exit(1)
+		}
+	}()
+	// execute command
 	if err := rootCmd.Execute(); err != nil {
-		log.Error(err)
+		if pe := new(errors.Error); errors.Is(err, pe) {
+			log.WithField("error", err).Error("command failed")
+		} else {
+			log.Error(err.Error())
+		}
 		os.Exit(1)
 	}
 }
 
 func init() {
-	log = xlog.WithZero(xlog.ZeroOptions{
-		PrettyPrint: true,
-		ErrorField:  "error",
-	})
+	log = xlog.WithZero(xlog.ZeroOptions{PrettyPrint: true})
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file ($HOME/.algoid/config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&homeDir, "home", "", "home directory ($HOME/.algoid)")
@@ -80,7 +78,6 @@ func initConfig() {
 	}
 
 	// Set default values
-	viper.SetDefault("resolver", defaultProviders)
 	viper.SetDefault("client.timeout", 5)
 	viper.SetDefault("client.home", filepath.Join(home, ".algoid"))
 

@@ -1,17 +1,31 @@
+# These values are the only ones required to use the application
+# locally as a regular clients. Even if not provided these are
+# the default values.
 client:
-  node: did-agent.aidtech.network:443
-  tls: true
+  node: algo-did.aidtech.network:443
   timeout: 5
-resolver:
-  - method: algo
-    endpoint: https://did-agent.aidtech.network/v1/retrieve/{{.Method}}/{{.Subject}}
-    protocol: http
-  - method: bryk
-    endpoint: https://did.bryk.io/v1/retrieve/{{.Method}}/{{.Subject}}
-    protocol: http
-  - method: ccp
-    endpoint: https://did.baidu.com/v1/did/resolve/{{.DID}}
-    protocol: http
-  - method: stack
-    endpoint: https://core.blockstack.org/v1/dids/{{.DID}}
-    protocol: http
+  pow: 16
+# These values are required to run an agent node.
+agent:
+  pow: 8
+  port: 9090
+  http: true
+  proxy_protocol: true
+  env: dev
+  storage:
+    kind: ephemeral
+  method:
+    - algo
+  tls:
+    enabled: false
+    cert: /etc/algoid/tls/tls.crt
+    key: /etc/algoid/tls/tls.key
+    system_ca: true
+    custom_ca: []
+  network:
+    algod:
+      address: "..."
+      token: "..."
+    indexer:
+      address: "..."
+      token: "..."

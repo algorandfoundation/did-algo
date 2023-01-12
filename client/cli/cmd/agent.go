@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 	"syscall"
 	"time"
@@ -281,7 +280,12 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 	gwOpts := []rpc.GatewayOption{
 		rpc.WithClientOptions(gwCl...),
 		rpc.WithInterceptor(handler.QueryResponseFilter()),
-		rpc.WithGatewayMiddleware(customGatewayHeaders()),
+		rpc.WithGatewayMiddleware(mw.Headers(map[string]string{
+			"x-agent-version":        info.CoreVersion,
+			"x-agent-build-code":     info.BuildCode,
+			"x-agent-release":        releaseCode(),
+			"x-content-type-options": "nosniff",
+		})),
 	}
 	if viper.GetBool("agent.proxy_protocol") {
 		log.Debug("enable PROXY protocol support")
@@ -292,21 +296,6 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 		return nil, fmt.Errorf("failed to initialize HTTP gateway: %w", err)
 	}
 	return gw, nil
-}
-
-// Add version details as custom headers to all responses from the
-// agent's HTTP gateway.
-func customGatewayHeaders() func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add("x-agent-version", info.CoreVersion)
-			w.Header().Add("x-agent-build-code", info.BuildCode)
-			w.Header().Add("x-agent-release", releaseCode())
-			w.Header().Add("x-content-type-options", "nosniff")
-			next.ServeHTTP(w, r)
-		}
-		return http.HandlerFunc(fn)
-	}
 }
 
 // Return the proper storage handler instance based on the connection

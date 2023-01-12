@@ -1,13 +1,18 @@
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
-{{- $fullName := include "algo-id.fullname" . -}}
+{{- $fullName := include "cc.fullname" . -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ printf "%s-storage" $fullName }}
   labels:
-    {{- include "algo-id.labels" . | nindent 4 }}
+    {{- include "cc.labels" . | nindent 4 }}
   annotations:
+    {{- if .Values.persistence.keep }}
     helm.sh/resource-policy: "keep"
+    {{- end }}
+    {{- with .Values.persistence.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   storageClassName: {{ .Values.persistence.storageClass }}
   accessModes:

@@ -110,3 +110,4 @@ echo "Indexer mode: ${INDEXER}"
 # Use 'exec' so that the 'algod' application becomes the container’s PID 1. This
 # allows the application to receive any Unix signals sent to the container.
 exec algod
+ 

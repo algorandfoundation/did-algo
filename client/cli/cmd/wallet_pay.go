@@ -11,6 +11,7 @@ import (
 	"github.com/algorand/go-algorand-sdk/future"
 	"github.com/algorand/go-algorand-sdk/mnemonic"
 	at "github.com/algorand/go-algorand-sdk/types"
+	"github.com/algorandfoundation/did-algo/client/internal"
 	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
@@ -91,7 +92,14 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	// Get client connection
-	conn, err := getClientConnection()
+	conf := new(internal.ClientSettings)
+	if err := viper.UnmarshalKey("client", conf); err != nil {
+		return err
+	}
+	if err := conf.Validate(); err != nil {
+		return err
+	}
+	conn, err := getClientConnection(conf)
 	if err != nil {
 		return fmt.Errorf("failed to establish connection: %w", err)
 	}
@@ -101,7 +109,7 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 	cl := protoV1.NewAgentAPIClient(conn)
 
 	// Get transaction parameters
-	txParams, err := cl.TxParameters(context.TODO(), &emptypb.Empty{})
+	txParams, err := cl.TxParameters(context.Background(), &emptypb.Empty{})
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,8 @@
-FROM debian:10
+FROM debian:stable-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ARG version=2.12.4
+ARG version=2.15.1
 
 # Install base tools
 RUN \

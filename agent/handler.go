@@ -13,9 +13,9 @@ import (
 
 	"github.com/algorand/go-algorand-sdk/client/v2/algod"
 	"github.com/algorand/go-algorand-sdk/client/v2/indexer"
-	"github.com/algorandfoundation/did-algo/info"
 	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"go.bryk.io/pkg/did"
+	"go.bryk.io/pkg/did/resolver"
 	"go.bryk.io/pkg/log"
 	"go.bryk.io/pkg/net/rpc"
 	"go.bryk.io/pkg/otel"
@@ -83,14 +83,14 @@ func (h *Handler) Retrieve(req *protoV1.QueryRequest) (*did.Identifier, *did.Pro
 	// Verify method is supported
 	if !h.isSupported(req.Method) {
 		h.oop.WithFields(logFields).Warning("non supported method")
-		return nil, nil, errors.New("non supported method")
+		return nil, nil, errors.New(resolver.ErrMethodNotSupported)
 	}
 
 	// Retrieve document from storage
 	id, proof, err := h.store.Get(req)
 	if err != nil {
 		h.oop.WithFields(logFields).Warning(err.Error())
-		return nil, nil, err
+		return nil, nil, errors.New(resolver.ErrNotFound)
 	}
 	return id, proof, nil
 }
@@ -145,9 +145,7 @@ func (h *Handler) Process(req *protoV1.ProcessRequest) (string, error) {
 }
 
 // AccountInformation returns details about the crypto account specified.
-func (h *Handler) AccountInformation(
-	ctx context.Context,
-	req *protoV1.AccountInformationRequest) (*protoV1.AccountInformationResponse, error) {
+func (h *Handler) AccountInformation(ctx context.Context, req *protoV1.AccountInformationRequest) (*protoV1.AccountInformationResponse, error) { // nolint: lll
 	ai, err := h.algoNode.AccountInformation(req.Address).Do(ctx)
 	if err != nil {
 		h.oop.WithFields(log.Fields{
@@ -183,9 +181,7 @@ func (h *Handler) AccountInformation(
 
 // AccountActivity opens a channel to monitor near real-time account activity.
 // The channel must be closed using the provided context when no longer needed.
-func (h *Handler) AccountActivity(
-	ctx context.Context,
-	req *protoV1.AccountActivityRequest) (<-chan *protoV1.AccountActivityResponse, error) {
+func (h *Handler) AccountActivity(ctx context.Context, req *protoV1.AccountActivityRequest) (<-chan *protoV1.AccountActivityResponse, error) { // nolint: lll
 	check := time.NewTicker(time.Duration(5) * time.Second)
 	sink := make(chan *protoV1.AccountActivityResponse)
 	go func() {
@@ -296,11 +292,6 @@ func (h *Handler) QueryResponseFilter() rpc.GatewayInterceptor {
 		}
 
 		// Return result
-		res.Header().Set("content-type", "application/json")
-		res.Header().Set("x-content-type-options", "nosniff")
-		res.Header().Set("x-algoid-build-code", info.BuildCode)
-		res.Header().Set("x-algoid-build-timestamp", info.BuildTimestamp)
-		res.Header().Set("x-algoid-version", info.CoreVersion)
 		res.WriteHeader(status)
 		_, _ = res.Write(response)
 		return errors.New("prevent further processing")

@@ -1,37 +1,43 @@
-{{- $fullName := include "algo-id.fullname" . -}}
+{{- $fullName := include "cc.fullname" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $fullName }}
+  name: {{ include "cc.fullname" . }}
   labels:
-    {{- include "algo-id.labels" . | nindent 4 }}
+    {{- include "cc.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "algo-id.selectorLabels" . | nindent 6 }}
+      {{- include "cc.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        {{- include "algo-id.selectorLabels" . | nindent 8 }}
+            {{- include "cc.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+    {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end }}
     {{- end }}
-      restartPolicy: {{ .Values.restartPolicy }}
-      serviceAccountName: {{ include "algo-id.serviceAccountName" . }}
+      serviceAccountName: {{ include "cc.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         - name: config
           configMap:
-            name: {{ include "algo-id.fullname" . }}
-        {{- if .Values.configuration.agent.tls.enabled }}
+            name: {{ include "cc.fullname" . }}
+        {{- if .Values.tlsSecretName }}
         - name: tls
           secret:
             secretName: {{ .Values.tlsSecretName }}
@@ -50,7 +56,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/algoid
-            {{- if .Values.configuration.agent.tls.enabled }}
+            {{- if .Values.tlsSecretName }}
             - name: tls
               mountPath: /etc/algoid/tls
               readOnly: true
@@ -65,8 +71,10 @@ spec:
             - "/etc/algoid/config.yaml"
           ports:
             - name: rpc
-              containerPort: 9090
               protocol: TCP
+              containerPort: {{ .Values.access.port }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
           livenessProbe:
             initialDelaySeconds: 5
             periodSeconds: 10

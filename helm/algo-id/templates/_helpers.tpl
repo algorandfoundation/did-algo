@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "algo-id.name" -}}
+{{- define "cc.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "algo-id.fullname" -}}
+{{- define "cc.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "algo-id.chart" -}}
+{{- define "cc.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "algo-id.labels" -}}
-helm.sh/chart: {{ include "algo-id.chart" . }}
-{{ include "algo-id.selectorLabels" . }}
+{{- define "cc.labels" -}}
+helm.sh/chart: {{ include "cc.chart" . }}
+{{ include "cc.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "algo-id.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "algo-id.name" . }}
+{{- define "cc.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "cc.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "algo-id.serviceAccountName" -}}
+{{- define "cc.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "algo-id.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "cc.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

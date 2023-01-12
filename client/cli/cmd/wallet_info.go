@@ -7,9 +7,11 @@ import (
 
 	ac "github.com/algorand/go-algorand-sdk/crypto"
 	"github.com/algorand/go-algorand-sdk/mnemonic"
+	"github.com/algorandfoundation/did-algo/client/internal"
 	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var walletInfoCmd = &cobra.Command{
@@ -51,7 +53,14 @@ var walletInfoCmd = &cobra.Command{
 		}
 
 		// Get client connection
-		conn, err := getClientConnection()
+		conf := new(internal.ClientSettings)
+		if err := viper.UnmarshalKey("client", conf); err != nil {
+			return err
+		}
+		if err := conf.Validate(); err != nil {
+			return err
+		}
+		conn, err := getClientConnection(conf)
 		if err != nil {
 			return fmt.Errorf("failed to establish connection: %w", err)
 		}
@@ -61,7 +70,7 @@ var walletInfoCmd = &cobra.Command{
 		cl := protoV1.NewAgentAPIClient(conn)
 
 		// Get account info
-		info, err := cl.AccountInformation(context.TODO(), &protoV1.AccountInformationRequest{
+		info, err := cl.AccountInformation(context.Background(), &protoV1.AccountInformationRequest{
 			Address:  account.Address.String(),
 			Protocol: "algorand",
 			Network:  "testnet",
