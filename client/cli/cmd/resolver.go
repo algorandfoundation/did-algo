@@ -14,6 +14,7 @@ import (
 	"go.bryk.io/pkg/cli"
 	pkgHttp "go.bryk.io/pkg/net/http"
 	"go.bryk.io/pkg/otel"
+	"google.golang.org/grpc"
 )
 
 var resolverCmd = &cobra.Command{
@@ -120,6 +121,8 @@ func runResolverServer(cmd *cobra.Command, args []string) error {
 
 	// Start server
 	mux := http.NewServeMux()
+	mux.HandleFunc("/1.0/ping", pingHandler)
+	mux.HandleFunc("/1.0/ready", resolverReadyHandler(conn))
 	mux.HandleFunc("/1.0/identifiers/", rr.ResolutionHandler)
 	srv, err := pkgHttp.NewServer(conf.ServerOpts(mux, releaseCode())...)
 	if err != nil {
@@ -140,6 +143,25 @@ func runResolverServer(cmd *cobra.Command, args []string) error {
 
 	// stop server
 	log.Info("preparing to exit")
-	_ = conn.Close() // client internal API client connection
-	return srv.Stop(true)
+	err = srv.Stop(true) // prevent further requests
+	_ = conn.Close()     // close internal API client connection
+	return err
+}
+
+// Basic reachability test.
+func pingHandler(w http.ResponseWriter, r *http.Request) {
+	_, _ = w.Write([]byte("pong"))
+}
+
+// Status reported is based on the connection to the agent being used.
+func resolverReadyHandler(conn *grpc.ClientConn) func(w http.ResponseWriter, r *http.Request) {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		st := conn.GetState().String()
+		if st != "READY" && st != "IDLE" {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			_, _ = w.Write([]byte(st))
+			return
+		}
+	}
+	return fn
 }

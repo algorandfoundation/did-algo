@@ -2,6 +2,7 @@
 {{- if .Values.access.ingress.tlsPassthrough -}}
 {{- $fullName := include "cc.fullname" . -}}
 {{- $svcPort := .Values.access.port -}}
+{{- $resolverPort := .Values.configuration.resolver.port -}}
 {{- if and .Values.access.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.access.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.access.ingress.annotations "kubernetes.io/ingress.class" .Values.access.ingress.className}}
@@ -34,16 +35,30 @@ spec:
     - host: {{ .Values.access.ingress.host }}
       http:
         paths:
-          - path: /
+          {{- range .Values.access.ingress.http.paths }}
+          - path: {{ . }}
             pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
+          {{- end }}
+          {{- if .Values.resolver.enabled }}
+          {{- range .Values.resolver.paths }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $resolverPort }}
+          {{- end }}
+          {{- end }}
 {{- else -}}
 {{- $fullName := include "cc.fullname" . -}}
 {{- $svcPort := .Values.access.port -}}
+{{- $resolverPort := .Values.configuration.resolver.port -}}
 {{- $httpBackendProtocol := ternary "https" "http" .Values.access.ingress.http.secureBackend -}}
 {{- if and .Values.access.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.access.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -92,6 +107,17 @@ spec:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
+          {{- end }}
+          {{- if .Values.resolver.enabled }}
+          {{- range .Values.resolver.paths }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $resolverPort }}
+          {{- end }}
           {{- end }}
 {{- end }}
 ---

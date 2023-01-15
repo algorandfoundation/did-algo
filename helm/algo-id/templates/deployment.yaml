@@ -48,7 +48,56 @@ spec:
             claimName: {{ printf "%s-storage" $fullName }}
         {{- end }}
       containers:
-        - name: main
+        {{- if .Values.resolver.enabled }}
+        - name: resolver
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.resolver.image }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/algoid
+            {{- if .Values.tlsSecretName }}
+            - name: tls
+              mountPath: /etc/algoid/tls
+              readOnly: true
+            {{- end }}
+          args:
+            - "resolver"
+            - "--config"
+            - "/etc/algoid/config.yaml"
+          ports:
+            - name: resolver
+              protocol: TCP
+              containerPort: {{ .Values.configuration.resolver.port }}
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              {{- if .Values.configuration.resolver.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
+              path: /1.0/ping
+              port: resolver
+          readinessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              {{- if .Values.configuration.resolver.tls.enabled }}
+              scheme: HTTPS
+              {{- end }}
+              path: /1.0/ready
+              port: resolver
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- end }}
+        - name: agent
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"

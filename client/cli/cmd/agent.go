@@ -13,7 +13,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.bryk.io/pkg/cli"
-	mw "go.bryk.io/pkg/net/middleware"
+	mwHeaders "go.bryk.io/pkg/net/middleware/headers"
+	mwProxy "go.bryk.io/pkg/net/middleware/proxy"
 	"go.bryk.io/pkg/net/rpc"
 	"go.bryk.io/pkg/otel"
 )
@@ -280,7 +281,7 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 	gwOpts := []rpc.GatewayOption{
 		rpc.WithClientOptions(gwCl...),
 		rpc.WithInterceptor(handler.QueryResponseFilter()),
-		rpc.WithGatewayMiddleware(mw.Headers(map[string]string{
+		rpc.WithGatewayMiddleware(mwHeaders.Handler(map[string]string{
 			"x-agent-version":        info.CoreVersion,
 			"x-agent-build-code":     info.BuildCode,
 			"x-agent-release":        releaseCode(),
@@ -289,7 +290,7 @@ func getAgentGateway(handler *agent.Handler) (*rpc.Gateway, error) {
 	}
 	if viper.GetBool("agent.proxy_protocol") {
 		log.Debug("enable PROXY protocol support")
-		gwOpts = append(gwOpts, rpc.WithGatewayMiddleware(mw.ProxyHeaders()))
+		gwOpts = append(gwOpts, rpc.WithGatewayMiddleware(mwProxy.Handler()))
 	}
 	gw, err := rpc.NewGateway(gwOpts...)
 	if err != nil {

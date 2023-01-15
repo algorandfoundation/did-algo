@@ -9,7 +9,9 @@ import (
 	"github.com/spf13/viper"
 	"go.bryk.io/pkg/did/resolver"
 	pkgHttp "go.bryk.io/pkg/net/http"
-	"go.bryk.io/pkg/net/middleware"
+	mwHeaders "go.bryk.io/pkg/net/middleware/headers"
+	mwProxy "go.bryk.io/pkg/net/middleware/proxy"
+	mwRecovery "go.bryk.io/pkg/net/middleware/recovery"
 	otelHttp "go.bryk.io/pkg/otel/http"
 	"google.golang.org/grpc"
 )
@@ -62,9 +64,9 @@ func (rs *ResolverSettings) ServerOpts(handler http.Handler, rc string) []pkgHtt
 		pkgHttp.WithHandler(handler),
 		pkgHttp.WithPort(int(rs.Port)),
 		pkgHttp.WithIdleTimeout(10 * time.Second),
-		pkgHttp.WithMiddleware(middleware.PanicRecovery()),
+		pkgHttp.WithMiddleware(mwRecovery.Handler()),
 		pkgHttp.WithMiddleware(otelHttp.NewMonitor().ServerMiddleware("resolver")),
-		pkgHttp.WithMiddleware(middleware.Headers(map[string]string{
+		pkgHttp.WithMiddleware(mwHeaders.Handler(map[string]string{
 			"x-resolver-version":     info.CoreVersion,
 			"x-resolver-build-code":  info.BuildCode,
 			"x-resolver-release":     rc,
@@ -72,7 +74,7 @@ func (rs *ResolverSettings) ServerOpts(handler http.Handler, rc string) []pkgHtt
 		})),
 	}
 	if rs.ProxyProtocol {
-		opts = append(opts, pkgHttp.WithMiddleware(middleware.ProxyHeaders()))
+		opts = append(opts, pkgHttp.WithMiddleware(mwProxy.Handler()))
 	}
 	if rs.TLS.Enabled {
 		val, err := rs.TLS.expand()

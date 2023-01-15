@@ -11,5 +11,11 @@ spec:
       targetPort: rpc
       protocol: TCP
       name: rpc
+    {{- if .Values.resolver.enabled }}
+    - port: {{ .Values.configuration.resolver.port }}
+      targetPort: resolver
+      protocol: TCP
+      name: resolver
+    {{- end }}
   selector:
     {{- include "cc.selectorLabels" . | nindent 4 }}

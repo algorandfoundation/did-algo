@@ -25,6 +25,21 @@ configuration:
       indexer:
         address: ""
         token: ""
+  resolver:
+    env: dev
+    port: 9091
+    proxy_protocol: true
+    tls:
+      enabled: false
+      cert: /etc/algoid/tls/tls.crt
+      key: /etc/algoid/tls/tls.key
+      system_ca: true
+      custom_ca: []
+    client:
+      node: algo-did.aidtech.network:443
+      insecure: false
+      timeout: 5
+      pow: 16
 
 # Service access settings.
 access:
@@ -61,7 +76,6 @@ access:
       # For example: /api
       paths:
         - /v1
-        - /1.0
     # gRPC traffic settings:
     grpc:
       # Enable direct gRPC access to the service.
@@ -73,6 +87,16 @@ access:
       # form: `protobuf_package.service`
       services:
         - did.v1.AgentAPI
+
+# DID resolver settings.
+resolver:
+  # include `resolver` container in deployment
+  enabled: false
+  # image repository
+  image: ghcr.io/algorandfoundation/algoid-resolver
+  # HTTP paths enabled
+  paths:
+    - /1.0
 
 # Release naming rules.
 nameOverride: ""
