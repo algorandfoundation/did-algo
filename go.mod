@@ -10,7 +10,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
-	go.bryk.io/pkg v0.0.0-20230112165004-433c81e951a4
+	go.bryk.io/pkg v0.0.0-20230115194216-0e62bc0b0f97
 	go.mongodb.org/mongo-driver v1.11.1
 	go.opentelemetry.io/otel v1.11.2
 	golang.org/x/crypto v0.5.0
