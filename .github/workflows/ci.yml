@@ -54,7 +54,7 @@ jobs:
       - name: Scan dependencies
         id: scan-deps
         if: ${{ !contains(env.commit_msg, '[scan-deps skip]') }}
-        uses: sonatype-nexus-community/nancy-github-action@v1.0.2
+        uses: sonatype-nexus-community/nancy-github-action@v1.0.3
 
   # Validate the protocol buffer definitions on the project
   # using 'buf'. Remove if not required.
