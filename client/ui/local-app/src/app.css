@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* custom CSS required to style the connector modal */
+div#walletconnect-qrcode-modal {
+  @apply bg-gray-700 bg-opacity-75 backdrop-blur-sm;
+}
+
+p#walletconnect-qrcode-text {
+  @apply font-sans text-base font-normal text-gray-400;
+}
+
+div.walletconnect-modal__base {
+  @apply max-w-md rounded-md shadow-md;
+}
+
+div.walletconnect-modal__header > img {
+  @apply hidden;
+}
+
+div.walletconnect-modal__header > p {
+  @apply hidden;
+}
+
+div.walletconnect-modal__footer a {
+  @apply inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500;
+}

@@ -13,6 +13,7 @@ tmp/
 # Build releases
 dist
 *.tgz
+!client/ui/local-app/dist
 
 # PKI
 *.crt
