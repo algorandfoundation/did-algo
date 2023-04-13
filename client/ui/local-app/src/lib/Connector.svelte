@@ -59,6 +59,7 @@
   // setup the main wc connector instance
   async function startSession() {
     if (!connector.connected) {
+      resetConnector();
       await connector.createSession({
         chainId: mainnet ? 416001 : 416002
       });
@@ -110,6 +111,28 @@
       wallet.addresses = data.accounts;
       appState.setWallet(wallet);
       dispatch('session_update');
+    });
+  }
+
+  // reset the wc connector instance
+  function resetConnector() {
+    connector.off('connect');
+    connector.off('disconnect');
+    connector.off('session_update');
+    connector = null;
+    connector = new WalletConnect({
+      bridge: 'https://bridge.walletconnect.org',
+      qrcodeModal: QRCodeModal,
+      clientMeta: {
+        name: 'AlgoID Connect (beta)',
+        description: 'AlgoID wallet connector',
+        url: 'http://github.com/algorandfoundation/did-algo',
+        icons: [
+          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_128x128.png',
+          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_192x192.png',
+          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_512x512.png'
+        ]
+      }
     });
   }
 </script>
