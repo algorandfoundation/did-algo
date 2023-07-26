@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"syscall"
-	"time"
 
 	"github.com/algorandfoundation/did-algo/agent"
 	"github.com/algorandfoundation/did-algo/agent/storage"
@@ -16,7 +15,6 @@ import (
 	mwHeaders "go.bryk.io/pkg/net/middleware/headers"
 	mwProxy "go.bryk.io/pkg/net/middleware/proxy"
 	"go.bryk.io/pkg/net/rpc"
-	"go.bryk.io/pkg/otel"
 )
 
 var agentCmd = &cobra.Command{
@@ -113,23 +111,8 @@ func init() {
 }
 
 func runMethodServer(_ *cobra.Command, _ []string) error {
-	// Observability operator
-	oop, err := otel.NewOperator([]otel.OperatorOption{
-		otel.WithLogger(log),
-		otel.WithServiceName("algoid"),
-		otel.WithServiceVersion(info.CoreVersion),
-		otel.WithHostMetrics(),
-		otel.WithRuntimeMetrics(5 * time.Second),
-		otel.WithResourceAttributes(otel.Attributes{
-			"environment": viper.GetString("agent.env"),
-		}),
-	}...)
-	if err != nil {
-		return err
-	}
-
 	// Prepare API handler
-	handler, err := getAgentHandler(oop)
+	handler, err := getAgentHandler()
 	if err != nil {
 		return err
 	}
@@ -140,7 +123,6 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 		rpc.WithPort(viper.GetInt("agent.port")),
 		rpc.WithNetworkInterface(rpc.NetworkInterfaceAll),
 		rpc.WithServiceProvider(handler),
-		rpc.WithObservability(oop),
 		rpc.WithResourceLimits(rpc.ResourceLimits{
 			Connections: 1000,
 			Requests:    10,
@@ -203,7 +185,7 @@ func runMethodServer(_ *cobra.Command, _ []string) error {
 	return handler.Close()
 }
 
-func getAgentHandler(oop *otel.Operator) (*agent.Handler, error) {
+func getAgentHandler() (*agent.Handler, error) {
 	// Storage
 	ss := &storageSettings{}
 	if err := viper.UnmarshalKey("agent.storage", ss); err != nil {
@@ -230,7 +212,7 @@ func getAgentHandler(oop *otel.Operator) (*agent.Handler, error) {
 		Methods:     viper.GetStringSlice("agent.method"),
 		Difficulty:  uint(viper.GetInt("agent.pow")),
 		Store:       store,
-		OOP:         oop,
+		Logger:      log,
 		AlgoNode:    algodClient,
 		AlgoIndexer: indexerClient,
 	})

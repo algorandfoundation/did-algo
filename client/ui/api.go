@@ -1,9 +1,6 @@
 package ui
 
 import (
-	"encoding/json"
-	"io"
-	"net/http"
 	"time"
 
 	"github.com/algorandfoundation/did-algo/client/internal"
@@ -36,79 +33,10 @@ func LocalAPIServer(st *store.LocalStore, conf *internal.ClientSettings, log xlo
 		return nil, err
 	}
 
-	// HTTP handler
-	router := http.NewServeMux()
-	router.HandleFunc("/ready", func(w http.ResponseWriter, _ *http.Request) {
-		if !p.Ready() {
-			w.WriteHeader(http.StatusServiceUnavailable)
-			return
-		}
-		_, _ = w.Write([]byte("ok"))
-	})
-	router.HandleFunc("/list", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Add("content-type", "application/json")
-		_ = json.NewEncoder(w).Encode(p.List())
-	})
-	router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		_ = r.Body.Close()
-		params := map[string]string{}
-		if err = json.Unmarshal(body, &params); err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		name, ok := params["name"]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		passphrase, ok := params["recovery_key"]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		if err = p.Register(name, passphrase); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		_, _ = w.Write([]byte("ok"))
-	})
-	router.HandleFunc("/update", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		_ = r.Body.Close()
-		req := new(updateRequest)
-		if err = json.Unmarshal(body, req); err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		if err = p.Update(req); err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			_, _ = w.Write([]byte(err.Error()))
-			return
-		}
-		_, _ = w.Write([]byte("ok"))
-	})
-
 	// server instance
 	opts := []xhttp.Option{
 		xhttp.WithPort(9090),
-		xhttp.WithHandler(router),
+		xhttp.WithHandler(p.ServerHandler()),
 		xhttp.WithIdleTimeout(10 * time.Second),
 		xhttp.WithMiddleware(
 			mdLogging.Handler(log, nil),

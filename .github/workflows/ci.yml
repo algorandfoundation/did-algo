@@ -20,12 +20,6 @@ jobs:
     name: scan for vulnerabilities
     runs-on: ubuntu-latest
     steps:
-      # Go
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.20.x
-
       # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -36,6 +30,12 @@ jobs:
         env:
           GITHUB_USER: ${{ github.actor }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+      # Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20.x
 
       # Get commit message
       - name: Get commit message
@@ -63,12 +63,6 @@ jobs:
     needs: scan
     runs-on: ubuntu-latest
     steps:
-      # Go
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.20.x
-
       # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -79,7 +73,13 @@ jobs:
         env:
           GITHUB_USER: ${{ github.actor }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      
+
+      # Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20.x
+
       # Get commit message
       - name: Get commit message
         run: |
@@ -90,9 +90,9 @@ jobs:
       # Setup buf
       - name: Setup buf
         id: buf-setup
-        uses: bufbuild/buf-setup-action@v1.15.1
+        uses: bufbuild/buf-setup-action@v1.17.0
         with:
-          version: 1.15.1
+          version: 1.17.0
           github_token: ${{ github.token }}
 
       # Static analysis
@@ -124,12 +124,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     steps:
-      # Go
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: ${{ matrix.go-version }}
-
       # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -141,24 +135,18 @@ jobs:
           GITHUB_USER: ${{ github.actor }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
+      # Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
       # Get commit message
       - name: Get commit message
         run: |
           echo 'commit_msg<<EOF' >> $GITHUB_ENV
           git log --format=%B -n 1 ${{ github.sha }} >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-
-      # If "vendor" is in cache, restore.
-      # To run conditional steps use:
-      # if: steps.vendor-cache.outputs.cache-hit != 'true'
-      - name: Restore modules from cache
-        id: vendor-cache
-        uses: actions/cache@v3
-        env:
-          cache-name: vendor
-        with:
-          path: ./vendor
-          key: ${{ env.cache-name }}-${{ hashFiles('go.sum') }}
 
       # Style consistency and static analysis using 'golangci-lint'
       # https://github.com/marketplace/actions/run-golangci-lint
@@ -182,7 +170,3 @@ jobs:
           name: assets
           path: |
             coverage.html
-
-      # Populate vendor cache to speed up future runs
-      - name: Populate vendor cache
-        run: go mod vendor

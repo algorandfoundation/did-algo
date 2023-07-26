@@ -236,6 +236,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }
@@ -256,6 +257,7 @@
         "transactions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1AlgoTransaction"
           },
           "description": "Transaction details."
@@ -306,6 +308,7 @@
         "pendingTransactions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/v1AlgoTransaction"
           },
           "description": "Transactions submitted by this account that are yet to be processed\nby the network."
@@ -361,10 +364,12 @@
       "type": "object",
       "properties": {
         "task": {
-          "$ref": "#/definitions/ProcessRequestTask"
+          "$ref": "#/definitions/ProcessRequestTask",
+          "description": "Mutation type."
         },
         "ticket": {
-          "$ref": "#/definitions/v1Ticket"
+          "$ref": "#/definitions/v1Ticket",
+          "description": "Request ticket."
         }
       },
       "description": "Mutation request, either to publish or deactivate a DID record."

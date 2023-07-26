@@ -2,7 +2,10 @@ package ui
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"strings"
 	"time"
 
@@ -205,6 +208,17 @@ func (p *Provider) Update(req *updateRequest) error {
 	return nil
 }
 
+// ServerHandler returns an HTTP handler that can be used to exposed
+// the provider instance through an HTTP server.
+func (p *Provider) ServerHandler() http.Handler {
+	router := http.NewServeMux()
+	router.HandleFunc("/ready", p.readyHandlerFunc)
+	router.HandleFunc("/list", p.listHandlerFunc)
+	router.HandleFunc("/register", p.registerHandlerFunc)
+	router.HandleFunc("/update", p.updateHandlerFunc)
+	return router
+}
+
 // Get client connection.
 func (p *Provider) connect() error {
 	p.log.Infof("establishing connection to network agent: %s", p.conf.Node)
@@ -236,6 +250,80 @@ func (p *Provider) close() error {
 		return p.conn.Close()
 	}
 	return nil
+}
+
+// HTTP handler for the `GET /ready` endpoint.
+func (p *Provider) readyHandlerFunc(w http.ResponseWriter, _ *http.Request) {
+	if !p.Ready() {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+	_, _ = w.Write([]byte("ok"))
+}
+
+// HTTP handler for the `GET /list` endpoint.
+func (p *Provider) listHandlerFunc(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Add("content-type", "application/json")
+	_ = json.NewEncoder(w).Encode(p.List())
+}
+
+// HTTP handler for the `POST /register` endpoint.
+func (p *Provider) registerHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_ = r.Body.Close()
+	params := map[string]string{}
+	if err = json.Unmarshal(body, &params); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	name, ok := params["name"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	passphrase, ok := params["recovery_key"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err = p.Register(name, passphrase); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	_, _ = w.Write([]byte("ok"))
+}
+
+// HTTP handler for the `POST /update` endpoint.
+func (p *Provider) updateHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_ = r.Body.Close()
+	req := new(updateRequest)
+	if err = json.Unmarshal(body, req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err = p.Update(req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+	_, _ = w.Write([]byte("ok"))
 }
 
 type algoDestination struct {

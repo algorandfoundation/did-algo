@@ -120,8 +120,6 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 
 	// Get sender address
 	sender := account.Address.String()
-	log.Debugf("%+v", params)
-	log.Debug(sender, receiver, amount)
 
 	// Build transaction
 	tx, err := future.MakePaymentTxn(sender, receiver, uint64(amount), nil, "", params)

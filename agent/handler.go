@@ -18,15 +18,14 @@ import (
 	"go.bryk.io/pkg/did/resolver"
 	"go.bryk.io/pkg/log"
 	"go.bryk.io/pkg/net/rpc"
-	"go.bryk.io/pkg/otel"
 	"google.golang.org/grpc"
 )
 
 // Handler provides the required functionality for the DID method.
 type Handler struct {
-	oop         *otel.Operator
 	methods     []string
 	store       Storage
+	log         log.Logger
 	difficulty  uint
 	algoNode    *algod.Client
 	algoIndexer *indexer.Client
@@ -44,8 +43,8 @@ type HandlerOptions struct {
 	// Storage mechanism to be used for persistent state.
 	Store Storage
 
-	// Observability operator.
-	OOP *otel.Operator
+	// Log sink.
+	Logger log.Logger
 
 	// Algorand node client.
 	AlgoNode *algod.Client
@@ -57,7 +56,7 @@ type HandlerOptions struct {
 // NewHandler starts a new DID method handler instance.
 func NewHandler(options HandlerOptions) (*Handler, error) {
 	return &Handler{
-		oop:         options.OOP,
+		log:         options.Logger,
 		store:       options.Store,
 		methods:     options.Methods,
 		difficulty:  options.Difficulty,
@@ -68,7 +67,7 @@ func NewHandler(options HandlerOptions) (*Handler, error) {
 
 // Close the instance and safely terminate any internal processing.
 func (h *Handler) Close() error {
-	h.oop.Info("closing agent handler")
+	h.log.Info("closing agent handler")
 	return h.store.Close()
 }
 
@@ -78,18 +77,18 @@ func (h *Handler) Retrieve(req *protoV1.QueryRequest) (*did.Identifier, *did.Pro
 		"method":  req.Method,
 		"subject": req.Subject,
 	}
-	h.oop.WithFields(logFields).Debug("retrieve request")
+	h.log.WithFields(logFields).Debug("retrieve request")
 
 	// Verify method is supported
 	if !h.isSupported(req.Method) {
-		h.oop.WithFields(logFields).Warning("non supported method")
+		h.log.WithFields(logFields).Warning("non supported method")
 		return nil, nil, errors.New(resolver.ErrMethodNotSupported)
 	}
 
 	// Retrieve document from storage
 	id, proof, err := h.store.Get(req)
 	if err != nil {
-		h.oop.WithFields(logFields).Warning(err.Error())
+		h.log.WithFields(logFields).Warning(err.Error())
 		return nil, nil, errors.New(resolver.ErrNotFound)
 	}
 	return id, proof, nil
@@ -104,25 +103,25 @@ func (h *Handler) Process(req *protoV1.ProcessRequest) (string, error) {
 
 	// Validate ticket
 	if err := req.Ticket.Verify(h.difficulty); err != nil {
-		h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid ticket")
+		h.log.WithFields(log.Fields{"error": err.Error()}).Error("invalid ticket")
 		return "", err
 	}
 
 	// Load DID document and proof
 	id, err := req.Ticket.GetDID()
 	if err != nil {
-		h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid DID contents")
+		h.log.WithFields(log.Fields{"error": err.Error()}).Error("invalid DID contents")
 		return "", err
 	}
 	proof, err := req.Ticket.GetProofLD()
 	if err != nil {
-		h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid DID proof")
+		h.log.WithFields(log.Fields{"error": err.Error()}).Error("invalid DID proof")
 		return "", err
 	}
 
 	// Verify method is supported
 	if !h.isSupported(id.Method()) {
-		h.oop.WithFields(log.Fields{"method": id.Method()}).Warning("non supported method")
+		h.log.WithFields(log.Fields{"method": id.Method()}).Warning("non supported method")
 		return "", errors.New("non supported method")
 	}
 
@@ -130,13 +129,13 @@ func (h *Handler) Process(req *protoV1.ProcessRequest) (string, error) {
 	isUpdate := h.store.Exists(id)
 	if isUpdate {
 		if err := req.Ticket.Verify(h.difficulty); err != nil {
-			h.oop.WithFields(log.Fields{"error": err.Error()}).Error("invalid ticket")
+			h.log.WithFields(log.Fields{"error": err.Error()}).Error("invalid ticket")
 			return "", err
 		}
 	}
 
 	// Store record
-	h.oop.WithFields(log.Fields{
+	h.log.WithFields(log.Fields{
 		"subject": id.Subject(),
 		"update":  isUpdate,
 		"task":    req.Task,
@@ -148,7 +147,7 @@ func (h *Handler) Process(req *protoV1.ProcessRequest) (string, error) {
 func (h *Handler) AccountInformation(ctx context.Context, req *protoV1.AccountInformationRequest) (*protoV1.AccountInformationResponse, error) { // nolint: lll
 	ai, err := h.algoNode.AccountInformation(req.Address).Do(ctx)
 	if err != nil {
-		h.oop.WithFields(log.Fields{
+		h.log.WithFields(log.Fields{
 			"error":   err.Error(),
 			"address": req.Address,
 		}).Error("failed to get account information")
@@ -156,7 +155,7 @@ func (h *Handler) AccountInformation(ctx context.Context, req *protoV1.AccountIn
 	}
 	_, ptList, err := h.algoNode.PendingTransactionsByAddress(req.Address).Do(ctx)
 	if err != nil {
-		h.oop.WithFields(log.Fields{
+		h.log.WithFields(log.Fields{
 			"error":   err.Error(),
 			"address": req.Address,
 		}).Error("failed to get pending transactions")
@@ -196,7 +195,7 @@ func (h *Handler) AccountActivity(ctx context.Context, req *protoV1.AccountActiv
 				query := h.algoIndexer.LookupAccountTransactions(req.Address)
 				resp, err := query.Do(ctx)
 				if err != nil {
-					h.oop.WithFields(log.Fields{
+					h.log.WithFields(log.Fields{
 						"error":   err.Error(),
 						"address": req.Address,
 					}).Error("failed to get account activity")
@@ -217,14 +216,14 @@ func (h *Handler) AccountActivity(ctx context.Context, req *protoV1.AccountActiv
 func (h *Handler) TxParameters(ctx context.Context) (*protoV1.TxParametersResponse, error) {
 	params, err := h.algoNode.SuggestedParams().Do(ctx)
 	if err != nil {
-		h.oop.WithFields(log.Fields{
+		h.log.WithFields(log.Fields{
 			"error": err.Error(),
 		}).Error("failed to get transaction parameters")
 		return nil, err
 	}
 	data, err := json.Marshal(params)
 	if err != nil {
-		h.oop.WithFields(log.Fields{
+		h.log.WithFields(log.Fields{
 			"error": err.Error(),
 		}).Error("failed to encode transaction parameters")
 		return nil, err
@@ -236,7 +235,7 @@ func (h *Handler) TxParameters(ctx context.Context) (*protoV1.TxParametersRespon
 func (h *Handler) TxSubmit(ctx context.Context, req *protoV1.TxSubmitRequest) (*protoV1.TxSubmitResponse, error) {
 	tid, err := h.algoNode.SendRawTransaction(req.Stx).Do(ctx)
 	if err != nil {
-		h.oop.WithFields(log.Fields{
+		h.log.WithFields(log.Fields{
 			"error": err.Error(),
 			"tx":    base64.StdEncoding.EncodeToString(req.Stx),
 		}).Error("failed to submit raw transaction")

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
-	"go.bryk.io/pkg/otel"
+	otelApi "go.bryk.io/pkg/otel/api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -18,21 +18,19 @@ type rpcHandler struct {
 }
 
 func (rh *rpcHandler) Ping(ctx context.Context, _ *emptypb.Empty) (*protoV1.PingResponse, error) {
-	// Track operation
-	sp := rh.handler.oop.Start(ctx, "Ping", otel.WithSpanKind(otel.SpanKindServer))
-	defer sp.End(nil)
 	return &protoV1.PingResponse{Ok: true}, nil
 }
 
 func (rh *rpcHandler) Process(ctx context.Context, req *protoV1.ProcessRequest) (res *protoV1.ProcessResponse, err error) { // nolint: lll
 	// Track operation
-	sp := rh.handler.oop.Start(ctx, "Process", otel.WithSpanKind(otel.SpanKindServer))
-	defer sp.End(err)
+	sp := otelApi.Start(ctx, "Process", otelApi.WithSpanKind(otelApi.SpanKindServer))
+	defer sp.End(nil)
 
 	// Process and return response
 	res.Identifier, err = rh.handler.Process(req)
 	res.Ok = err == nil
 	if err != nil {
+		sp.End(err)
 		err = status.Error(codes.InvalidArgument, err.Error())
 	}
 	return
@@ -40,12 +38,13 @@ func (rh *rpcHandler) Process(ctx context.Context, req *protoV1.ProcessRequest) 
 
 func (rh *rpcHandler) Query(ctx context.Context, req *protoV1.QueryRequest) (res *protoV1.QueryResponse, err error) { // nolint: lll
 	// Track operation
-	sp := rh.handler.oop.Start(ctx, "Query", otel.WithSpanKind(otel.SpanKindServer))
-	defer sp.End(err)
+	sp := otelApi.Start(ctx, "Query", otelApi.WithSpanKind(otelApi.SpanKindServer))
+	defer sp.End(nil)
 
 	// Process and return response
 	id, proof, err := rh.handler.Retrieve(req)
 	if err != nil {
+		sp.End(err)
 		err = status.Error(codes.NotFound, err.Error())
 		return
 	}
@@ -56,29 +55,30 @@ func (rh *rpcHandler) Query(ctx context.Context, req *protoV1.QueryRequest) (res
 }
 
 func (rh *rpcHandler) TxParameters(ctx context.Context, _ *emptypb.Empty) (res *protoV1.TxParametersResponse, err error) { // nolint: lll
-	// Track operation
-	sp := rh.handler.oop.Start(ctx, "TxParameters", otel.WithSpanKind(otel.SpanKindServer))
-	defer sp.End(err)
-	return rh.handler.TxParameters(ctx)
+	sp := otelApi.Start(ctx, "TxParameters", otelApi.WithSpanKind(otelApi.SpanKindServer))
+	res, err = rh.handler.TxParameters(ctx)
+	sp.End(err)
+	return res, err
 }
 
 func (rh *rpcHandler) TxSubmit(ctx context.Context, req *protoV1.TxSubmitRequest) (res *protoV1.TxSubmitResponse, err error) { // nolint: lll
-	// Track operation
-	sp := rh.handler.oop.Start(ctx, "TxSubmit", otel.WithSpanKind(otel.SpanKindServer))
-	defer sp.End(err)
-	return rh.handler.TxSubmit(ctx, req)
+	sp := otelApi.Start(ctx, "TxSubmit", otelApi.WithSpanKind(otelApi.SpanKindServer))
+	res, err = rh.handler.TxSubmit(ctx, req)
+	sp.End(err)
+	return res, err
 }
 
 func (rh *rpcHandler) AccountInformation(ctx context.Context, req *protoV1.AccountInformationRequest) (res *protoV1.AccountInformationResponse, err error) { // nolint: lll
-	// Track operation
-	sp := rh.handler.oop.Start(ctx, "AccountInformation", otel.WithSpanKind(otel.SpanKindServer))
-	defer sp.End(err)
-	return rh.handler.AccountInformation(ctx, req)
+	sp := otelApi.Start(ctx, "AccountInformation", otelApi.WithSpanKind(otelApi.SpanKindServer))
+	res, err = rh.handler.AccountInformation(ctx, req)
+	sp.End(err)
+	return res, err
 }
 
 func (rh *rpcHandler) AccountActivity(req *protoV1.AccountActivityRequest, stream protoV1.AgentAPI_AccountActivityServer) error { // nolint: lll
 	// Track operation
-	sp := rh.handler.oop.Start(stream.Context(), "AccountActivity", otel.WithSpanKind(otel.SpanKindServer))
+	sp := otelApi.Start(stream.Context(), "AccountActivity", otelApi.WithSpanKind(otelApi.SpanKindServer))
+	defer sp.End(nil)
 
 	// Open account monitor
 	monitor, err := rh.handler.AccountActivity(stream.Context(), req)
@@ -94,6 +94,5 @@ func (rh *rpcHandler) AccountActivity(req *protoV1.AccountActivityRequest, strea
 			return err
 		}
 	}
-	sp.End(nil)
 	return nil
 }

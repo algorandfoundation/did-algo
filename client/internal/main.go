@@ -65,7 +65,7 @@ func (rs *ResolverSettings) ServerOpts(handler http.Handler, rc string) []pkgHtt
 		pkgHttp.WithPort(int(rs.Port)),
 		pkgHttp.WithIdleTimeout(10 * time.Second),
 		pkgHttp.WithMiddleware(mwRecovery.Handler()),
-		pkgHttp.WithMiddleware(otelHttp.NewMonitor().ServerMiddleware("resolver")),
+		pkgHttp.WithMiddleware(otelHttp.NewMonitor().ServerMiddleware()),
 		pkgHttp.WithMiddleware(mwHeaders.Handler(map[string]string{
 			"x-resolver-version":     info.CoreVersion,
 			"x-resolver-build-code":  info.BuildCode,

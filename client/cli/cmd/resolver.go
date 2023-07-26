@@ -1,19 +1,15 @@
 package cmd
 
 import (
-	"context"
 	"net/http"
 	"os"
 	"syscall"
-	"time"
 
 	"github.com/algorandfoundation/did-algo/client/internal"
-	"github.com/algorandfoundation/did-algo/info"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.bryk.io/pkg/cli"
 	pkgHttp "go.bryk.io/pkg/net/http"
-	"go.bryk.io/pkg/otel"
 	"google.golang.org/grpc"
 )
 
@@ -92,19 +88,6 @@ func init() {
 }
 
 func runResolverServer(cmd *cobra.Command, args []string) error {
-	// Observability operator
-	oop, err := otel.NewOperator([]otel.OperatorOption{
-		otel.WithLogger(log),
-		otel.WithServiceName("algoid"),
-		otel.WithServiceVersion(info.CoreVersion),
-		otel.WithHostMetrics(),
-		otel.WithRuntimeMetrics(5 * time.Second),
-	}...)
-	if err != nil {
-		return err
-	}
-	defer oop.Shutdown(context.Background())
-
 	// Load settings
 	conf := new(internal.ResolverSettings)
 	conf.Load(viper.GetViper())
