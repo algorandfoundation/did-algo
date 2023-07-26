@@ -107,7 +107,7 @@ jobs:
         uses: bufbuild/buf-breaking-action@v1.1.2
         if: steps.buf-lint.outcome == 'success' && !contains(env.commit_msg, '[buf-breaking skip]')
         with:
-          against: 'https://github.com/${{ github.repository }}.git#branch=${{ github.event.repository.default_branch }}'
+          against: "https://github.com/${{ github.repository }}.git#branch=${{ github.event.repository.default_branch }}"
         env:
           BUF_INPUT_HTTPS_USERNAME: ${{ github.actor }}
           BUF_INPUT_HTTPS_PASSWORD: ${{ secrets.ACCESS_TOKEN }}
@@ -119,7 +119,7 @@ jobs:
     needs: protos
     strategy:
       matrix:
-        go-version: [1.18.x, 1.19.x, 1.20.x]
+        go-version: [1.19.x, 1.20.x]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
