@@ -250,6 +250,11 @@ func (h *Handler) ServerSetup(server *grpc.Server) {
 	protoV1.RegisterAgentAPIServer(server, &rpcHandler{handler: h})
 }
 
+// ServiceDesc returns the standard service description for `AgentAPI`.
+func (h *Handler) ServiceDesc() grpc.ServiceDesc {
+	return protoV1.AgentAPI_ServiceDesc
+}
+
 // GatewaySetup return the HTTP setup method to allow exposing the
 // handler's functionality through an HTTP gateway.
 func (h *Handler) GatewaySetup() rpc.GatewayRegisterFunc {
