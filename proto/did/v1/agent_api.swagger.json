@@ -208,11 +208,11 @@
     "ProcessRequestTask": {
       "type": "string",
       "enum": [
-        "TASK_INVALID",
+        "TASK_UNSPECIFIED",
         "TASK_PUBLISH"
       ],
-      "default": "TASK_INVALID",
-      "description": "Available mutations.\n\n - TASK_INVALID: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one."
+      "default": "TASK_UNSPECIFIED",
+      "description": "Available mutations.\n\n - TASK_UNSPECIFIED: Invalid task selected.\n - TASK_PUBLISH: Publish a DID document. This same operation covers publishing\na completely new identifier or updating an existing one."
     },
     "protobufAny": {
       "type": "object",

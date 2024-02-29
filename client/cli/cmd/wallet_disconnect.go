@@ -82,5 +82,5 @@ var walletDisconnectCmd = &cobra.Command{
 }
 
 func init() {
-	walletCmd.AddCommand(walletDisconnectCmd)
+	// walletCmd.AddCommand(walletDisconnectCmd)
 }

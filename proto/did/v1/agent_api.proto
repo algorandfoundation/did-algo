@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package did.v1;
 
-option go_package = "did/v1;protov1";
-
 import "google/protobuf/empty.proto";
-import "third_party/google/api/annotations.proto";
+import "google/api/annotations.proto";
+// import "buf/validate/validate.proto";
+// import "protoc-gen-openapiv2/options/annotations.proto";
 
 // AgentAPI defines the network protocol as detailed in the DID Method specification.
 service AgentAPI {
@@ -109,7 +109,7 @@ message ProcessRequest {
   // Available mutations.
   enum Task {
     // Invalid task selected.
-    TASK_INVALID = 0;
+    TASK_UNSPECIFIED = 0;
 
     // Publish a DID document. This same operation covers publishing
     // a completely new identifier or updating an existing one.

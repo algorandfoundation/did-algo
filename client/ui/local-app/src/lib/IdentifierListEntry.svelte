@@ -10,6 +10,11 @@
   //  - link_wallet: link a wallet to a selected identifier
   const dispatch = createEventDispatcher();
 
+  // format a DID value to a shorter textual representation
+  function formatDID(did: string): string {
+    return did.slice(0, 18) + '...' + did.slice(-18);
+  }
+
   // format a date value to a common textual representation
   // using the user's locale.
   function formatDate(val: string): string {
@@ -34,8 +39,8 @@
   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
     {identifier.name}
   </td>
-  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-    {identifier.did}
+  <td class="whitespace-nowrap break-all px-3 py-4 text-sm text-gray-500">
+    {formatDID(identifier.did)}
   </td>
   <td class="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell">
     {identifier.addresses.length}

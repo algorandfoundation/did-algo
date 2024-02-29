@@ -22,15 +22,12 @@ type LocalAPI struct {
 }
 
 // LocalAPIServer creates a new instance of the local API server.
-func LocalAPIServer(st *store.LocalStore, conf *internal.ClientSettings, log xlog.Logger) (*LocalAPI, error) {
+func LocalAPIServer(st *store.LocalStore, client *internal.AlgoClient, log xlog.Logger) (*LocalAPI, error) {
 	// provider instances
 	p := &Provider{
-		st:   st,
-		log:  log,
-		conf: conf,
-	}
-	if err := p.connect(); err != nil {
-		return nil, err
+		st:     st,
+		log:    log,
+		client: client,
 	}
 
 	// server instance

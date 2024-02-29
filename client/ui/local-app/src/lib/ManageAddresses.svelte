@@ -7,6 +7,9 @@
   // component properties
   export let identifier: IdentifierEntry;
 
+  // recovery key
+  let passphrase: string;
+
   // main application context
   const appCtx = GetContext();
 
@@ -47,7 +50,12 @@
 
   // process data submission
   async function submit() {
-    let result = await appState.updateDID(identifier.name, identifier.did, addresses);
+    let result = await appState.updateDID(
+      identifier.name,
+      identifier.did,
+      addresses,
+      passphrase
+    );
     appCtx.closeModal();
     if (result) {
       appCtx.showAlert('success', 'Identifier updated successfully.');
@@ -100,6 +108,22 @@
         {/each}
       </div>
     {/if}
+  </div>
+  <!-- recovery key -->
+  <div
+    class="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+    <p class="sm:col-span-3">Enter the recovery key used to create this identifier.</p>
+    <div>
+      <p class="block text-base font-medium leading-6 text-gray-900">Recovery key</p>
+    </div>
+    <div class="sm:col-span-2">
+      <input
+        type="password"
+        name="recovery_key"
+        id="recovery_key"
+        bind:value={passphrase}
+        class="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+    </div>
   </div>
   <!-- action buttons -->
   <div class="flex-shrink-0 border-t border-gray-200 px-4 py-5 sm:px-6">

@@ -1,23 +1,16 @@
 package cmd
 
 import (
-	"context"
 	"encoding/base64"
-	"encoding/json"
-	"fmt"
 	"strconv"
 
-	ac "github.com/algorand/go-algorand-sdk/crypto"
-	"github.com/algorand/go-algorand-sdk/future"
-	"github.com/algorand/go-algorand-sdk/mnemonic"
-	at "github.com/algorand/go-algorand-sdk/types"
-	"github.com/algorandfoundation/did-algo/client/internal"
-	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	ac "github.com/algorand/go-algorand-sdk/v2/crypto"
+	"github.com/algorand/go-algorand-sdk/v2/mnemonic"
+	"github.com/algorand/go-algorand-sdk/v2/transaction"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.bryk.io/pkg/cli"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 var walletPayCmd = &cobra.Command{
@@ -46,7 +39,7 @@ func init() {
 		},
 		{
 			Name:      "submit",
-			Usage:     "Submit transaction to the network",
+			Usage:     "Submit transaction to the network (based on your active profile)",
 			FlagKey:   "tx.submit",
 			ByDefault: false,
 			Short:     "s",
@@ -58,7 +51,7 @@ func init() {
 	walletCmd.AddCommand(walletPayCmd)
 }
 
-func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
+func runWalletPayCmd(_ *cobra.Command, args []string) (err error) {
 	// Get parameters
 	wallet, receiver, amount, err := getTxParameters(args)
 	if err != nil {
@@ -91,38 +84,20 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 		return err
 	}
 
-	// Get client connection
-	conf := new(internal.ClientSettings)
-	if err := viper.UnmarshalKey("client", conf); err != nil {
-		return err
-	}
-	if err := conf.Validate(); err != nil {
-		return err
-	}
-	conn, err := getClientConnection(conf)
+	// Get network client
+	cl, err := getAlgoClient()
 	if err != nil {
-		return fmt.Errorf("failed to establish connection: %w", err)
+		return err
 	}
-	defer func() {
-		_ = conn.Close()
-	}()
-	cl := protoV1.NewAgentAPIClient(conn)
 
 	// Get transaction parameters
-	txParams, err := cl.TxParameters(context.Background(), &emptypb.Empty{})
-	if err != nil {
-		return err
-	}
-	params := at.SuggestedParams{}
-	if err := json.Unmarshal(txParams.Params, &params); err != nil {
-		return err
-	}
+	params, _ := cl.SuggestedParams()
 
 	// Get sender address
 	sender := account.Address.String()
 
 	// Build transaction
-	tx, err := future.MakePaymentTxn(sender, receiver, uint64(amount), nil, "", params)
+	tx, err := transaction.MakePaymentTxn(sender, receiver, uint64(amount), nil, "", params)
 	if err != nil {
 		return err
 	}
@@ -140,13 +115,11 @@ func runWalletPayCmd(cmd *cobra.Command, args []string) (err error) {
 
 	// Submit transaction
 	log.Debug("submitting signed transaction")
-	tr, err := cl.TxSubmit(context.TODO(), &protoV1.TxSubmitRequest{
-		Stx: stx,
-	})
+	txID, err := cl.SubmitTx(stx)
 	if err != nil {
 		return err
 	}
-	log.Infof("transaction successfully submitted with id: %s", tr.Id)
+	log.Infof("transaction successfully submitted with id: %s", txID)
 	return nil
 }
 

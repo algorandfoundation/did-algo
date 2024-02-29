@@ -6,7 +6,7 @@ and [DID Resolution](https://w3c-ccg.github.io/did-resolution/) specifications.
 
 ## Driver Interface
 
-The driver can be invoked via HTTP GET requests of the form call to:
+The driver can be invoked via HTTP GET requests of the form:
 
 `<http://<resolver-url>/1.0/identifiers/did:algo:<did subject>`
 

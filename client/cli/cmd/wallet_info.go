@@ -1,17 +1,13 @@
 package cmd
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
-	ac "github.com/algorand/go-algorand-sdk/crypto"
-	"github.com/algorand/go-algorand-sdk/mnemonic"
-	"github.com/algorandfoundation/did-algo/client/internal"
-	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
+	ac "github.com/algorand/go-algorand-sdk/v2/crypto"
+	"github.com/algorand/go-algorand-sdk/v2/mnemonic"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var walletInfoCmd = &cobra.Command{
@@ -52,42 +48,26 @@ var walletInfoCmd = &cobra.Command{
 			return err
 		}
 
-		// Get client connection
-		conf := new(internal.ClientSettings)
-		if err := viper.UnmarshalKey("client", conf); err != nil {
-			return err
-		}
-		if err := conf.Validate(); err != nil {
-			return err
-		}
-		conn, err := getClientConnection(conf)
+		// Get network client
+		cl, err := getAlgoClient()
 		if err != nil {
-			return fmt.Errorf("failed to establish connection: %w", err)
+			return err
 		}
-		defer func() {
-			_ = conn.Close()
-		}()
-		cl := protoV1.NewAgentAPIClient(conn)
 
 		// Get account info
-		info, err := cl.AccountInformation(context.Background(), &protoV1.AccountInformationRequest{
-			Address:  account.Address.String(),
-			Protocol: "algorand",
-			Network:  "testnet",
-		})
+		info, err := cl.AccountInformation(account.Address.String())
 		if err != nil {
 			return err
 		}
 
 		// Print results
 		fmt.Printf("address: %s\n", account.Address.String())
+		fmt.Printf("public key: %x\n", account.PublicKey)
 		fmt.Printf("status: %s\n", info.Status)
-		fmt.Printf("current balance: %d\n", info.Balance)
+		fmt.Printf("round: %d\n", info.Round)
+		fmt.Printf("current balance: %d\n", info.Amount)
 		fmt.Printf("pending rewards: %d\n", info.PendingRewards)
-		fmt.Printf("total rewards: %d\n", info.TotalRewards)
-		for _, pt := range info.PendingTransactions {
-			fmt.Printf("pending transaction. amount: %d, to: %s\n", pt.Amount, pt.Receiver)
-		}
+		fmt.Printf("total rewards: %d\n", info.Rewards)
 		return nil
 	},
 }

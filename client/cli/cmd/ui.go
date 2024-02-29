@@ -6,48 +6,46 @@ import (
 	"os/exec"
 	"syscall"
 
-	"github.com/algorandfoundation/did-algo/client/internal"
 	"github.com/algorandfoundation/did-algo/client/ui"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"go.bryk.io/pkg/cli"
 	xhttp "go.bryk.io/pkg/net/http"
 )
+
+var uiCmdDesc = `
+Graphical client.
+
+Starts a local graphical user interface that can be used
+to create and manage local identifiers and connect your
+wallet for more advanced features.`
 
 var uiCmd = &cobra.Command{
 	Use:     "ui",
 	Aliases: []string{"gui"},
 	Short:   "Start the local graphical client",
 	RunE:    runLocalUI,
-	Long: `Graphical client
-
-Starts a local graphical user interface that can be used
-to create and manage local identifiers and connect your
-wallet for more advanced features.`,
+	Long:    uiCmdDesc,
 }
 
 func init() {
 	rootCmd.AddCommand(uiCmd)
 }
 
-func runLocalUI(cmd *cobra.Command, args []string) error {
-	// Load client configuration
-	conf := new(internal.ClientSettings)
-	if err := viper.UnmarshalKey("client", conf); err != nil {
-		return err
-	}
-	if err := conf.Validate(); err != nil {
-		return err
-	}
-
+func runLocalUI(_ *cobra.Command, _ []string) error {
 	// Get store handler
 	st, err := getClientStore()
 	if err != nil {
 		return err
 	}
 
+	// Get network client
+	cl, err := getAlgoClient()
+	if err != nil {
+		return err
+	}
+
 	// Local API server
-	srv, err := ui.LocalAPIServer(st, conf, log)
+	srv, err := ui.LocalAPIServer(st, cl, log)
 	if err != nil {
 		return err
 	}

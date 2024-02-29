@@ -62,10 +62,9 @@ archives:
       # include documentation files in the package for distribution
       - README.md
       - LICENSE*
-      - src: '*.md'
+      - src: "*.md"
         dst: docs
         strip_parent: true
-    rlcp: true
 # generate integrity checksums
 # https://goreleaser.com/customization/checksum/
 checksum:
@@ -75,7 +74,6 @@ checksum:
 # https://goreleaser.com/customization/source/
 source:
   enabled: true
-  rlcp: true
 # produce test releases
 # https://goreleaser.com/customization/snapshots/
 snapshot:
@@ -83,8 +81,7 @@ snapshot:
 # build and publish docker images
 # https://goreleaser.com/customization/docker/
 dockers:
-  -
-    # Build IDs to gather the binaries from
+  - # Build IDs to gather the binaries from
     ids:
       - did-algo
     # GOOS of the built binary that should be used
@@ -115,8 +112,7 @@ dockers:
 # linux packages
 # https://goreleaser.com/customization/nfpm/
 nfpms:
-  -
-    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+  - file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     builds:
       - did-algo
     vendor: Algorand Foundation
@@ -140,7 +136,7 @@ nfpms:
         type: "config|noreplace"
 changelog:
   # Sorts the changelog commit messages (asc, desc or '')
-  sort: ''
+  sort: ""
   # Remove certain commit messages from the changelog
   filters:
     # Standard commit messages can help to produce better changelogs
@@ -153,13 +149,12 @@ changelog:
 # Produce homebrew formulas for the project artifacts
 # https://goreleaser.com/customization/homebrew/
 brews:
-  -
-    # Formula name
+  - # Formula name
     name: algoid
     # Push the formula to the tap repository
     skip_upload: "true"
     # TAP repository
-    tap:
+    repository:
       owner: bryk-io
       name: homebrew-tap
     # Use 'github-actions' as commit author

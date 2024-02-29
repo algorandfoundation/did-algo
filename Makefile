@@ -25,11 +25,11 @@ LD_FLAGS += -X $(PROJECT_REPO)/info.BuildTimestamp=$(GIT_COMMIT_DATE)
 # subdirectories if no value is provided.
 pkg?="..."
 
-# "buf" is used to manage protocol buffer definitions, either
-# locally (on a dev container) or using a builder image.
+# "buf" is used to manage protocol buffer definitions, if not installed
+# locally we fallback to use a builder image.
 buf:=buf
-ifndef REMOTE_CONTAINERS_SOCKETS
-	buf=docker run --platform linux/amd64 --rm -it -v $(shell pwd):/workdir ghcr.io/bryk-io/buf-builder:1.17.0 buf
+ifeq (, $(shell which buf))
+	buf=docker run --platform linux/amd64 --rm -it -v $(shell pwd):/workdir ghcr.io/bryk-io/buf-builder:1.29.0 buf
 endif
 
 help:

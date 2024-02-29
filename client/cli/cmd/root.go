@@ -13,10 +13,9 @@ import (
 )
 
 var (
-	log            xlog.Logger
-	cfgFile        = ""
-	homeDir        = ""
-	didDomainValue = "did.algorand.foundation"
+	log     xlog.Logger
+	cfgFile = ""
+	homeDir = ""
 )
 
 var rootCmd = &cobra.Command{
@@ -26,9 +25,9 @@ var rootCmd = &cobra.Command{
 	SilenceUsage:  true,
 	Long: `Algorand DID
 
-Reference client implementation for the "algo" DID method. The platform allows
-entities to fully manage Decentralized Identifiers as described by version v1.0
-of the specification.
+Reference client implementation for the "algo" DID method. The platform
+allows entities to fully manage Decentralized Identifiers as described
+by version v1.0 of the W3C specification.
 
 For more information:
 https://github.com/algorandfoundation/did-algo`,
@@ -60,7 +59,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file ($HOME/.algoid/config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&homeDir, "home", "", "home directory ($HOME/.algoid)")
-	if err := viper.BindPFlag("client.home", rootCmd.PersistentFlags().Lookup("home")); err != nil {
+	if err := viper.BindPFlag("home", rootCmd.PersistentFlags().Lookup("home")); err != nil {
 		panic(err)
 	}
 }
@@ -78,8 +77,7 @@ func initConfig() {
 	}
 
 	// Set default values
-	viper.SetDefault("client.timeout", 5)
-	viper.SetDefault("client.home", filepath.Join(home, ".algoid"))
+	viper.SetDefault("home", filepath.Join(home, ".algoid"))
 
 	// Set configuration file
 	if cfgFile != "" {

@@ -11,13 +11,8 @@ import (
 	"go.bryk.io/pkg/did"
 )
 
-var walletConnectCmd = &cobra.Command{
-	Use:     "connect",
-	Aliases: []string{"link", "ln"},
-	RunE:    runWalletConnectCmd,
-	Example: "algoid wallet connect [wallet-name] [did-name]",
-	Short:   "Connect your ALGO wallet to a DID",
-	Long: `Connect your ALGO wallet to a DID
+const walletConnectCmdDesc = `
+Connect your ALGO wallet to a DID.
 
 Connecting your ALGO wallet to a DID will allow other users to
 discover your ALGO address when resolving your identifier.
@@ -25,7 +20,15 @@ discover your ALGO address when resolving your identifier.
 Effectively connecting your ID to a highly secure and efficient
 payments channel. Additionally, your counterparties might also
 discover or request your credentials when/if required to perform
-certain transactions.`,
+certain transactions.`
+
+var walletConnectCmd = &cobra.Command{
+	Use:     "connect",
+	Aliases: []string{"link", "ln"},
+	RunE:    runWalletConnectCmd,
+	Example: "algoid wallet connect [wallet-name] [did-name]",
+	Short:   "Connect your ALGO wallet to a DID",
+	Long:    walletConnectCmdDesc,
 }
 
 func init() {
@@ -48,7 +51,7 @@ func init() {
 	if err := cli.SetupCommandParams(walletConnectCmd, params, viper.GetViper()); err != nil {
 		panic(err)
 	}
-	walletCmd.AddCommand(walletConnectCmd)
+	// walletCmd.AddCommand(walletConnectCmd)
 }
 
 func runWalletConnectCmd(_ *cobra.Command, args []string) error {
@@ -115,7 +118,7 @@ func runWalletConnectCmd(_ *cobra.Command, args []string) error {
 	}
 
 	// Register custom context
-	id.RegisterContext("https://did-ns.aidtech.network/v1")
+	id.RegisterContext("https://did.algorand.foundation/v1")
 
 	// Update record
 	log.Info("updating local DID record")
