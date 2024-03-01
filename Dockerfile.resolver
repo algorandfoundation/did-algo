@@ -1,0 +1,9 @@
+FROM zhield/shell:stable
+
+EXPOSE 9091/tcp
+
+COPY algoid /usr/bin/algoid
+
+COPY resolver-config.yaml /etc/algoid/config.yaml
+
+ENTRYPOINT ["/usr/bin/algoid", "resolver"]

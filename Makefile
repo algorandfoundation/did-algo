@@ -80,6 +80,13 @@ docker:
 	"--label=org.opencontainers.image.revision=$(GIT_COMMIT_HASH)" \
 	"--label=org.opencontainers.image.version=$(GIT_TAG:v%=%)" \
 	--rm -t $(DOCKER_IMAGE):$(GIT_TAG:v%=%) .
+	@docker build \
+	"--label=org.opencontainers.image.title=$(BINARY_NAME)-resolver" \
+	"--label=org.opencontainers.image.authors=$(MAINTAINERS)" \
+	"--label=org.opencontainers.image.created=$(GIT_COMMIT_DATE)" \
+	"--label=org.opencontainers.image.revision=$(GIT_COMMIT_HASH)" \
+	"--label=org.opencontainers.image.version=$(GIT_TAG:v%=%)" \
+	--rm -f Dockerfile.resolver -t $(DOCKER_IMAGE)-resolver:$(GIT_TAG:v%=%) .
 	@rm $(BINARY_NAME)
 
 ## install: Install the binary to GOPATH and keep cached all compiled artifacts

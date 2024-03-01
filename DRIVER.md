@@ -21,60 +21,42 @@ default behavior when no `Accept` header is provided.
 Request:
 
 ```shell
-curl -X GET <http://localhost:8080/1.0/identifiers/did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82>
+curl -X GET <http://localhost:8080/1.0/identifiers/did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170>
 ```
 
 Response:
 
 ```json
-HTTP/1.1 200 OK
-Connection: keep-alive
-Content-Length: 1123
-Content-Type: application/ld+json;profile="https://w3id.org/did-resolution";charset=utf-8
-Date: Sun, 15 Jan 2023 17:39:30 GMT
-Strict-Transport-Security: max-age=15724800; includeSubDomains
-X-Content-Type-Options: nosniff
-X-Resolver-Version: 0.4.0
-
 {
+  "@context": [
+    "https://w3id.org/did-resolution/v1"
+  ],
+  "didDocument": {
     "@context": [
-        "https://w3id.org/did-resolution/v1"
+      "https://www.w3.org/ns/did/v1",
+      "https://w3id.org/security/suites/ed25519-2020/v1",
+      "https://w3id.org/security/suites/x25519-2020/v1"
     ],
-    "didDocument": {
-        "@context": [
-            "https://www.w3.org/ns/did/v1",
-            "https://w3id.org/security/suites/ed25519-2020/v1",
-            "https://w3id.org/security/suites/x25519-2020/v1"
-        ],
-        "authentication": [
-            "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#master",
-            "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#key-2"
-        ],
-        "id": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82",
-        "verificationMethod": [
-            {
-                "controller": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82",
-                "id": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#master",
-                "publicKeyMultibase": "zCh9PDTZzeWxk2WdH4M1e8k2951D5D11jz7Uti9HRBGiK",
-                "type": "Ed25519VerificationKey2020"
-            },
-            {
-                "controller": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82",
-                "id": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#key-2",
-                "publicKeyMultibase": "zGrjYfS1jotUQPyNqib75XNpGsS4ZL1MoPaEVF19a4W5h",
-                "type": "Ed25519VerificationKey2020"
-            }
-        ]
-    },
-    "didDocumentMetadata": {
-        "created": "2022-03-23T19:15:10Z",
-        "deactivated": false,
-        "updated": "2022-03-23T20:11:30Z"
-    },
-    "didResolutionMetadata": {
-        "contentType": "application/ld+json;profile=\"https://w3id.org/did-resolution\"",
-        "retrieved": "2023-01-15T17:39:30Z"
-    }
+    "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
+    "verificationMethod": [
+      {
+        "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master",
+        "type": "Ed25519VerificationKey2020",
+        "controller": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
+        "publicKeyMultibase": "z5U83dEzpKaRwaTxJ8iqF6dC58fNpsEfhugDYfVC9ouZ3"
+      }
+    ],
+    "authentication": [
+      "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master"
+    ]
+  },
+  "didDocumentMetadata": {
+    "deactivated": false
+  },
+  "didResolutionMetadata": {
+    "contentType": "application/did+ld+json",
+    "retrieved": "2024-03-01T01:32:42Z"
+  }
 }
 ```
 
@@ -90,46 +72,30 @@ Request:
 ```shell
 curl -X GET \
 --header "Accept: application/did+ld+json" \
-<http://localhost:8080/1.0/identifiers/did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82>
+<http://localhost:8080/1.0/identifiers/did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170>
 ```
 
 Response:
 
 ```json
-HTTP/1.1 200 OK
-Connection: keep-alive
-Content-Length: 806
-Content-Type: application/did+ld+json;charset=utf-8
-Date: Sun, 15 Jan 2023 17:47:11 GMT
-Strict-Transport-Security: max-age=15724800; includeSubDomains
-X-Content-Type-Options: nosniff
-X-Resolver-Version: 0.4.0
-
 {
-    "@context": [
-        "https://www.w3.org/ns/did/v1",
-        "https://w3id.org/security/suites/ed25519-2020/v1",
-        "https://w3id.org/security/suites/x25519-2020/v1"
-    ],
-    "authentication": [
-        "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#master",
-        "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#key-2"
-    ],
-    "id": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82",
-    "verificationMethod": [
-        {
-            "controller": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82",
-            "id": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#master",
-            "publicKeyMultibase": "zCh9PDTZzeWxk2WdH4M1e8k2951D5D11jz7Uti9HRBGiK",
-            "type": "Ed25519VerificationKey2020"
-        },
-        {
-            "controller": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82",
-            "id": "did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82#key-2",
-            "publicKeyMultibase": "zGrjYfS1jotUQPyNqib75XNpGsS4ZL1MoPaEVF19a4W5h",
-            "type": "Ed25519VerificationKey2020"
-        }
-    ]
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1",
+    "https://w3id.org/security/suites/x25519-2020/v1"
+  ],
+  "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
+  "verificationMethod": [
+    {
+      "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
+      "publicKeyMultibase": "z5U83dEzpKaRwaTxJ8iqF6dC58fNpsEfhugDYfVC9ouZ3"
+    }
+  ],
+  "authentication": [
+    "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master"
+  ]
 }
 ```
 
@@ -147,30 +113,21 @@ Request:
 ```shell
 curl -X GET \
 --header "Accept: application/did+cbor" \
-<http://localhost:8080/1.0/identifiers/did:algo:c93fdef1-8a0a-4c65-8c54-fd33117c9e82>
+<http://localhost:8080/1.0/identifiers/did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170>
 ```
 
 Response:
 
 ```json
-HTTP/1.1 406 Not Acceptable
-Connection: keep-alive
-Content-Length: 187
-Content-Type: application/ld+json;profile="https://w3id.org/did-resolution";charset=utf-8
-Date: Sun, 15 Jan 2023 17:49:49 GMT
-Strict-Transport-Security: max-age=15724800; includeSubDomains
-X-Content-Type-Options: nosniff
-X-Resolver-Version: 0.4.0
-
 {
-    "@context": [
-        "https://w3id.org/did-resolution/v1"
-    ],
-    "didResolutionMetadata": {
-        "contentType": "application/did+cbor",
-        "error": "representationNotSupported",
-        "retrieved": "2023-01-15T17:49:49Z"
-    }
+  "@context": [
+    "https://w3id.org/did-resolution/v1"
+  ],
+  "didResolutionMetadata": {
+    "contentType": "application/did+cbor",
+    "retrieved": "2024-03-01T01:39:03Z",
+    "error": "representationNotSupported"
+  }
 }
 ```
 
