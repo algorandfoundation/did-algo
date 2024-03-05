@@ -91,7 +91,8 @@ docker:
 
 ## install: Install the binary to GOPATH and keep cached all compiled artifacts
 install:
-	@go build -v -ldflags '$(LD_FLAGS)' -i -o ${GOPATH}/bin/$(BINARY_NAME) ./client/cli
+	@go build -v -ldflags '$(LD_FLAGS)' -o ${GOPATH}/bin/$(BINARY_NAME) ./client/cli
+	mv ${BINARY_NAME} ${GOBIN}/.
 
 ## lint: Static analysis
 lint:
