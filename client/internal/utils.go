@@ -206,7 +206,7 @@ func publishDID(
 	}
 
 	// add data for the last box
-	if len(data) > max_box_size {
+	if len(data) > max_box_size || numBoxes == 0 {
 		boxData = append(boxData, data[numBoxes*max_box_size:])
 	}
 
@@ -237,7 +237,13 @@ func publishDID(
 			return fmt.Errorf("failed to get add method: %w", err)
 		}
 
-		_, err = sendTxGroup(algodClient, uploadMethod, 0, pubKey, boxes, boxIndex, sp, sender, signer, appID, chunks[:8])
+		firstChunks := chunks
+
+		if len(chunks) > 8 {
+			firstChunks = chunks[:8]
+		}
+
+		_, err = sendTxGroup(algodClient, uploadMethod, 0, pubKey, boxes, boxIndex, sp, sender, signer, appID, firstChunks)
 		if err != nil {
 			return fmt.Errorf("failed to send tx group: %w", err)
 		}
