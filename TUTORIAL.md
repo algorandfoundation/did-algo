@@ -147,7 +147,127 @@ Use "algoid [command] --help" for more information about a command.
 
 Let's explore some of the basic functions available.
 
-## 3. DID Managent
+### 2.1 Configuration
+
+To get started, created a config file at `$HOME/.algoid/config.yaml`
+
+For example, to use Algorand testnet:
+
+```
+network:
+  active: testnet
+  profiles:
+    # to deploy your own storage provider contract
+    - name: testnet
+      node: https://testnet-api.algonode.cloud
+      node_token: ""
+```
+
+## 3. Wallet Management
+
+The `algoid` application also provides all the tools you need to create and manage
+any number of standalone Algorand wallets. You can explore all the functions available
+by inspecting the `wallet` command.
+
+```txt
+Manage your ALGO wallet(s)
+
+Usage:
+  algoid wallet [command]
+
+Available Commands:
+  connect     Connect your ALGO wallet to a DID
+  create      Create a new (standalone) ALGO wallet
+  delete      Permanently delete an ALGO wallet
+  disconnect  Remove a linked ALGO address from your DID
+  export      Export wallet's master derivation key
+  info        Get account information
+  list        List your existing ALGO wallet(s)
+  pay         Create and submit a new transaction
+  rename      Rename an existing ALGO wallet
+  restore     Restore a wallet using an existing mnemonic file
+  watch       Monitor your wallet's activity
+```
+
+### 3.1 Create Wallet
+
+Wallets are created and manage locally, the sensitive cryptographic materials
+required to operate your locally wallet are encrypted prior to be written to the
+local filesystem.
+
+Let's create a new wallet, we'll use the `wallet create` command.
+
+```shell
+algoid wallet create sample-account
+```
+
+You'll be asked to enter and confirm a passphrase, this will be used as the
+encryption key required for secure storage. Finally, you'll get an output similar
+to this.
+
+```shell
+2024-03-06T12:00:15-05:00 INF new wallet created address=3ARALWACZXG2IHZOPYOKPHLT6KNJKI45RJSFQSYOJSJVD675DX42M4ZMRE name=sample-account
+```
+
+### 3.2 List existing Wallets
+
+As mentioned earlier, you can create as many wallets as you wish. You can then
+see a list of all your local wallets.
+
+```shell
+algoid wallet list
+```
+
+The list displays every wallet using its local alias for simpler usage.
+
+```shell
+2024-03-06T12:00:33-05:00 INF wallet found: sample-account
+```
+
+### 3.3 Get wallet details
+
+To get additional details such as your account balance, status, rewards, etc; simply
+use the `wallet info` command.
+
+```shell
+algoid wallet info sample-account
+```
+
+The client application will reach out to the network and the account information will
+be printed.
+
+```txt
+address: 3ARALWACZXG2IHZOPYOKPHLT6KNJKI45RJSFQSYOJSJVD675DX42M4ZMRE
+public key: d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9
+status: Offline
+round: 37804729
+current balance: 0
+pending rewards: 0
+total rewards: 0
+```
+
+## 4. Deploy
+
+```shell
+algoid deploy sample-account
+
+2024-03-06T12:01:40-05:00 INF storage contract deployed successfully app_id=613372790
+```
+
+### Update Config
+
+```yml
+network:
+  active: testnet
+  profiles:
+    # to deploy your own storage provider contract
+    - name: testnet
+      node: https://testnet-api.algonode.cloud
+      node_token: ""
+      app_id: 613372790
+```
+
+## 4. DID Managent
 
 Decentralized Identifiers are completely controlled by you, without coordination
 with any central authority and can be securely used between peers on a trustless
@@ -157,26 +277,26 @@ conext of different "verification relationships".
 
 > For more information you can refer to the [latest specification](https://w3c.github.io/did-core/#verification-methods).
 
-### 3.1 Create a new DID
+### 4.1 Create a new DID
 
 To create a new DID, with a new passphrase-protected cryptographic key enabled
 for authentication simply run:
 
 ```shell
-algoid create my-first-did --passphrase
+algoid create sample-account
 ```
 
 You'll be asked to enter and confirm you passphrase and finally get an output
 similar to:
 
 ```shell
-2021-10-19T22:19:33-05:00 INF generating new identifier method=algo
-2021-10-19T22:19:33-05:00 DBG adding master key
-2021-10-19T22:19:33-05:00 DBG setting master key as authentication mechanism
-2021-10-19T22:19:33-05:00 INF adding entry to local store
+2024-03-06T12:02:54-05:00 INF generating new identifier method=algo subject=d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
+2024-03-06T12:02:54-05:00 DBG adding master key
+2024-03-06T12:02:54-05:00 DBG setting master key as authentication mechanism
+2024-03-06T12:02:54-05:00 INF adding entry to local store
 ```
 
-### 3.2 List existing DIDs
+### 4.2 List existing DIDs
 
 As mentioned earlier, you can create as many DIDs as you wish. You can then
 see a list of all your identifiers.
@@ -188,11 +308,11 @@ algoid list
 The list displays every DID instance along it's local alias for simpler usage.
 
 ```txt
-Name            DID
-my-first-did    did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef
+Name              DID
+sample-account    did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
 ```
 
-### 3.3 Inspect your local DID document
+### 4.3 Inspect your local DID document
 
 Every DID is resolvable to a DID document. A DID document provides all the
 information required to validate control and ownership over a given identifier.
@@ -201,36 +321,40 @@ You can inspect the all the information associated with you identifier using
 the `info` command.
 
 ```shell
-algoid info my-first-did
+algoid info sample-account
 ```
 
 The command will print on the screen the full contents of the associated DID
 document.
 
 ```json
+2024-03-06T12:03:25-05:00 INF created: 2024-03-06T17:02:54Z
+2024-03-06T12:03:25-05:00 INF updated: 2024-03-06T17:02:54Z
+2024-03-06T12:03:25-05:00 INF active: true
 {
-  "@context": [
-    "https://www.w3.org/ns/did/v1",
-    "https://w3id.org/security/v1"
-  ],
-  "id": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef",
-  "created": "2021-10-20T03:19:33Z",
-  "updated": "2021-10-20T03:19:33Z",
-  "verificationMethod": [
-    {
-      "id": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef#master",
-      "type": "Ed25519VerificationKey2018",
-      "controller": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef",
-      "publicKeyMultibase": "zCh9PDTZzeWxk2WdH4M1e8k2951D5D11jz7Uti9HRBGiK"
-    }
-  ],
-  "authentication": [
-    "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef#master"
-  ]
+  "document": {
+    "@context": [
+      "https://www.w3.org/ns/did/v1",
+      "https://w3id.org/security/suites/ed25519-2020/v1",
+      "https://w3id.org/security/suites/x25519-2020/v1"
+    ],
+    "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
+    "verificationMethod": [
+      {
+        "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master",
+        "type": "Ed25519VerificationKey2020",
+        "controller": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
+        "publicKeyMultibase": "zFYh9rcBz66DNU8UwzLNmyVAsLhJe17kCmFdEazHb9Qxg"
+      }
+    ],
+    "authentication": [
+      "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master"
+    ]
+  }
 }
 ```
 
-### 3.4 Edit a DID
+### 4.4 Edit a DID
 
 The details associated with any of your identifiers can be modified using the
 `edit` command. This includes adding or removing different verification methods
@@ -266,180 +390,6 @@ Flags:
   -t, --type string      type of cryptographic key: RSA (rsa), Ed25519 (ed) or secp256k1 (koblitz) (default "ed")
 ```
 
-## 4 Wallet Management
-
-The `algoid` application also provides all the tools you need to create and manage
-any number of standalone Algorand wallets. You can explore all the functions available
-by inspecting the `wallet` command.
-
-```txt
-Manage your ALGO wallet(s)
-
-Usage:
-  algoid wallet [command]
-
-Available Commands:
-  connect     Connect your ALGO wallet to a DID
-  create      Create a new (standalone) ALGO wallet
-  delete      Permanently delete an ALGO wallet
-  disconnect  Remove a linked ALGO address from your DID
-  export      Export wallet's master derivation key
-  info        Get account information
-  list        List your existing ALGO wallet(s)
-  pay         Create and submit a new transaction
-  rename      Rename an existing ALGO wallet
-  restore     Restore a wallet using an existing mnemonic file
-  watch       Monitor your wallet's activity
-```
-
-### 4.1 Create Wallet
-
-Wallets are created and manage locally, the sensitive cryptographic materials
-required to operate your locally wallet are encrypted prior to be written to the
-local filesystem.
-
-Let's create a new wallet, we'll use the `wallet create` command.
-
-```shell
-algoid wallet create sample-account
-```
-
-You'll be asked to enter and confirm a passphrase, this will be used as the
-encryption key required for secure storage. Finally, you'll get an output similar
-to this.
-
-```shell
-2021-10-19T22:52:11-05:00 INF new wallet created address=GZAURFQR7VRUL2TRVMUJ3G3IGFYSFXBWHBFFQBEITXWDLFVVHTICFNY2LE name=sample-account
-```
-
-### 4.2 List existing Wallets
-
-As mentioned earlier, you can create as many wallets as you wish. You can then
-see a list of all your local wallets.
-
-```shell
-algoid wallet list
-```
-
-The list displays every wallet using its local alias for simpler usage.
-
-```txt
-2021-10-19T22:55:58-05:00 INF wallet found: sample-account
-```
-
-### 4.3 Get wallet details
-
-To get additional details such as your account balance, status, rewards, etc; simply
-use the `wallet info` command.
-
-```shell
-algoid wallet info sample-account
-```
-
-The client application will reach out to the network and the account information will
-be printed.
-
-```txt
-2021-10-19T22:57:58-05:00 INF establishing connection to network agent: did-agent.aidtech.network:443
-address: GZAURFQR7VRUL2TRVMUJ3G3IGFYSFXBWHBFFQBEITXWDLFVVHTICFNY2LE
-status: Offline
-current balance: 0
-pending rewards: 0
-total rewards: 0
-```
-
-### 4.4 Connect a wallet to a DID
-
-Now that you have a new DID instance and a new Algorand account, you can use
-the `wallet connect` command to link both. This will enable discoverability and
-interoperability for different services that require to link your ID to a
-secure and performant digital payments channel.
-
-```txt
-Connect your ALGO wallet to a DID
-
-Connecting your ALGO wallet to a DID will allow other users to
-discover your ALGO address when resolving your identifier.
-
-Effectively connecting your ID to a highly secure and efficient
-payments channel. Additionally, your counterparties might also
-discover or request your credentials when/if required to perform
-certain transactions.
-
-Usage:
-  algoid wallet connect [flags]
-
-Aliases:
-  connect, link, ln
-
-Examples:
-algoid wallet connect [wallet-name] [did-name]
-```
-
-For example, to link the DID and created previously created.
-
-```shell
-algoid wallet connect sample-account my-first-did
-```
-
-After providing the wallet decryption key you'll get a confirmation message.
-
-```txt
-2021-10-19T23:07:55-05:00 INF updating local DID record
-```
-
-To confirm the connection you can inspect the details for your DID.
-
-```shell
-algoid info my-first-did
-```
-
-The updated DID document now include the `algo-connect` extension with
-details about the connected Algorand account.
-
-```json
-{
-  "@context": [
-    "https://www.w3.org/ns/did/v1",
-    "https://w3id.org/security/v1"
-  ],
-  "id": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef",
-  "created": "2021-10-20T03:19:33Z",
-  "updated": "2021-10-20T04:07:55Z",
-  "verificationMethod": [
-    {
-      "id": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef#master",
-      "type": "Ed25519VerificationKey2018",
-      "controller": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef",
-      "publicKeyMultibase": "zCh9PDTZzeWxk2WdH4M1e8k2951D5D11jz7Uti9HRBGiK"
-    }
-  ],
-  "authentication": [
-    "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef#master"
-  ],
-  "service": [
-    {
-      "id": "did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef#algo-connect",
-      "type": "did.algorand.foundation.ExternalService",
-      "serviceEndpoint": "https://did.algorand.foundation",
-      "extensions": [
-        {
-          "id": "algo-address",
-          "version": "0.1.0",
-          "data": [
-            {
-              "address": "GZAURFQR7VRUL2TRVMUJ3G3IGFYSFXBWHBFFQBEITXWDLFVVHTICFNY2LE",
-              "asset": "ALGO",
-              "network": "testnet"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
 ## 5. Publish your DID globally
 
 Up to this point all the details about our DID are just available on our machine;
@@ -468,24 +418,15 @@ Flags:
   -p, --pow int      set the required request ticket difficulty level (default 24)
 ```
 
-For example, by running `algoid publish my-first-did` you'll get an output similar to
+For example, by running `algoid publish sample-account` you'll get an output similar to
 the following.
 
-```txt
-2021-10-19T23:18:56-05:00 DBG key selected for the operation: did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef#master
-2021-10-19T23:18:56-05:00 INF publishing: my-first-did
-2021-10-19T23:18:56-05:00 INF generating request ticket pow=16
-2021-10-19T23:18:56-05:00 DBG ticket obtained: 00359dea149f5de57be799a5f953bb46e8640011c8ec2978f6855f17d1efcbfa
-2021-10-19T23:18:56-05:00 DBG time: 1.081207ms (rounds completed 15)
-2021-10-19T23:18:56-05:00 INF establishing connection to network agent: did-agent.aidtech.network:443
-2021-10-19T23:18:56-05:00 INF submitting request to the network
-2021-10-19T23:18:58-05:00 DBG request status: true
-2021-10-19T23:18:58-05:00 INF identifier: /ipfs/bafkreicws5lv7mu335gc7rkr4wkvmhkqftlvimm5fd3piupwnlinnmlzp4
+```shell
+2024-03-06T12:04:00-05:00 INF submitting request to the network
+2024-03-06T12:04:00-05:00 INF publishing: sample-account
+2024-03-06T12:04:00-05:00 INF publishing DID document did=did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
+2024-03-06T12:04:16-05:00 INF DID instance published
 ```
-
-Notice the IPFS CID generated: `/ipfs/bafkreicws5lv7mu335gc7rkr4wkvmhkqftlvimm5fd3piupwnlinnmlzp4`;
-this identifier can be used to retrieve the now globally published DID document from any publicly
-available IPFS Gateway, like [dweb.link](https://dweb.link/ipfs/bafkreicws5lv7mu335gc7rkr4wkvmhkqftlvimm5fd3piupwnlinnmlzp4).
 
 ### 5.1 Resolve a DID
 
@@ -509,5 +450,28 @@ algoid retrieve [existing DID]
 For example, to resolve the DID created as part of this tutorial.
 
 ```shell
-algoid resolve did:algo:f30304e2-e702-4f47-b242-2e9e064f6eef
+algoid resolve did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
+
+2024-03-06T12:04:34-05:00 INF retrieving record
+2024-03-06T12:04:34-05:00 INF retrieving DID document did=did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
+2024-03-06T12:04:35-05:00 WRN skipping validation
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1",
+    "https://w3id.org/security/suites/x25519-2020/v1"
+  ],
+  "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
+  "verificationMethod": [
+    {
+      "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
+      "publicKeyMultibase": "zFYh9rcBz66DNU8UwzLNmyVAsLhJe17kCmFdEazHb9Qxg"
+    }
+  ],
+  "authentication": [
+    "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master"
+  ]
+}
 ```
