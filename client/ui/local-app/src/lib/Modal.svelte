@@ -22,6 +22,14 @@
     return !state.hidden;
   }
 
+  // format a DID value to a shorter textual representation
+  function formatTitle(title: string): string {
+    if (title.length <= 24) {
+      return title;
+    }
+    return title.slice(0, 18) + '...' + title.slice(-18);
+  }
+
   // show the modal window.
   // this function can be called by the component's parents.
   export function show(title: string, subtitle: string, asPanel: boolean): void {
@@ -95,7 +103,9 @@
         <!-- header -->
         <div class="flex items-center bg-gray-50 p-6 sm:rounded-md">
           <div class="flex-1">
-            <h1 class="text-lg font-semibold text-gray-900">{state.title}</h1>
+            <h1 class="break-all text-lg font-semibold text-gray-900">
+              {formatTitle(state.title)}
+            </h1>
             {#if state.subtitle}
               <span class="text-sm text-gray-500">{state.subtitle}</span>
             {/if}

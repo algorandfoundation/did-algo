@@ -1,0 +1,143 @@
+{
+  "name": "AlgoDID",
+  "desc": "",
+  "methods": [
+    {
+      "name": "startUpload",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The pubkey of the DID"
+        },
+        {
+          "name": "numBoxes",
+          "type": "uint64",
+          "desc": "The number of boxes that the data will take up"
+        },
+        {
+          "name": "endBoxSize",
+          "type": "uint64",
+          "desc": "The size of the last box"
+        },
+        {
+          "name": "mbrPayment",
+          "type": "pay",
+          "desc": "Payment from the uploader to cover the box MBR"
+        }
+      ],
+      "desc": "Allocate boxes to begin data upload process",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "upload",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The pubkey of the DID"
+        },
+        {
+          "name": "boxIndex",
+          "type": "uint64",
+          "desc": "The index of the box to upload the given chunk of data to"
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "desc": "The offset within the box to start writing the data"
+        },
+        {
+          "name": "data",
+          "type": "byte[]",
+          "desc": "The data to write"
+        }
+      ],
+      "desc": "Upload data to a specific offset in a box",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "finishUpload",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The address of the DID"
+        }
+      ],
+      "desc": "Mark uploading as false",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "startDelete",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The address of the DID"
+        }
+      ],
+      "desc": "Starts the deletion process for the data associated with a DID",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "deleteData",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The address of the DID"
+        },
+        {
+          "name": "boxIndex",
+          "type": "uint64",
+          "desc": "The index of the box to delete"
+        }
+      ],
+      "desc": "Deletes a box of data",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "updateApplication",
+      "args": [],
+      "desc": "Allow the contract to be updated by the creator",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "dummy",
+      "args": [],
+      "desc": "Dummy function to add extra box references for deleteData.Boxes are 32k, but a single app call can only include enough references to read/write 8kat a time. Thus when a box is deleted, we need to add additional dummy calls with boxreferences to increase the total read/write budget to 32k.",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      }
+    },
+    {
+      "name": "createApplication",
+      "desc": "",
+      "returns": {
+        "type": "void",
+        "desc": ""
+      },
+      "args": []
+    }
+  ]
+}

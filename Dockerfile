@@ -1,4 +1,4 @@
-FROM ghcr.io/bryk-io/shell:0.2.0
+FROM zhield/shell:stable
 
 EXPOSE 9090/tcp
 

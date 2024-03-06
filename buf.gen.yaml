@@ -5,26 +5,43 @@ managed:
   optimize_for: SPEED
   cc_enable_arenas: false
   java_multiple_files: true
+  go_package_prefix:
+    # same value as `module` in go.mod
+    default: github.com/algorandfoundation/did-algo
+    # don't build/rewrite import paths for external dependencies
+    except:
+      - buf.build/googleapis/googleapis
+      - buf.build/bufbuild/protovalidate
+      - buf.build/grpc-ecosystem/grpc-gateway
 # For each plugin:
+#   - plugin: buf will look for a remote plugin
 #   - name: buf generate will look for a binary named protoc-gen-NAME
 #   - out: path relative to the output directory
 #   - opt: options to provide to the plugin
 plugins:
-  - name: go
+  - plugin: buf.build/protocolbuffers/go:v1.32.0
     out: .
     opt:
       - paths=source_relative
-  - name: go-grpc
+  - plugin: buf.build/grpc/go:v1.3.0
     out: .
     opt:
       - paths=source_relative
       - require_unimplemented_servers=true
-  - name: grpc-gateway
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.19.1
+    out: .
+    opt:
+      - logtostderr=true
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.19.1
     out: .
     opt:
       - paths=source_relative
       - logtostderr=true
-  - name: openapiv2
-    out: .
-    opt:
-      - logtostderr=true
+  # - plugin: buf.build/bufbuild/validate-go:v1.0.4
+  #   out: .
+  #   opt:
+  #     - paths=source_relative
+  # - name: go-drpc
+  #   out: .
+  #   opt:
+  #     - paths=source_relative

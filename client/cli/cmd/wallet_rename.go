@@ -42,5 +42,5 @@ var walletRenameCmd = &cobra.Command{
 }
 
 func init() {
-	walletCmd.AddCommand(walletRenameCmd)
+	// walletCmd.AddCommand(walletRenameCmd)
 }

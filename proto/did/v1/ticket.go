@@ -1,4 +1,4 @@
-package protov1
+package didv1
 
 import (
 	"bytes"

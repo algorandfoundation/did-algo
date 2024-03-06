@@ -39,7 +39,7 @@ func init() {
 			Name:      "domain",
 			Usage:     "domain value to use",
 			FlagKey:   "proof.domain",
-			ByDefault: didDomainValue,
+			ByDefault: "",
 			Short:     "d",
 		},
 		{

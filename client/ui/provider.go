@@ -1,23 +1,18 @@
 package ui
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-	"time"
 
+	ac "github.com/algorand/go-algorand-sdk/v2/crypto"
+	"github.com/algorand/go-algorand-sdk/v2/mnemonic"
 	"github.com/algorandfoundation/did-algo/client/internal"
 	"github.com/algorandfoundation/did-algo/client/store"
-	"github.com/algorandfoundation/did-algo/info"
-	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
 	"go.bryk.io/pkg/did"
 	xlog "go.bryk.io/pkg/log"
-	"go.bryk.io/pkg/net/rpc"
-	"google.golang.org/grpc"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // Provider is responsible for handling features required
@@ -25,9 +20,7 @@ import (
 type Provider struct {
 	st     *store.LocalStore
 	log    xlog.Logger
-	conf   *internal.ClientSettings
-	conn   *grpc.ClientConn
-	client protoV1.AgentAPIClient
+	client *internal.AlgoClient
 }
 
 // LocalEntry represents a DID instance stored in the local
@@ -54,11 +47,7 @@ type LocalEntry struct {
 
 // Ready returns true if the network is available.
 func (p *Provider) Ready() bool {
-	res, err := p.client.Ping(context.Background(), &emptypb.Empty{})
-	if err != nil {
-		return false
-	}
-	return res.Ok
+	return p.client.Ready()
 }
 
 // List all DID instances in the local store.
@@ -87,25 +76,30 @@ func (p *Provider) Register(name string, passphrase string) error {
 		return fmt.Errorf("there's already a DID with reference name: %s", name)
 	}
 
-	// Generate master key from available secret
-	masterKey, err := keyFromMaterial([]byte(passphrase))
+	// Create wallet
+	account := ac.GenerateAccount()
+	seed, err := mnemonic.FromPrivateKey(account.PrivateKey)
 	if err != nil {
 		return err
 	}
-	defer masterKey.Destroy()
-	pk := make([]byte, 64)
-	copy(pk, masterKey.PrivateKey())
+	if err := p.st.SaveWallet(name, seed, passphrase); err != nil {
+		return err
+	}
 
-	p.log.Info("generating new identifier")
-	id, err := did.NewIdentifierWithMode("algo", "", did.ModeUUID)
+	// Generate base identifier instance
+	subject := fmt.Sprintf("%x-%d", account.PublicKey, p.client.StorageAppID())
+	method := "algo"
+	p.log.WithFields(xlog.Fields{
+		"subject": subject,
+		"method":  method,
+	}).Info("generating new identifier")
+	id, err := did.NewIdentifier(method, subject)
 	if err != nil {
 		return err
 	}
-	p.log.Debug("adding master key")
-	if err = id.AddVerificationMethod("master", pk, did.KeyTypeEd); err != nil {
+	if err = id.AddVerificationMethod("master", account.PrivateKey, did.KeyTypeEd); err != nil {
 		return err
 	}
-	p.log.Debug("setting master key as authentication mechanism")
 	if err = id.AddVerificationRelationship(id.GetReference("master"), did.AuthenticationVM); err != nil {
 		return err
 	}
@@ -116,39 +110,32 @@ func (p *Provider) Register(name string, passphrase string) error {
 }
 
 // Sync a DID instance with the network.
-func (p *Provider) Sync(name string) error {
+func (p *Provider) Sync(name string, passphrase string) error {
 	id, err := p.st.Get(name)
 	if err != nil {
 		return fmt.Errorf("no available record under the provided reference name: %s", name)
 	}
 
-	// Get selected key for the sync operation
-	key, err := getSyncKey(id)
+	// Decrypt wallet
+	seed, err := p.st.OpenWallet(name, passphrase)
 	if err != nil {
 		return err
 	}
-	p.log.Debugf("key selected for the operation: %s", key.ID)
 
-	// Generate request ticket
-	p.log.Infof("publishing: %s", name)
-	ticket, err := getRequestTicket(id, key)
+	// Restore account handler
+	key, err := mnemonic.ToPrivateKey(seed)
 	if err != nil {
 		return err
 	}
-	req := &protoV1.ProcessRequest{Ticket: ticket}
+	account, err := ac.AccountFromPrivateKey(key)
+	if err != nil {
+		return err
+	}
 
 	// Submit request
 	p.log.Info("submitting request to the network")
-	res, err := p.client.Process(context.Background(), req)
-	if err != nil {
+	if err := p.client.PublishDID(id, &account); err != nil {
 		return fmt.Errorf("network return an error: %w", err)
-	}
-	p.log.Debugf("request status: %v", res.Ok)
-	if res.Identifier != "" {
-		p.log.Info("identifier: ", res.Identifier)
-	}
-	if !res.Ok {
-		return nil
 	}
 
 	// Update local record if sync was successful
@@ -163,47 +150,49 @@ func (p *Provider) Update(req *updateRequest) error {
 		return fmt.Errorf("no available record under the provided reference name: %s", req.Name)
 	}
 
-	// get service entry
-	svc := id.Service("algo-connect")
-	if svc == nil {
-		svc = newServiceEntry()
-	}
-
-	// replace addresses
-	var addresses []algoDestination
-	ext := did.Extension{
-		ID:      "algo-address",
-		Version: "0.1.0",
-	}
-	for _, entry := range req.Addresses {
-		if entry.Enabled {
-			addresses = append(addresses, algoDestination{
-				Address: entry.Address,
-				Network: strings.ToLower(entry.Network),
-				Asset:   "ALGO",
-			})
+	if len(req.Addresses) != 0 { // nolint: nestif
+		// get service entry
+		svc := id.Service("algo-connect")
+		if svc == nil {
+			svc = newServiceEntry()
 		}
-	}
-	ext.Data = addresses
-	svc.AddExtension(ext)
 
-	// update service entry
-	_ = id.RemoveService("algo-connect")
-	if len(addresses) > 0 {
-		if err := id.AddService(svc); err != nil {
+		// replace addresses
+		var addresses []algoDestination
+		ext := did.Extension{
+			ID:      "algo-address",
+			Version: "0.1.0",
+		}
+		for _, entry := range req.Addresses {
+			if entry.Enabled {
+				addresses = append(addresses, algoDestination{
+					Address: entry.Address,
+					Network: strings.ToLower(entry.Network),
+					Asset:   "ALGO",
+				})
+			}
+		}
+		ext.Data = addresses
+		svc.AddExtension(ext)
+
+		// update service entry
+		_ = id.RemoveService("algo-connect")
+		if len(addresses) > 0 {
+			if err := id.AddService(svc); err != nil {
+				return err
+			}
+			id.RegisterContext("https://did.algorand.foundation/v1")
+		}
+
+		// update local record
+		if err = p.st.Update(req.Name, id); err != nil {
 			return err
 		}
-		id.RegisterContext("https://did-ns.aidtech.network/v1")
-	}
-
-	// update local record
-	if err = p.st.Update(req.Name, id); err != nil {
-		return err
 	}
 
 	// sync with the network in the background
 	go func() {
-		_ = p.Sync(req.Name)
+		_ = p.Sync(req.Name, req.Passphrase)
 	}()
 	return nil
 }
@@ -219,36 +208,8 @@ func (p *Provider) ServerHandler() http.Handler {
 	return router
 }
 
-// Get client connection.
-func (p *Provider) connect() error {
-	p.log.Infof("establishing connection to network agent: %s", p.conf.Node)
-	opts := []rpc.ClientOption{
-		rpc.WaitForReady(),
-		rpc.WithUserAgent(fmt.Sprintf("algoid-client/%s", info.CoreVersion)),
-		rpc.WithTimeout(time.Duration(p.conf.Timeout) * time.Second),
-	}
-	if p.conf.Insecure {
-		p.log.Warning("using an insecure connection")
-	} else {
-		opts = append(opts, rpc.WithClientTLS(rpc.ClientTLSConfig{IncludeSystemCAs: true}))
-	}
-	if p.conf.Override != "" {
-		p.log.WithField("override", p.conf.Override).Warning("using server name override")
-		opts = append(opts, rpc.WithServerNameOverride(p.conf.Override))
-	}
-	conn, err := rpc.NewClientConnection(p.conf.Node, opts...)
-	if err != nil {
-		return err
-	}
-	p.client = protoV1.NewAgentAPIClient(conn)
-	return nil
-}
-
 // Close client connection and free resources.
 func (p *Provider) close() error {
-	if p.conn != nil {
-		return p.conn.Close()
-	}
 	return nil
 }
 
@@ -339,7 +300,8 @@ type addressEntry struct {
 }
 
 type updateRequest struct {
-	Name      string         `json:"name"`
-	DID       string         `json:"did"`
-	Addresses []addressEntry `json:"addresses"`
+	Name       string         `json:"name"`
+	DID        string         `json:"did"`
+	Passphrase string         `json:"passphrase"`
+	Addresses  []addressEntry `json:"addresses"`
 }

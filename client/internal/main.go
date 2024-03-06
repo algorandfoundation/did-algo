@@ -1,153 +1,223 @@
 package internal
 
 import (
+	"bytes"
+	"context"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
-	"time"
+	"strconv"
+	"strings"
 
-	"github.com/algorandfoundation/did-algo/info"
-	protoV1 "github.com/algorandfoundation/did-algo/proto/did/v1"
-	"github.com/spf13/viper"
-	"go.bryk.io/pkg/did/resolver"
-	pkgHttp "go.bryk.io/pkg/net/http"
-	mwHeaders "go.bryk.io/pkg/net/middleware/headers"
-	mwProxy "go.bryk.io/pkg/net/middleware/proxy"
-	mwRecovery "go.bryk.io/pkg/net/middleware/recovery"
-	otelHttp "go.bryk.io/pkg/otel/http"
-	"google.golang.org/grpc"
+	"github.com/algorand/go-algorand-sdk/v2/client/v2/algod"
+	"github.com/algorand/go-algorand-sdk/v2/client/v2/common/models"
+	"github.com/algorand/go-algorand-sdk/v2/crypto"
+	"github.com/algorand/go-algorand-sdk/v2/transaction"
+	"github.com/algorand/go-algorand-sdk/v2/types"
+	"go.bryk.io/pkg/did"
+	xlog "go.bryk.io/pkg/log"
 )
-
-// DefaultAgentEndpoint defines the standard network agent to use
-// when no user-provided value is available.
-const DefaultAgentEndpoint = "algo-did.aidtech.network:443"
-
-// ResolverSettings defines the configuration options available when
-// deploying a DIF compliant resolver endpoint.
-type ResolverSettings struct {
-	Port          uint            `json:"port" yaml:"port" mapstructure:"port"`
-	ProxyProtocol bool            `json:"proxy_protocol" yaml:"proxy_protocol" mapstructure:"proxy_protocol"`
-	TLS           *tlsSettings    `json:"tls" yaml:"tls" mapstructure:"tls"`
-	Client        *ClientSettings `json:"client" yaml:"client" mapstructure:"client"`
-}
-
-// Load available configuration values and set sensible default values.
-func (rs *ResolverSettings) Load(v *viper.Viper) {
-	_ = v.UnmarshalKey("resolver", rs)
-	if rs.Port == 0 {
-		rs.Port = 9091
-	}
-	if rs.TLS == nil {
-		rs.TLS = &tlsSettings{Enabled: false}
-	}
-	if rs.Client == nil {
-		rs.Client = new(ClientSettings)
-		_ = rs.Client.Validate()
-		rs.Client.Insecure = v.GetBool("resolver.client.insecure")
-		if node := v.GetString("resolver.client.node"); node != "" {
-			rs.Client.Node = node
-		}
-	}
-}
-
-// Resolver instance.
-func (rs *ResolverSettings) Resolver(conn *grpc.ClientConn) (*resolver.Instance, error) {
-	// Driver instance
-	provider := &provider{client: protoV1.NewAgentAPIClient(conn)}
-
-	// Resolver instance
-	return resolver.New(resolver.WithProvider("algo", provider))
-}
-
-// ServerOpts returns proper settings when exposing the resolver through
-// an HTTP endpoint.
-func (rs *ResolverSettings) ServerOpts(handler http.Handler, rc string) []pkgHttp.Option {
-	opts := []pkgHttp.Option{
-		pkgHttp.WithHandler(handler),
-		pkgHttp.WithPort(int(rs.Port)),
-		pkgHttp.WithIdleTimeout(10 * time.Second),
-		pkgHttp.WithMiddleware(mwRecovery.Handler()),
-		pkgHttp.WithMiddleware(otelHttp.NewMonitor().ServerMiddleware()),
-		pkgHttp.WithMiddleware(mwHeaders.Handler(map[string]string{
-			"x-resolver-version":     info.CoreVersion,
-			"x-resolver-build-code":  info.BuildCode,
-			"x-resolver-release":     rc,
-			"x-content-type-options": "nosniff",
-		})),
-	}
-	if rs.ProxyProtocol {
-		opts = append(opts, pkgHttp.WithMiddleware(mwProxy.Handler()))
-	}
-	if rs.TLS.Enabled {
-		val, err := rs.TLS.expand()
-		if err == nil {
-			opts = append(opts, pkgHttp.WithTLS(*val))
-		}
-	}
-	return opts
-}
 
 // ClientSettings defines the configuration options available when
 // interacting with an AlgoDID network agent.
 type ClientSettings struct {
-	Node     string `json:"node" yaml:"node" mapstructure:"node"`
-	Timeout  uint   `json:"timeout" yaml:"timeout" mapstructure:"timeout"`
-	Insecure bool   `json:"insecure" yaml:"insecure" mapstructure:"insecure"`
-	Override string `json:"override" yaml:"override" mapstructure:"override"`
-	PoW      uint   `json:"pow" yaml:"pow" mapstructure:"pow"`
+	Active   string            `json:"active" yaml:"active" mapstructure:"active"`
+	Profiles []*NetworkProfile `json:"profiles" yaml:"profiles" mapstructure:"profiles"`
 }
 
-// Validate the settings and load sensible default values.
-func (cl *ClientSettings) Validate() error {
-	if cl.Node == "" {
-		cl.Node = DefaultAgentEndpoint
+// NetworkProfile defines the configuration options to connect to a
+// specific AlgoDID network agent.
+type NetworkProfile struct {
+	// Profile name.
+	Name string `json:"name" yaml:"name" mapstructure:"name"`
+
+	// Algod node address.
+	Node string `json:"node" yaml:"node" mapstructure:"node"`
+
+	// Algod node access token.
+	NodeToken string `json:"node_token,omitempty" yaml:"node_token,omitempty" mapstructure:"node_token"`
+
+	// Application ID for the AlgoDID storage smart contract.
+	AppID uint `json:"app_id" yaml:"app_id" mapstructure:"app_id"`
+
+	// Storage contract provider server, if any.
+	StoreProvider string `json:"store_provider,omitempty" yaml:"store_provider,omitempty" mapstructure:"store_provider"`
+}
+
+// AlgoClient provides a simplified interface to interact with the
+// Algorand network.
+type AlgoClient struct {
+	np    *NetworkProfile
+	log   xlog.Logger
+	httpC *http.Client
+	algod *algod.Client
+}
+
+// NewAlgoClient creates a new instance of the AlgoClient.
+func NewAlgoClient(profile *NetworkProfile, log xlog.Logger) (*AlgoClient, error) {
+	if profile == nil {
+		return nil, fmt.Errorf("no network profile provided")
 	}
-	if cl.PoW == 0 {
-		cl.PoW = 8
+	client, err := algod.MakeClient(profile.Node, profile.NodeToken)
+	if err != nil {
+		return nil, err
 	}
-	if cl.Timeout == 0 {
-		cl.Timeout = 5
+	return &AlgoClient{
+		np:    profile,
+		log:   log,
+		algod: client,
+		httpC: &http.Client{},
+	}, nil
+}
+
+// StorageAppID returns the application ID for the AlgoDID storage.
+func (c *AlgoClient) StorageAppID() uint {
+	return c.np.AppID
+}
+
+// SuggestedParams returns the suggested transaction parameters.
+func (c *AlgoClient) SuggestedParams() (types.SuggestedParams, error) {
+	return c.algod.SuggestedParams().Do(context.TODO())
+}
+
+// SubmitTx sends a raw signed transaction to the network.
+func (c *AlgoClient) SubmitTx(stx []byte) (string, error) {
+	return c.algod.SendRawTransaction(stx).Do(context.TODO())
+}
+
+// AccountInformation returns the account information for the given address.
+func (c *AlgoClient) AccountInformation(address string) (models.Account, error) {
+	return c.algod.AccountInformation(address).Do(context.TODO())
+}
+
+// Ready returns true if the network is available.
+func (c *AlgoClient) Ready() bool {
+	return c.algod.HealthCheck().Do(context.TODO()) == nil
+}
+
+// DeployContract creates a new instance of the AlgoDID storage smart contract
+// on the network.
+func (c *AlgoClient) DeployContract(sender *crypto.Account) (uint64, error) {
+	contract := loadContract()
+	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
+	return createApp(c.algod, contract, signer.Account.Address, signer)
+}
+
+// PublishDID sends a new DID document to the network
+// fot on-chain storage.
+func (c *AlgoClient) PublishDID(id *did.Identifier, sender *crypto.Account) error {
+	c.log.WithFields(map[string]interface{}{
+		"did": id.String(),
+	}).Info("publishing DID document")
+	contract := loadContract()
+	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
+	doc, _ := json.Marshal(id.Document(true))
+	pub, appID, err := parseSubjectString(id.Subject())
+	if err != nil {
+		return err
+	}
+	if c.np.StoreProvider != "" {
+		return c.submitToProvider(pub, appID, http.MethodPost, doc)
+	}
+	return publishDID(c.algod, appID, contract, sender.Address, signer, doc, pub)
+}
+
+// DeleteDID removes a DID document from the network.
+func (c *AlgoClient) DeleteDID(id *did.Identifier, sender *crypto.Account) error {
+	c.log.WithFields(map[string]interface{}{
+		"did": id.String(),
+	}).Info("deleting DID document")
+	contract := loadContract()
+	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
+	pub, appID, err := parseSubjectString(id.Subject())
+	if err != nil {
+		return err
+	}
+	if c.np.StoreProvider != "" {
+		return c.submitToProvider(pub, appID, http.MethodDelete, nil)
+	}
+	return deleteDID(appID, pub, sender.Address, c.algod, contract, signer)
+}
+
+// Resolve retrieves a DID document from the network.
+func (c *AlgoClient) Resolve(id string) (*did.Document, error) {
+	c.log.WithField("did", id).Info("retrieving DID document")
+
+	// Parse the DID
+	subject, err := did.Parse(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract the public key and application ID from the subject
+	pub, appID, err := parseSubjectString(subject.Subject())
+	if err != nil {
+		return nil, err
+	}
+
+	// Retrieve the data from the network
+	data, err := resolveDID(appID, pub, c.algod)
+	if err != nil {
+		return nil, err
+	}
+	doc := &did.Document{}
+	if err := json.Unmarshal(data, doc); err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
+func (c *AlgoClient) submitToProvider(pub []byte, appID uint64, method string, doc []byte) error {
+	c.log.Warning("using provider: ", c.np.StoreProvider)
+	addr, err := addressFromPub(pub)
+	if err != nil {
+		return err
+	}
+	endpoint := fmt.Sprintf("%s/v1/%s/%d", c.np.StoreProvider, addr, appID)
+	var payload io.Reader
+	if doc != nil {
+		payload = bytes.NewReader(doc)
+	}
+	req, err := http.NewRequestWithContext(context.TODO(), method, endpoint, payload)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	res, err := c.httpC.Do(req)
+	if err != nil {
+		return err
+	}
+	body, _ := io.ReadAll(res.Body) // nolint
+	defer res.Body.Close()          // nolint
+	if res.StatusCode != http.StatusOK {
+		c.log.Warningf("%s", body)
+		return fmt.Errorf("unexpected response: %s", res.Status)
 	}
 	return nil
 }
 
-type tlsSettings struct {
-	Enabled  bool     `json:"enabled" yaml:"enabled" mapstructure:"enabled"`
-	SystemCA bool     `json:"system_ca" yaml:"system_ca" mapstructure:"system_ca"`
-	Cert     string   `json:"cert" yaml:"cert" mapstructure:"cert"`
-	Key      string   `json:"key" yaml:"key" mapstructure:"key"`
-	CustomCA []string `json:"custom_ca" yaml:"custom_ca" mapstructure:"custom_ca"`
-
-	// private expanded values
-	cert      []byte
-	key       []byte
-	customCAs [][]byte
+func addressFromPub(pub []byte) (string, error) {
+	return types.EncodeAddress(pub)
 }
 
-func (ts *tlsSettings) expand() (*pkgHttp.TLS, error) {
-	var err error
-	if ts.Cert != "" {
-		ts.cert, err = loadPem(ts.Cert)
-		if err != nil {
-			return nil, err
-		}
+func parseSubjectString(subject string) (pub []byte, appID uint64, err error) {
+	idSegments := strings.Split(subject, "-")
+	if len(idSegments) != 2 {
+		err = fmt.Errorf("invalid subject identifier")
+		return
 	}
-	if ts.Key != "" {
-		ts.key, err = loadPem(ts.Key)
-		if err != nil {
-			return nil, err
-		}
+	pub, err = hex.DecodeString(idSegments[0])
+	if err != nil {
+		err = fmt.Errorf("invalid public key in subject identifier")
+		return
 	}
-	ts.customCAs = [][]byte{}
-	for _, ca := range ts.CustomCA {
-		cp, err := loadPem(ca)
-		if err != nil {
-			return nil, err
-		}
-		ts.customCAs = append(ts.customCAs, cp)
+	app, err := strconv.Atoi(idSegments[1])
+	if err != nil {
+		err = fmt.Errorf("invalid storage app ID in subject identifier")
+		return
 	}
-	return &pkgHttp.TLS{
-		Cert:             ts.cert,
-		PrivateKey:       ts.key,
-		IncludeSystemCAs: ts.SystemCA,
-		CustomCAs:        ts.customCAs,
-	}, nil
+	appID = uint64(app)
+	return
 }

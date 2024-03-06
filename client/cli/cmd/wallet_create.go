@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	ac "github.com/algorand/go-algorand-sdk/crypto"
-	"github.com/algorand/go-algorand-sdk/mnemonic"
+	ac "github.com/algorand/go-algorand-sdk/v2/crypto"
+	"github.com/algorand/go-algorand-sdk/v2/mnemonic"
 	"github.com/kennygrant/sanitize"
 	"github.com/spf13/cobra"
 	xlog "go.bryk.io/pkg/log"

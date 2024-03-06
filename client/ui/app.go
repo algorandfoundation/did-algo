@@ -3,6 +3,7 @@ package ui
 import (
 	"embed"
 	"io/fs"
+	"path"
 )
 
 // AppContents contains a static build of the local graphical
@@ -13,5 +14,5 @@ var AppContents fs.FS
 var dist embed.FS
 
 func init() {
-	AppContents, _ = fs.Sub(dist, "local-app/dist")
+	AppContents, _ = fs.Sub(dist, path.Join("local-app", "dist"))
 }

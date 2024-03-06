@@ -41,7 +41,12 @@ const apiClient = {
     }
   },
   // update DID's addresses
-  update: async (name: string, did: string, addresses: AddressEntry[]) => {
+  update: async (
+    name: string,
+    did: string,
+    addresses: AddressEntry[],
+    passphrase: string
+  ) => {
     try {
       const response = await fetch('http://localhost:9090/update', {
         method: 'POST',
@@ -51,6 +56,7 @@ const apiClient = {
         body: JSON.stringify({
           name,
           did,
+          passphrase,
           addresses
         })
       });
@@ -113,8 +119,13 @@ export const appState = {
     }
     return result;
   },
-  updateDID: async function (name: string, did: string, addresses: AddressEntry[]) {
-    const result = await apiClient.update(name, did, addresses);
+  updateDID: async function (
+    name: string,
+    did: string,
+    addresses: AddressEntry[],
+    passphrase: string
+  ) {
+    const result = await apiClient.update(name, did, addresses, passphrase);
     if (result) {
       this.reload();
     }
