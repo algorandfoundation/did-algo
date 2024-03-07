@@ -1,4 +1,3 @@
-home: ./tmp/store
 network:
   active: testnet
   profiles:
