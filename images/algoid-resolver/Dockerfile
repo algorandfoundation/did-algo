@@ -1,4 +1,4 @@
-FROM ghcr.io/algorandfoundation/algoid:0.4.0
+FROM ghcr.io/algorandfoundation/algoid:image_workflow
 
 EXPOSE 9091/tcp
 
