@@ -22,6 +22,12 @@ const (
 	bytes_per_call = 2048 - 4 - 34 - 8 - 8
 )
 
+const (
+	mainnetGenesisHash = "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8="
+	testnetGenesisHash = "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="
+	betanetGenesisHash = "mFgazF+2uRS1tMiL9dsj01hJGySEmPN28B/TjjvpVW0="
+)
+
 // CreateApp is used to deploy the AlgoDID storage smart contract to the
 // Algorand network.
 func createApp(
@@ -115,7 +121,7 @@ func createApp(
 	return confirmedTxn.ApplicationIndex, nil
 }
 
-// PublishDID is used to upload a new DID document to the AlgoDID
+// publishDID is used to upload a new DID document to the AlgoDID
 // storage smart contract.
 func publishDID(
 	algodClient *algod.Client,
@@ -125,7 +131,13 @@ func publishDID(
 	signer transaction.TransactionSigner,
 	data []byte,
 	pubKey []byte,
+	network string,
 ) error {
+	err := checkNetwork(network, algodClient)
+	if err != nil {
+		return err
+	}
+
 	ceilBoxes := int(math.Ceil(float64(len(data)) / float64(max_box_size)))
 	endBoxSize := len(data) % max_box_size
 
@@ -281,9 +293,30 @@ func publishDID(
 	return err
 }
 
+func checkNetwork(network string, algodClient *algod.Client) error {
+	sp, err := algodClient.SuggestedParams().Do(context.Background())
+
+	if err != nil {
+		return fmt.Errorf("failed to get suggested params: %w", err)
+	}
+
+	if (network == "mainnet" && base64.StdEncoding.EncodeToString(sp.GenesisHash) != mainnetGenesisHash) ||
+		(network == "testnet" && base64.StdEncoding.EncodeToString(sp.GenesisHash) != testnetGenesisHash) ||
+		(network == "betanet" && base64.StdEncoding.EncodeToString(sp.GenesisHash) != betanetGenesisHash) {
+		return fmt.Errorf("The given network does not match the network of the Algorand node")
+	}
+
+	return nil
+}
+
 // ResolveDID is used to read the DID document from the AlgoDID storage smart
 // contract.
-func resolveDID(appID uint64, pubKey []byte, algodClient *algod.Client) ([]byte, error) {
+func resolveDID(appID uint64, pubKey []byte, algodClient *algod.Client, network string) ([]byte, error) {
+	err := checkNetwork(network, algodClient)
+	if err != nil {
+		return nil, err
+	}
+
 	metadata, err := getMetadata(appID, pubKey, algodClient)
 	if err != nil {
 		return nil, err
@@ -319,7 +352,13 @@ func deleteDID(
 	algodClient *algod.Client,
 	contract *abi.Contract,
 	signer transaction.TransactionSigner,
+	network string,
 ) error {
+	err := checkNetwork(network, algodClient)
+	if err != nil {
+		return err
+	}
+
 	startAtc := transaction.AtomicTransactionComposer{}
 
 	method, err := contract.GetMethodByName("startDelete")

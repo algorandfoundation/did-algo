@@ -74,8 +74,10 @@ func runRegisterCmd(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("there's already a DID with reference name: %s", name)
 	}
 
+	// TODO: pass this in from cli
+	network := "testnet"
 	// Generate base identifier instance
-	subject := fmt.Sprintf("%x-%d", account.PublicKey, appID)
+	subject := fmt.Sprintf("%s-%x-%d", network, account.PublicKey, appID)
 	method := "algo"
 	log.WithFields(xlog.Fields{
 		"subject": subject,

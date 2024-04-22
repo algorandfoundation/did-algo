@@ -114,14 +114,14 @@ func (c *AlgoClient) PublishDID(id *did.Identifier, sender *crypto.Account) erro
 	contract := loadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
 	doc, _ := json.Marshal(id.Document(true))
-	pub, appID, err := parseSubjectString(id.Subject())
+	pub, network, appID, err := parseSubjectString(id.Subject())
 	if err != nil {
 		return err
 	}
 	if c.np.StoreProvider != "" {
 		return c.submitToProvider(pub, appID, http.MethodPost, doc)
 	}
-	return publishDID(c.algod, appID, contract, sender.Address, signer, doc, pub)
+	return publishDID(c.algod, appID, contract, sender.Address, signer, doc, pub, network)
 }
 
 // DeleteDID removes a DID document from the network.
@@ -131,14 +131,14 @@ func (c *AlgoClient) DeleteDID(id *did.Identifier, sender *crypto.Account) error
 	}).Info("deleting DID document")
 	contract := loadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
-	pub, appID, err := parseSubjectString(id.Subject())
+	pub, network, appID, err := parseSubjectString(id.Subject())
 	if err != nil {
 		return err
 	}
 	if c.np.StoreProvider != "" {
 		return c.submitToProvider(pub, appID, http.MethodDelete, nil)
 	}
-	return deleteDID(appID, pub, sender.Address, c.algod, contract, signer)
+	return deleteDID(appID, pub, sender.Address, c.algod, contract, signer, network)
 }
 
 // Resolve retrieves a DID document from the network.
@@ -152,13 +152,13 @@ func (c *AlgoClient) Resolve(id string) (*did.Document, error) {
 	}
 
 	// Extract the public key and application ID from the subject
-	pub, appID, err := parseSubjectString(subject.Subject())
+	pub, network, appID, err := parseSubjectString(subject.Subject())
 	if err != nil {
 		return nil, err
 	}
 
 	// Retrieve the data from the network
-	data, err := resolveDID(appID, pub, c.algod)
+	data, err := resolveDID(appID, pub, c.algod, network)
 	if err != nil {
 		return nil, err
 	}
@@ -202,18 +202,34 @@ func addressFromPub(pub []byte) (string, error) {
 	return types.EncodeAddress(pub)
 }
 
-func parseSubjectString(subject string) (pub []byte, appID uint64, err error) {
+// pubkey-network-appID
+func parseSubjectString(subject string) (pub []byte, network string, appID uint64, err error) {
 	idSegments := strings.Split(subject, "-")
-	if len(idSegments) != 2 {
-		err = fmt.Errorf("invalid subject identifier")
+	if len(idSegments) != 3 {
+		err = fmt.Errorf("invalid subject identifier. Expected 3 segments, got %d", len(idSegments))
 		return
 	}
-	pub, err = hex.DecodeString(idSegments[0])
+
+	network = idSegments[0]
+	matchFound := false
+	for _, a := range []string{"mainnet", "testnet"} {
+		if a == network {
+			matchFound = true
+			break
+		}
+	}
+	if !matchFound {
+		err = fmt.Errorf("invalid network in subject identifier: %s", network)
+		return
+	}
+
+	pub, err = hex.DecodeString(idSegments[1])
 	if err != nil {
 		err = fmt.Errorf("invalid public key in subject identifier")
 		return
 	}
-	app, err := strconv.Atoi(idSegments[1])
+
+	app, err := strconv.Atoi(idSegments[2])
 	if err != nil {
 		err = fmt.Errorf("invalid storage app ID in subject identifier")
 		return
