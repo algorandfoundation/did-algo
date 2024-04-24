@@ -45,6 +45,7 @@ type NetworkProfile struct {
 	StoreProvider string `json:"store_provider,omitempty" yaml:"store_provider,omitempty" mapstructure:"store_provider"`
 }
 
+// NetworkClient is an interface for easily interacting with algod.
 type NetworkClient struct {
 	profile *NetworkProfile
 	algod   *algod.Client
@@ -222,12 +223,12 @@ func addressFromPub(pub []byte) (string, error) {
 	return types.EncodeAddress(pub)
 }
 
-// pubkey-network-appID
+// parseSubjectString extracts the network, public key and application ID from a DID (network-pubkey-appID).
 func parseSubjectString(subject string) (pub []byte, network string, appID uint64, err error) {
 	idSegments := strings.Split(subject, "-")
 	if len(idSegments) != 3 {
 		err = fmt.Errorf("invalid subject identifier. Expected 3 segments, got %d", len(idSegments))
-		return
+		return pub, network, appID, err
 	}
 
 	network = idSegments[0]
@@ -240,20 +241,20 @@ func parseSubjectString(subject string) (pub []byte, network string, appID uint6
 	}
 	if !matchFound {
 		err = fmt.Errorf("invalid network in subject identifier: %s", network)
-		return
+		return pub, network, appID, err
 	}
 
 	pub, err = hex.DecodeString(idSegments[1])
 	if err != nil {
 		err = fmt.Errorf("invalid public key in subject identifier")
-		return
+		return pub, network, appID, err
 	}
 
 	app, err := strconv.Atoi(idSegments[2])
 	if err != nil {
 		err = fmt.Errorf("invalid storage app ID in subject identifier")
-		return
+		return pub, network, appID, err
 	}
 	appID = uint64(app)
-	return
+	return pub, network, appID, err
 }

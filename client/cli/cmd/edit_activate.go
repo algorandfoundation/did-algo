@@ -13,7 +13,7 @@ var activateCmd = &cobra.Command{
 	Use:     "activate",
 	Short:   "Mark a DID as active",
 	Example: "algoid edit activate [DID reference name]",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("you must specify a DID reference name")
 		}

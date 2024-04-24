@@ -12,7 +12,7 @@ var configAppIDCmd = &cobra.Command{
 	Use:     "app-id",
 	Example: "algoid config app-id [app-id] [network]",
 	Short:   "Adjust the `app-id` setting for the active network profile",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			return fmt.Errorf("appID name is required")
 		}

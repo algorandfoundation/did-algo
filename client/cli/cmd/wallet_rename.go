@@ -13,7 +13,7 @@ var walletRenameCmd = &cobra.Command{
 	Short:   "Rename an existing ALGO wallet",
 	Example: "algoid wallet rename [current-name] [new-name]",
 	Aliases: []string{"mv"},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		// Get parameters
 		if len(args) != 2 {
 			return errors.New("missing required parameters")

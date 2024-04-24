@@ -16,7 +16,7 @@ var walletCreateCmd = &cobra.Command{
 	Aliases: []string{"new"},
 	Short:   "Create a new (standalone) ALGO wallet",
 	Example: "algoid wallet new [wallet-name]",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		// Get parameters
 		if len(args) != 1 {
 			return errors.New("you must provide a name for your wallet")

@@ -56,10 +56,10 @@ func runResolverCmd(_ *cobra.Command, _ []string) error {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/1.0/ping", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/1.0/ping", func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("pong"))
 	})
-	mux.HandleFunc("/1.0/ready", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/1.0/ready", func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 	})
 	mux.HandleFunc("/1.0/identifiers/", rslv.ResolutionHandler)

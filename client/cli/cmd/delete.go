@@ -13,7 +13,7 @@ var deleteCmd = &cobra.Command{
 	Short:   "Permanently delete a local identifier",
 	Example: "algoid delete [DID reference name]",
 	Aliases: []string{"del", "rm", "remove"},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("you must specify a DID reference name")
 		}

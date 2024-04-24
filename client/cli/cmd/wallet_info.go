@@ -15,7 +15,7 @@ var walletInfoCmd = &cobra.Command{
 	Short:   "Get account information",
 	Example: "algoid wallet info [wallet-name] [network]",
 	Aliases: []string{"details", "inspect", "more"},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		// Get parameters
 		if len(args) != 2 {
 			return errors.New("missing required parameters")
