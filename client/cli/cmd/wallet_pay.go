@@ -17,7 +17,7 @@ var walletPayCmd = &cobra.Command{
 	Use:     "pay",
 	Short:   "Create and submit a new transaction",
 	Aliases: []string{"txn", "send"},
-	Example: "algoid wallet pay [wallet-name]",
+	Example: "algoid wallet pay [wallet-name] [network]",
 	RunE:    runWalletPayCmd,
 }
 
@@ -90,8 +90,9 @@ func runWalletPayCmd(_ *cobra.Command, args []string) (err error) {
 		return err
 	}
 
+	network := args[1]
 	// Get transaction parameters
-	params, _ := cl.SuggestedParams()
+	params, _ := cl.Networks[network].SuggestedParams()
 
 	// Get sender address
 	sender := account.Address.String()
@@ -115,7 +116,7 @@ func runWalletPayCmd(_ *cobra.Command, args []string) (err error) {
 
 	// Submit transaction
 	log.Debug("submitting signed transaction")
-	txID, err := cl.SubmitTx(stx)
+	txID, err := cl.Networks[network].SubmitTx(stx)
 	if err != nil {
 		return err
 	}

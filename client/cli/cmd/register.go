@@ -17,7 +17,7 @@ import (
 var registerCmd = &cobra.Command{
 	Use:     "register",
 	Short:   "Creates a new DID locally",
-	Example: "algoid register [wallet-name]",
+	Example: "algoid register [wallet-name] [network]",
 	Aliases: []string{"create", "new"},
 	RunE:    runRegisterCmd,
 }
@@ -31,7 +31,7 @@ func init() {
 }
 
 func runRegisterCmd(_ *cobra.Command, args []string) error {
-	if len(args) != 1 {
+	if len(args) != 2 {
 		return errors.New("missing required parameters")
 	}
 	name := sanitize.Name(args[0])
@@ -62,8 +62,9 @@ func runRegisterCmd(_ *cobra.Command, args []string) error {
 		return err
 	}
 
+	network := args[1]
 	// Get storage application identifier
-	appID, err := getStorageAppID()
+	appID, err := getStorageAppID(network)
 	if err != nil {
 		return err
 	}
@@ -74,8 +75,6 @@ func runRegisterCmd(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("there's already a DID with reference name: %s", name)
 	}
 
-	// TODO: pass this in from cli
-	network := "testnet"
 	// Generate base identifier instance
 	subject := fmt.Sprintf("%s-%x-%d", network, account.PublicKey, appID)
 	method := "algo"

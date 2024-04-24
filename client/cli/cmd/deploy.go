@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 
 	ac "github.com/algorand/go-algorand-sdk/v2/crypto"
 	"github.com/algorand/go-algorand-sdk/v2/mnemonic"
@@ -13,7 +14,7 @@ var deployContractCmd = &cobra.Command{
 	Use:     "deploy",
 	Aliases: []string{"deploy-contract"},
 	Short:   "Deploy the AlgoDID storage smart contract",
-	Example: "algoid deploy [wallet-name]",
+	Example: "algoid deploy [wallet-name] [network]",
 	RunE:    runDeployContractCmd,
 }
 
@@ -23,7 +24,7 @@ func init() {
 
 func runDeployContractCmd(_ *cobra.Command, args []string) error {
 	// Get parameters
-	if len(args) != 1 {
+	if len(args) != 2 {
 		return errors.New("missing required parameters")
 	}
 	name := sanitize.Name(args[0])
@@ -60,11 +61,12 @@ func runDeployContractCmd(_ *cobra.Command, args []string) error {
 		return err
 	}
 
+	network := args[1]
 	// Deploy contract
-	appID, err := cl.DeployContract(&account)
+	appID, err := cl.Networks[network].DeployContract(&account)
 	if err != nil {
 		return err
 	}
-	log.WithField("app_id", appID).Info("storage contract deployed successfully")
+	log.WithField("app_id", appID).Info(fmt.Sprintf("storage contract deployed successfully to %s", network))
 	return nil
 }
