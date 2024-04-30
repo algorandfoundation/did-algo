@@ -288,7 +288,7 @@ You'll be asked to enter and confirm you passphrase and finally get an output
 similar to:
 
 ```shell
-2024-04-30T17:41:55-04:00 INF generating new identifier method=algo subject=testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+2024-04-30T17:41:55-04:00 INF generating new identifier method=algo subject=testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007
 2024-04-30T17:41:55-04:00 DBG adding master key
 2024-04-30T17:41:55-04:00 DBG setting master key as authentication mechanism
 2024-04-30T17:41:55-04:00 INF adding entry to local store
@@ -307,7 +307,7 @@ The list displays every DID instance along it's local alias for simpler usage.
 
 ```txt
 Name              DID
-sample-account    did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+sample-account    did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007
 ```
 
 ### 4.3 Inspect your local DID document
@@ -336,17 +336,17 @@ document.
       "https://w3id.org/security/suites/ed25519-2020/v1",
       "https://w3id.org/security/suites/x25519-2020/v1"
     ],
-    "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
+    "id": "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007",
     "verificationMethod": [
       {
-        "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master",
+        "id": "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007#master",
         "type": "Ed25519VerificationKey2020",
-        "controller": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
+        "controller": "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007",
         "publicKeyMultibase": "z9Ry8aFPMLKapvtYkNNSFsoNhkc4192j4ai17EzMquAZc"
       }
     ],
     "authentication": [
-      "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master"
+      "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007#master"
     ]
   }
 }
@@ -422,7 +422,7 @@ the following.
 ```shell
 2024-04-30T17:42:54-04:00 INF submitting request to the network
 2024-04-30T17:42:54-04:00 INF publishing: sample-account
-2024-04-30T17:42:54-04:00 INF publishing DID document did=did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+2024-04-30T17:42:54-04:00 INF publishing DID document did=did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007
 2024-04-30T17:43:10-04:00 INF DID instance published
 ```
 
@@ -448,10 +448,10 @@ algoid retrieve [existing DID]
 For example, to resolve the DID created as part of this tutorial.
 
 ```shell
-algoid resolve did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+algoid resolve did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007
 
 2024-04-30T17:43:41-04:00 INF retrieving record
-2024-04-30T17:43:41-04:00 INF retrieving DID document did=did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+2024-04-30T17:43:41-04:00 INF retrieving DID document did=did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007
 2024-04-30T17:43:43-04:00 WRN skipping validation
 {
   "@context": [
@@ -459,17 +459,17 @@ algoid resolve did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2c
     "https://w3id.org/security/suites/ed25519-2020/v1",
     "https://w3id.org/security/suites/x25519-2020/v1"
   ],
-  "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
+  "id": "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007",
   "verificationMethod": [
     {
-      "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master",
+      "id": "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007#master",
       "type": "Ed25519VerificationKey2020",
-      "controller": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
+      "controller": "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007",
       "publicKeyMultibase": "z9Ry8aFPMLKapvtYkNNSFsoNhkc4192j4ai17EzMquAZc"
     }
   ],
   "authentication": [
-    "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master"
+    "did:algo:testnet:654583141:7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007#master"
   ]
 }
 ```
