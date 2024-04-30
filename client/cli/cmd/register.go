@@ -76,7 +76,7 @@ func runRegisterCmd(_ *cobra.Command, args []string) error {
 	}
 
 	// Generate base identifier instance
-	subject := fmt.Sprintf("%s:%d:%x", network, appID, account.PublicKey)
+	subject := fmt.Sprintf("%s:box:%d:%x", network, appID, account.PublicKey)
 	method := "algo"
 	log.WithFields(xlog.Fields{
 		"subject": subject,
