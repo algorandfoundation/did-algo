@@ -155,9 +155,7 @@ For example, to use Algorand testnet:
 
 ```
 network:
-  active: testnet
   profiles:
-    # to deploy your own storage provider contract
     - name: testnet
       node: https://testnet-api.algonode.cloud
       node_token: ""
@@ -206,7 +204,7 @@ encryption key required for secure storage. Finally, you'll get an output simila
 to this.
 
 ```shell
-2024-03-06T12:00:15-05:00 INF new wallet created address=3ARALWACZXG2IHZOPYOKPHLT6KNJKI45RJSFQSYOJSJVD675DX42M4ZMRE name=sample-account
+2024-04-30T17:33:49-04:00 INF new wallet created address=PVBONYHTY4OXO7PDNBE47FXCROASIUYZRTXC2LGCW6YZIOAGAAD2VXRI44 name=sample-account
 ```
 
 ### 3.2 List existing Wallets
@@ -221,7 +219,7 @@ algoid wallet list
 The list displays every wallet using its local alias for simpler usage.
 
 ```shell
-2024-03-06T12:00:33-05:00 INF wallet found: sample-account
+2024-04-30T17:34:09-04:00 INF wallet found: sample-account
 ```
 
 ### 3.3 Get wallet details
@@ -230,17 +228,18 @@ To get additional details such as your account balance, status, rewards, etc; si
 use the `wallet info` command.
 
 ```shell
-algoid wallet info sample-account
+algoid wallet info sample-account testnet
 ```
 
-The client application will reach out to the network and the account information will
+The client application will reach out to the network specified and the account information will
 be printed.
 
 ```txt
-address: 3ARALWACZXG2IHZOPYOKPHLT6KNJKI45RJSFQSYOJSJVD675DX42M4ZMRE
-public key: d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9
+network: testnet
+address: PVBONYHTY4OXO7PDNBE47FXCROASIUYZRTXC2LGCW6YZIOAGAAD2VXRI44
+public key: 7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007
 status: Offline
-round: 37804729
+round: 39535146
 current balance: 0
 pending rewards: 0
 total rewards: 0
@@ -249,7 +248,7 @@ total rewards: 0
 ## 4. Deploy
 
 ```shell
-algoid deploy sample-account
+algoid deploy sample-account testnet
 
 2024-03-06T12:01:40-05:00 INF storage contract deployed successfully app_id=613372790
 ```
@@ -258,13 +257,12 @@ algoid deploy sample-account
 
 ```yml
 network:
-  active: testnet
   profiles:
     # to deploy your own storage provider contract
     - name: testnet
       node: https://testnet-api.algonode.cloud
       node_token: ""
-      app_id: 613372790
+      app_id: 654583141
 ```
 
 ## 4. DID Managent
@@ -283,17 +281,17 @@ To create a new DID, with a new passphrase-protected cryptographic key enabled
 for authentication simply run:
 
 ```shell
-algoid create sample-account
+algoid create sample-account testnet
 ```
 
 You'll be asked to enter and confirm you passphrase and finally get an output
 similar to:
 
 ```shell
-2024-03-06T12:02:54-05:00 INF generating new identifier method=algo subject=d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
-2024-03-06T12:02:54-05:00 DBG adding master key
-2024-03-06T12:02:54-05:00 DBG setting master key as authentication mechanism
-2024-03-06T12:02:54-05:00 INF adding entry to local store
+2024-04-30T17:41:55-04:00 INF generating new identifier method=algo subject=testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+2024-04-30T17:41:55-04:00 DBG adding master key
+2024-04-30T17:41:55-04:00 DBG setting master key as authentication mechanism
+2024-04-30T17:41:55-04:00 INF adding entry to local store
 ```
 
 ### 4.2 List existing DIDs
@@ -309,7 +307,7 @@ The list displays every DID instance along it's local alias for simpler usage.
 
 ```txt
 Name              DID
-sample-account    did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
+sample-account    did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
 ```
 
 ### 4.3 Inspect your local DID document
@@ -328,9 +326,9 @@ The command will print on the screen the full contents of the associated DID
 document.
 
 ```json
-2024-03-06T12:03:25-05:00 INF created: 2024-03-06T17:02:54Z
-2024-03-06T12:03:25-05:00 INF updated: 2024-03-06T17:02:54Z
-2024-03-06T12:03:25-05:00 INF active: true
+2024-04-30T17:42:24-04:00 INF created: 2024-04-30T21:41:55Z
+2024-04-30T17:42:24-04:00 INF updated: 2024-04-30T21:41:55Z
+2024-04-30T17:42:24-04:00 INF active: true
 {
   "document": {
     "@context": [
@@ -338,17 +336,17 @@ document.
       "https://w3id.org/security/suites/ed25519-2020/v1",
       "https://w3id.org/security/suites/x25519-2020/v1"
     ],
-    "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
+    "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
     "verificationMethod": [
       {
-        "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master",
+        "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master",
         "type": "Ed25519VerificationKey2020",
-        "controller": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
-        "publicKeyMultibase": "zFYh9rcBz66DNU8UwzLNmyVAsLhJe17kCmFdEazHb9Qxg"
+        "controller": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
+        "publicKeyMultibase": "z9Ry8aFPMLKapvtYkNNSFsoNhkc4192j4ai17EzMquAZc"
       }
     ],
     "authentication": [
-      "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master"
+      "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master"
     ]
   }
 }
@@ -422,10 +420,10 @@ For example, by running `algoid publish sample-account` you'll get an output sim
 the following.
 
 ```shell
-2024-03-06T12:04:00-05:00 INF submitting request to the network
-2024-03-06T12:04:00-05:00 INF publishing: sample-account
-2024-03-06T12:04:00-05:00 INF publishing DID document did=did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
-2024-03-06T12:04:16-05:00 INF DID instance published
+2024-04-30T17:42:54-04:00 INF submitting request to the network
+2024-04-30T17:42:54-04:00 INF publishing: sample-account
+2024-04-30T17:42:54-04:00 INF publishing DID document did=did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+2024-04-30T17:43:10-04:00 INF DID instance published
 ```
 
 ### 5.1 Resolve a DID
@@ -450,28 +448,28 @@ algoid retrieve [existing DID]
 For example, to resolve the DID created as part of this tutorial.
 
 ```shell
-algoid resolve did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
+algoid resolve did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
 
-2024-03-06T12:04:34-05:00 INF retrieving record
-2024-03-06T12:04:34-05:00 INF retrieving DID document did=did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790
-2024-03-06T12:04:35-05:00 WRN skipping validation
+2024-04-30T17:43:41-04:00 INF retrieving record
+2024-04-30T17:43:41-04:00 INF retrieving DID document did=did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141
+2024-04-30T17:43:43-04:00 WRN skipping validation
 {
   "@context": [
     "https://www.w3.org/ns/did/v1",
     "https://w3id.org/security/suites/ed25519-2020/v1",
     "https://w3id.org/security/suites/x25519-2020/v1"
   ],
-  "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
+  "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
   "verificationMethod": [
     {
-      "id": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master",
+      "id": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master",
       "type": "Ed25519VerificationKey2020",
-      "controller": "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790",
-      "publicKeyMultibase": "zFYh9rcBz66DNU8UwzLNmyVAsLhJe17kCmFdEazHb9Qxg"
+      "controller": "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141",
+      "publicKeyMultibase": "z9Ry8aFPMLKapvtYkNNSFsoNhkc4192j4ai17EzMquAZc"
     }
   ],
   "authentication": [
-    "did:algo:d82205d802cdcda41f2e7e1ca79d73f29a95239d8a64584b0e4c9351fbfd1df9-613372790#master"
+    "did:algo:testnet-7d42e6e0f3c71d777de36849cf96e28b812453198cee2d2cc2b7b19438060007-654583141#master"
   ]
 }
 ```
