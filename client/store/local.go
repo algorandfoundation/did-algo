@@ -43,6 +43,7 @@ func NewLocalStore(home string) (*LocalStore, error) {
 			return nil, fmt.Errorf("failed to create new wallets directory: %w", err)
 		}
 	}
+
 	return &LocalStore{home: h}, nil
 }
 

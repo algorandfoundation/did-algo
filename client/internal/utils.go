@@ -30,7 +30,7 @@ const (
 
 // CreateApp is used to deploy the AlgoDID storage smart contract to the
 // Algorand network.
-func createApp(
+func CreateApp(
 	algodClient *algod.Client,
 	contract *abi.Contract,
 	sender types.Address,
@@ -311,7 +311,7 @@ func checkNetwork(network string, algodClient *algod.Client) error {
 
 // ResolveDID is used to read the DID document from the AlgoDID storage smart
 // contract.
-func resolveDID(appID uint64, pubKey []byte, algodClient *algod.Client, network string) ([]byte, error) {
+func ResolveDID(appID uint64, pubKey []byte, algodClient *algod.Client, network string) ([]byte, error) {
 	err := checkNetwork(network, algodClient)
 	if err != nil {
 		return nil, err

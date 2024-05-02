@@ -113,9 +113,9 @@ func (c *NetworkClient) Ready() bool {
 // DeployContract creates a new instance of the AlgoDID storage smart contract
 // on the network.
 func (c *NetworkClient) DeployContract(sender *crypto.Account) (uint64, error) {
-	contract := loadContract()
+	contract := LoadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
-	return createApp(c.algod, contract, signer.Account.Address, signer)
+	return CreateApp(c.algod, contract, signer.Account.Address, signer)
 }
 
 // PublishDID sends a new DID document to the network
@@ -124,7 +124,7 @@ func (c *AlgoDIDClient) PublishDID(id *did.Identifier, sender *crypto.Account) e
 	c.log.WithFields(map[string]interface{}{
 		"did": id.String(),
 	}).Info("publishing DID document")
-	contract := loadContract()
+	contract := LoadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
 	doc, _ := json.Marshal(id.Document(true))
 	pub, network, appID, err := parseSubjectString(id.Subject())
@@ -144,7 +144,7 @@ func (c *AlgoDIDClient) DeleteDID(id *did.Identifier, sender *crypto.Account) er
 	c.log.WithFields(map[string]interface{}{
 		"did": id.String(),
 	}).Info("deleting DID document")
-	contract := loadContract()
+	contract := LoadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
 	pub, network, appID, err := parseSubjectString(id.Subject())
 	if err != nil {
@@ -177,7 +177,7 @@ func (c *AlgoDIDClient) Resolve(id string) (*did.Document, error) {
 	networkClient := c.Networks[network]
 
 	// Retrieve the data from the network
-	data, err := resolveDID(appID, pub, networkClient.algod, network)
+	data, err := ResolveDID(appID, pub, networkClient.algod, network)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func parseSubjectString(subject string) (pub []byte, network string, appID uint6
 
 	network = idSegments[0]
 	matchFound := false
-	for _, a := range []string{"mainnet", "testnet"} {
+	for _, a := range []string{"mainnet", "testnet", "custom"} {
 		if a == network {
 			matchFound = true
 			break

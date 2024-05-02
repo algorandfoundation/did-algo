@@ -194,11 +194,9 @@ func (p *Provider) Update(req *updateRequest) error {
 		}
 	}
 
-	// sync with the network in the background
-	go func() {
-		_ = p.Sync(req.Name, req.Passphrase)
-	}()
-	return nil
+	err = p.Sync(req.Name, req.Passphrase)
+
+	return err
 }
 
 // ServerHandler returns an HTTP handler that can be used to exposed
@@ -266,6 +264,7 @@ func (p *Provider) registerHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	if err = p.Register(network, name, passphrase); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 		return
 	}
 	_, _ = w.Write([]byte("ok"))
