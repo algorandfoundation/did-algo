@@ -43,7 +43,7 @@ The ABNF for the `did:algo` format is described below
 ```abnf
 did-algo-format = "did:algo" [":" algorand-network] ":" algorand-namespace ":" namespace-format
 
-algorand-network = "testnet'
+algorand-network = "testnet" / "mainnet" ; If omitted, the algorand-network is implicity "mainnet"
 algorand-namepspace = app-namespace
 
 app-namespace = algorand-app ":" hex-ed25519key
