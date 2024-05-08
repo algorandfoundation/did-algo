@@ -41,12 +41,13 @@ The Application Binary Interface (ABI) defined in ARC4 for Algorand smart contra
 The ABNF for the `did:algo` format is described below
 
 ```abnf
-did-algo-format = "did:algo" [":" algorand-network] ":" algorand-namespace ":" namespace-format
+did-algo-format = "did:algo" [":" network] ":" namespace
 
-algorand-network = "testnet" / "mainnet" / "custom" ; If omitted, the algorand-network is implicity "mainnet"
-algorand-namepspace = app-namespace
+network = "testnet" / "mainnet" / "custom" ; If omitted, the algorand-network is implicity "mainnet"
 
-app-namespace = algorand-app ":" hex-ed25519key
+namespace = app-namespace ; Currently only one namespace is supported, but there may be more in the future
+
+app-namespace = "app:" algorand-app ":" hex-ed25519key
 
 algorand-app = 1*DIGIT ; The unsigned 64-bit integer for an application on the Algorand network
 hex-ed25519key = 64HEXDIG ; The public ed25519 key of the subject encoded in base16
