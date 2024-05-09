@@ -8,7 +8,7 @@ Most DIDs involve a registry which is often, but not always, a distributed ledge
 
 ## 1.1 Goals
 
-The primary goal of `did:algo` is to leverage the unique features of Algorand to provide a reliable decentralized resolution of DIDs. In paticular, `did:algo` is designed to inherit the permisionless nature of Algorand and allow anyone to publish an identifier in the immutable ledger. Publishers of the DID and its corresponding DID document **MAY** be the subject that is identified, but `did:algo` also enables 3rd party entites to publish DID documents on behalf of others in a verifiable manner. For example, one user, identified by their ed25519 public key, may have multiple DIDs via the `did:algo` method provided by various entities.
+The primary goal of `did:algo` is to leverage the unique features of Algorand to provide a reliable decentralized resolution of DIDs. In particular, `did:algo` is designed to inherit the permission-less nature of Algorand and allow anyone to publish an identifier in the immutable ledger. Publishers of the DID and its corresponding DID document **MAY** be the subject that is identified, but `did:algo` also enables 3rd party entities to publish DID documents on behalf of others in a verifiable manner. For example, one user, identified by their ed25519 public key, may have multiple DIDs via the `did:algo` method provided by various entities.
 
 # 2. Terminology
 
