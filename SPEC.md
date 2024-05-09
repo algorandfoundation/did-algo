@@ -34,7 +34,7 @@ The Algorand address that has authority to sign transactions for a given Algoran
 
 ## ARC4 ABI
 
-The Application Binary Interface (ABI) defined in ARC4 for Algorand smart contracts
+The Application Binary Interface (ABI) defined in [ARC4](https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0004.md) for Algorand smart contracts
 
 # 3. The did:algo Format
 
@@ -57,7 +57,7 @@ hex-ed25519-key = 64HEXDIG ; The public ed25519 key of the subject encoded in ba
 
 ## 4.1 Network
 
-The `network` in the `did:algo` method is used to specify which Algorand network must be used to resolve the DID. To resolve DID, only a non-archival algod node is needed. Resolvers SHOULD check the genesis hash of the node they are using to resolve the DID and verify it matches the network in the DID. It should be noted that this is NOT a security measure. A malicious node could serve incorrect genesis hash or box data through the API so it is important for resolvers to use a trusted node for resolution.
+The `network` in the `did:algo` method is used to specify which Algorand network must be used to resolve the DID. To resolve DID, only a non-archival algod node is needed. Resolvers **SHOULD** check the genesis hash of the node they are using to resolve the DID and verify it matches the network in the DID. It should be noted that this is NOT a security measure. A malicious node could serve incorrect genesis hash or box data through the API so it is important for resolvers to use a trusted node for resolution.
 
 The table of supported networks and their corresponding genesis hashes is below.
 
@@ -67,13 +67,13 @@ The table of supported networks and their corresponding genesis hashes is below.
 | testnet | SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI= |
 | betanet | mFgazF+2uRS1tMiL9dsj01hJGySEmPN28B/TjjvpVW0= |
 
-If the network in the DID is `custom`, the genesis hash MUST NOT be verified by resolvers. The primary use-case for `custom` is development on a local network.
+If the network in the DID is `custom`, the genesis hash **MUST NOT** be verified by resolvers. The primary use-case for `custom` is development on a local network.
 
 ## 4.2 App Namespace
 
 ### 4.2.1 Controller
 
-DIDDocuments created for `did:algo:app` DIDs SHOULD NOT have a controller field. Consumers of the DIDDocument MUST NOT assume the subject is the controller. In the reference implementation the controller is an Algorand address, which may have a dynamic auth address. This means ed25519 verification methods are not sufficient for verification and MUST NOT be used to identify the address that has permission to modify the in-app data.
+DIDDocuments created for `did:algo:app` DIDs **SHOULD NOT** have a [controller property](https://www.w3.org/TR/did-core/#did-controller). Consumers of the DIDDocument **MUST NOT** assume the subject is the controller. In the reference implementation the controller is an Algorand address, which may have a dynamic auth address. This means ed25519 verification methods are not sufficient for verification and **MUST NOT** be used to identify the address that has permission to modify the in-app data.
 
 In other app implementations there may be one or more entities that control the DIDDocument data. Since these entities do not have a DID, the only way to verify controllers for a `did:algo` DID is to inspect the TEAL code of the app.
 
@@ -81,7 +81,7 @@ If a controller field is set, it should be assumed that there are additional Alg
 
 ### 4.2.2 Metadata Box
 
-In order to support `did:algo:app` resolution, an application must contain a box with a 32 byte key corresponding to the `hex-ed25519-key` of the subject. The value of this box box must start with the ARC4 ABI tuple: `(uint64,uint64,uint8,uint64)` this data structure shall be referred to as the metadata box. Additional data MAY be in the metadata box, but it MUST NOT alter the four initial values defined here.
+In order to support `did:algo:app` resolution, an application must contain a box with a 32 byte key corresponding to the `hex-ed25519-key` of the subject. The value of this box box must start with the ARC4 ABI tuple: `(uint64,uint64,uint8,uint64)` this data structure shall be referred to as the metadata box. Additional data **MAY** be in the metadata box, but it **MUST NOT** alter the four initial values defined here.
 
 `metadata[0]` is a `uint64` indicating the key of the data box that contains the start of the DIDDocument for the subject.
 
@@ -93,4 +93,4 @@ In order to support `did:algo:app` resolution, an application must contain a box
 
 ### 4.2.3 Data box
 
-The data for the DIDDocument may be split across multiple boxes since each box can only hold 4 kilobytes of data. Data boxes are referenced via their `uint64` keys. DIDDocuments MUST be read and written sequentially across data boxes.
+The data for the DIDDocument may be split across multiple boxes since each box can only hold 4 kilobytes of data. Data boxes are referenced via their `uint64` keys. DIDDocuments **MUST** be read and written sequentially across data boxes.
