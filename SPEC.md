@@ -81,17 +81,15 @@ If a controller field is set, it should be assumed that there are additional Alg
 
 ### 4.2.2 Metadata Box
 
-In order to support `did:algo:app` resolution, an application must contain a box with a 32 byte key corresponding to the `hex-ed25519-key` of the subject. This box must contain the ARC4 ABI tuple: `(uint64,uint8,uint64,uint64)` this data structure shall be referred to as the metadata box. Additional data MAY be in the metadata box, but it MUST NOT alter the five values defined here. This means if following ARC4 ABI encoding, additional fields MUST be static types.
+In order to support `did:algo:app` resolution, an application must contain a box with a 32 byte key corresponding to the `hex-ed25519-key` of the subject. The value of this box box must start with the ARC4 ABI tuple: `(uint64,uint64,uint8,uint64)` this data structure shall be referred to as the metadata box. Additional data MAY be in the metadata box, but it MUST NOT alter the four initial values defined here.
 
 `metadata[0]` is a `uint64` indicating the key of the data box that contains the start of the DIDDocument for the subject.
 
-`metadata[1]` is a `uint64` indicating the key of the data box that contains the end of the DIDdocument for the subject. Reading the contents of `metadata[0]` to `metadata[1]` (inclusive) will result in the full DIDDocument for the subject. If `metadata[0] == metadata[1]`, the entire DIDDocument is in a single box.
+`metadata[1]` is a `uint64` indicating the key of the data box that contains the end of the DIDdocument for the subject. Reading the contents of `metadata[0]` to `metadata[1]` (inclusive) sequentially will result in the full DIDDocument for the subject. If `metadata[0] == metadata[1]`, the entire DIDDocument is in a single box.
 
 `metadata[2]` is a `uint8` containing the status of the binary data for the subject's DID document within the app. A value of `0` indicates the data is currently being uploaded and is not currently resolvable. A value of `1` indicates the data is ready and can be resolved. A value of `2` indicates the data is being deleted and is not resolvable.
 
 `metadata[3]` is a `uint64` indicating the amount of bytes in the final box.
-
-`lastDeleted[4]` is a `uint64` indicating which data box was last deleted. This is used to ensure data is properly deleted.
 
 ### 4.2.3 Data box
 
