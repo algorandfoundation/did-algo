@@ -245,7 +245,7 @@ func parseSubjectString(subject string) (pub []byte, network string, appID uint6
 	}
 
 	namespace := idSegments[1]
-	if namespace != "box" {
+	if namespace != "app" {
 		err = fmt.Errorf("invalid namespace in subject identifier: %s", namespace)
 		return pub, network, appID, err
 	}

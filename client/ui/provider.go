@@ -91,7 +91,7 @@ func (p *Provider) Register(network string, name string, passphrase string) erro
 	}
 
 	// Generate base identifier instance
-	subject := fmt.Sprintf("%s:box:%d:%x", network, p.client.Networks[network].StorageAppID(), account.PublicKey)
+	subject := fmt.Sprintf("%s:app:%d:%x", network, p.client.Networks[network].StorageAppID(), account.PublicKey)
 	method := "algo"
 	p.log.WithFields(xlog.Fields{
 		"subject": subject,

@@ -202,7 +202,7 @@ func TestListAfterRegister(t *testing.T) {
 	body, err := io.ReadAll(res.Body)
 	require.NoError(t, err)
 
-	require.Regexp(t, `{"name":"TestListAfterRegister","did":"did:algo:custom:box:`, string(body))
+	require.Regexp(t, `{"name":"TestListAfterRegister","did":"did:algo:custom:app:`, string(body))
 }
 
 func TestUpdate(t *testing.T) {
