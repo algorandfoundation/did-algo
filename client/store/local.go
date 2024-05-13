@@ -34,7 +34,7 @@ type IdentifierRecord struct {
 func NewLocalStore(home string) (*LocalStore, error) {
 	h := filepath.Clean(home)
 	if !dirExist(h) {
-		if err := os.Mkdir(h, 0700); err != nil {
+		if err := os.MkdirAll(h, 0700); err != nil {
 			return nil, fmt.Errorf("failed to create new home directory: %w", err)
 		}
 	}
