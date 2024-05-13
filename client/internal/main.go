@@ -226,12 +226,23 @@ func addressFromPub(pub []byte) (string, error) {
 // parseSubjectString extracts the network, public key and application ID from a DID (network:appID:pubkey).
 func parseSubjectString(subject string) (pub []byte, network string, appID uint64, err error) {
 	idSegments := strings.Split(subject, ":")
-	if len(idSegments) != 4 {
-		err = fmt.Errorf("invalid subject identifier. Expected 3 segments, got %d", len(idSegments))
+	if len(idSegments) != 4 && len(idSegments) != 3 {
+		err = fmt.Errorf("invalid subject identifier. Expected 3 or 4 segments, got %d", len(idSegments))
 		return pub, network, appID, err
 	}
 
-	network = idSegments[0]
+	idxOffset := 0
+
+	if len(idSegments) == 3 {
+		idxOffset = 1
+	}
+
+	if len(idSegments) == 3 {
+		network = "mainnet"
+	} else {
+		network = idSegments[0]
+	}
+
 	matchFound := false
 	for _, a := range []string{"mainnet", "testnet", "custom"} {
 		if a == network {
@@ -244,19 +255,19 @@ func parseSubjectString(subject string) (pub []byte, network string, appID uint6
 		return pub, network, appID, err
 	}
 
-	namespace := idSegments[1]
+	namespace := idSegments[1-idxOffset]
 	if namespace != "app" {
 		err = fmt.Errorf("invalid namespace in subject identifier: %s", namespace)
 		return pub, network, appID, err
 	}
 
-	pub, err = hex.DecodeString(idSegments[3])
+	pub, err = hex.DecodeString(idSegments[3-idxOffset])
 	if err != nil {
 		err = fmt.Errorf("invalid public key in subject identifier")
 		return pub, network, appID, err
 	}
 
-	app, err := strconv.Atoi(idSegments[2])
+	app, err := strconv.Atoi(idSegments[2-idxOffset])
 	if err != nil {
 		err = fmt.Errorf("invalid storage app ID in subject identifier")
 		return pub, network, appID, err
