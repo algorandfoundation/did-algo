@@ -157,6 +157,10 @@ jobs:
         with:
           version: v1.54.2
 
+      # Run algokit localnet for tests
+      - name: Algokit localnet
+      run: pipx install algokit && algokit localnet start
+
       # Run unit tests
       - name: Test
         run: make test
