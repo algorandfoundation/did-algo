@@ -264,7 +264,7 @@ func (p *Provider) registerHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	if err = p.Register(network, name, passphrase); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte(err.Error())) //nolint:errcheck,gosec
 		return
 	}
 	_, _ = w.Write([]byte("ok"))

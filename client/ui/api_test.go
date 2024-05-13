@@ -41,45 +41,45 @@ func getKmdClient() (kmd.Client, error) {
 func getSandboxAccounts() ([]crypto.Account, error) {
 	client, err := getKmdClient()
 	if err != nil {
-		return nil, fmt.Errorf("Failed to create kmd client: %+v", err)
+		return nil, fmt.Errorf("Failed to create kmd client: %w", err)
 	}
 
 	resp, err := client.ListWallets()
 	if err != nil {
-		return nil, fmt.Errorf("Failed to list wallets: %+v", err)
+		return nil, fmt.Errorf("Failed to list wallets: %w", err)
 	}
 
-	var walletId string
+	var walletID string
 	for _, wallet := range resp.Wallets {
 		if wallet.Name == "unencrypted-default-wallet" {
-			walletId = wallet.ID
+			walletID = wallet.ID
 		}
 	}
 
-	if walletId == "" {
+	if walletID == "" {
 		return nil, fmt.Errorf("No wallet named %s", "unencrypted-default-wallet")
 	}
 
-	whResp, err := client.InitWalletHandle(walletId, "")
+	whResp, err := client.InitWalletHandle(walletID, "")
 	if err != nil {
-		return nil, fmt.Errorf("Failed to init wallet handle: %+v", err)
+		return nil, fmt.Errorf("Failed to init wallet handle: %w", err)
 	}
 
 	addrResp, err := client.ListKeys(whResp.WalletHandleToken)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to list keys: %+v", err)
+		return nil, fmt.Errorf("Failed to list keys: %w", err)
 	}
 
-	var accts []crypto.Account
+	accts := make([]crypto.Account, len(addrResp.Addresses))
 	for _, addr := range addrResp.Addresses {
 		expResp, err := client.ExportKey(whResp.WalletHandleToken, "", addr)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to export key: %+v", err)
+			return nil, fmt.Errorf("Failed to export key: %w", err)
 		}
 
 		acct, err := crypto.AccountFromPrivateKey(expResp.PrivateKey)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to create account from private key: %+v", err)
+			return nil, fmt.Errorf("Failed to create account from private key: %w", err)
 		}
 
 		accts = append(accts, acct)
@@ -96,6 +96,7 @@ func req(t *testing.T, method string, endpoint string, reqBody string) *http.Res
 	require.NoError(t, err)
 
 	res, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
 
 	return res
 }
@@ -117,6 +118,9 @@ func TestMain(m *testing.M) {
 	}
 
 	status, err := algodClient.Status().Do(context.Background())
+	if err != nil {
+		panic(err)
+	}
 
 	// type NetworkProfile struct {
 	// 	// Profile name.
@@ -158,6 +162,9 @@ func TestMain(m *testing.M) {
 	}
 
 	srv, err := LocalAPIServer(localStore, cl, logger)
+	if err != nil {
+		panic(err)
+	}
 
 	logger.Debug("starting local API server on localhost:9090")
 	go func() {
@@ -169,12 +176,14 @@ func TestMain(m *testing.M) {
 
 func TestReady(t *testing.T) {
 	res := req(t, http.MethodGet, "ready", "")
+	defer res.Body.Close()
 
 	require.Equal(t, http.StatusOK, res.StatusCode)
 }
 
 func TestList(t *testing.T) {
 	res := req(t, http.MethodGet, "list", "")
+	defer res.Body.Close()
 
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
@@ -186,16 +195,19 @@ func TestList(t *testing.T) {
 
 func TestRegister(t *testing.T) {
 	res := req(t, http.MethodPost, "register", `{"name": "TestRegister", "recovery_key": "test", "network": "custom"}`)
+	defer res.Body.Close()
 
 	require.Equal(t, http.StatusOK, res.StatusCode)
 }
 
 func TestListAfterRegister(t *testing.T) {
 	res := req(t, http.MethodPost, "register", `{"name": "TestListAfterRegister", "recovery_key": "test", "network": "custom"}`)
+	defer res.Body.Close()
 
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
 	res = req(t, http.MethodGet, "list", "")
+	defer res.Body.Close()
 
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
@@ -207,6 +219,7 @@ func TestListAfterRegister(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	res := req(t, http.MethodPost, "register", `{"name": "TestUpdate", "recovery_key": "test", "network": "custom"}`)
+	defer res.Body.Close()
 
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
@@ -249,12 +262,12 @@ func TestUpdate(t *testing.T) {
 
 	// Create the app
 
-	createdAppId, err := internal.CreateApp(algodClient, internal.LoadContract(), acct.Address, signer)
+	createdAppID, err := internal.CreateApp(algodClient, internal.LoadContract(), acct.Address, signer)
 	require.NoError(t, err)
-	require.Equal(t, uint64(profile.AppID), createdAppId)
-	fmt.Printf("Created app ID: %d\n", createdAppId)
+	require.Equal(t, uint64(profile.AppID), createdAppID)
+	fmt.Printf("Created app ID: %d\n", createdAppID)
 
-	appInfo, err := algodClient.GetApplicationByID(createdAppId).Do(context.Background())
+	appInfo, err := algodClient.GetApplicationByID(createdAppID).Do(context.Background())
 	require.NoError(t, err)
 	require.False(t, appInfo.Deleted)
 
@@ -262,12 +275,13 @@ func TestUpdate(t *testing.T) {
 
 	res = req(t, http.MethodPost, "update", `{"name": "TestUpdate", "passphrase": "test"}`)
 	require.NoError(t, err)
+	defer res.Body.Close()
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
 	did, err := localStore.Get("TestUpdate")
 	require.NoError(t, err)
 
-	resolvedDid, err := internal.ResolveDID(createdAppId, acct.PublicKey, algodClient, "custom")
+	resolvedDid, err := internal.ResolveDID(createdAppID, acct.PublicKey, algodClient, "custom")
 	require.NoError(t, err)
 
 	fmt.Println(string(resolvedDid))
