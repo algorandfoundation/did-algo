@@ -7,7 +7,7 @@ OWNER=algorandfoundation
 REPO=did-algo
 PROJECT_REPO=github.com/$(OWNER)/$(REPO)
 DOCKER_IMAGE=ghcr.io/$(OWNER)/$(BINARY_NAME)
-MAINTAINERS='Ben Cessa <ben@aid.technology>'
+MAINTAINERS='Joe Polny <joe@algorand.foundation>'
 
 # State values
 GIT_COMMIT_DATE=$(shell TZ=UTC git log -n1 --pretty=format:'%cd' --date='format-local:%Y-%m-%dT%H:%M:%SZ')

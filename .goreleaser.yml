@@ -117,7 +117,7 @@ nfpms:
       - did-algo
     vendor: Algorand Foundation
     homepage: https://github.com/algorandfoundation/did-algo
-    maintainer: Ben Cessa <ben@aid.technology>
+    maintainer: Joe Polny <joe@algorand.foundation>
     description: Decentralized Identifiers for the Algorand blockchain
     license: BSD-3-Clause
     formats:
