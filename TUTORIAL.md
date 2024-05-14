@@ -390,11 +390,7 @@ Flags:
 
 ## 5. Publish your DID globally
 
-Up to this point all the details about our DID are just available on our machine;
-to be really useful we need to be able to publish this information on a decentralized
-way so that others can retrieve it when required. To this end, the `algo` DID method
-utilizes a robust integration with the [IPFS](https://ipfs.io/) decentralized storage
-protocol.
+Up to this point all the details about our DID are just available on our machine; to be really useful we need to be able to publish this information on the Algorand network so it can be accessed by anyone.
 
 To publish your local DID use the `publish` command.
 
