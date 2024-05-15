@@ -159,7 +159,7 @@ jobs:
 
       # Run algokit localnet for tests
       - name: Algokit localnet
-      run: pipx install algokit && algokit localnet start
+        run: pipx install algokit && algokit localnet start
 
       # Run unit tests
       - name: Test
