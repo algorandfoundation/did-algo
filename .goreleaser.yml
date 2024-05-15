@@ -100,8 +100,8 @@ dockers:
       - "--label=org.opencontainers.image.source=https://github.com/algorandfoundation/{{ .ProjectName }}"
     # Registries to push the image to
     image_templates:
-      - "ghcr.io/bryk-io/{{ .ProjectName }}:{{ .Version }}"
-      - "ghcr.io/bryk-io/{{ .ProjectName }}:latest"
+      - "ghcr.io/algorandfoundation/{{ .ProjectName }}:{{ .Version }}"
+      - "ghcr.io/algorandfoundation/{{ .ProjectName }}:latest"
     # Skips the docker push if there is an indicator for prerelease
     # in the tag e.g. v1.0.0-rc1 (auto)
     skip_push: auto
