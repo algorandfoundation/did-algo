@@ -21,7 +21,7 @@ default behavior when no `Accept` header is provided.
 Request:
 
 ```shell
-curl -X GET <http://localhost:8080/1.0/identifiers/did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170>
+curl -X GET <http://localhost:8080/1.0/identifiers/did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada>
 ```
 
 Response:
@@ -29,34 +29,22 @@ Response:
 ```json
 {
   "@context": [
-    "https://w3id.org/did-resolution/v1"
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1",
+    "https://w3id.org/security/suites/x25519-2020/v1"
   ],
-  "didDocument": {
-    "@context": [
-      "https://www.w3.org/ns/did/v1",
-      "https://w3id.org/security/suites/ed25519-2020/v1",
-      "https://w3id.org/security/suites/x25519-2020/v1"
-    ],
-    "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
-    "verificationMethod": [
-      {
-        "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master",
-        "type": "Ed25519VerificationKey2020",
-        "controller": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
-        "publicKeyMultibase": "z5U83dEzpKaRwaTxJ8iqF6dC58fNpsEfhugDYfVC9ouZ3"
-      }
-    ],
-    "authentication": [
-      "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master"
-    ]
-  },
-  "didDocumentMetadata": {
-    "deactivated": false
-  },
-  "didResolutionMetadata": {
-    "contentType": "application/did+ld+json",
-    "retrieved": "2024-03-01T01:32:42Z"
-  }
+  "id": "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada",
+  "verificationMethod": [
+    {
+      "id": "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada#master",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada",
+      "publicKeyMultibase": "zFh6VYTmcxGD2vTNMSTHhtMSa7TkGCded9ofBX5C6CxYq"
+    }
+  ],
+  "authentication": [
+    "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada#master"
+  ]
 }
 ```
 
@@ -72,7 +60,7 @@ Request:
 ```shell
 curl -X GET \
 --header "Accept: application/did+ld+json" \
-<http://localhost:8080/1.0/identifiers/did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170>
+<http://localhost:8080/1.0/identifiers/did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada>
 ```
 
 Response:
@@ -84,17 +72,17 @@ Response:
     "https://w3id.org/security/suites/ed25519-2020/v1",
     "https://w3id.org/security/suites/x25519-2020/v1"
   ],
-  "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
+  "id": "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada",
   "verificationMethod": [
     {
-      "id": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master",
+      "id": "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada#master",
       "type": "Ed25519VerificationKey2020",
-      "controller": "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170",
-      "publicKeyMultibase": "z5U83dEzpKaRwaTxJ8iqF6dC58fNpsEfhugDYfVC9ouZ3"
+      "controller": "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada",
+      "publicKeyMultibase": "zFh6VYTmcxGD2vTNMSTHhtMSa7TkGCded9ofBX5C6CxYq"
     }
   ],
   "authentication": [
-    "did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170#master"
+    "did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada#master"
   ]
 }
 ```
@@ -113,16 +101,14 @@ Request:
 ```shell
 curl -X GET \
 --header "Accept: application/did+cbor" \
-<http://localhost:8080/1.0/identifiers/did:algo:426165491c77a6c95eeed8d0420b38b0afbe9057c4f33147eb90fafd32aaad22-591154170>
+<http://localhost:8080/1.0/identifiers/did:algo:mainnet:app:1845671812:da490f2d15a625459bf970a3d55e1a646dfd3a956d011546e953e945d39fdada>
 ```
 
 Response:
 
 ```json
 {
-  "@context": [
-    "https://w3id.org/did-resolution/v1"
-  ],
+  "@context": ["https://w3id.org/did-resolution/v1"],
   "didResolutionMetadata": {
     "contentType": "application/did+cbor",
     "retrieved": "2024-03-01T01:39:03Z",

@@ -12,7 +12,7 @@ import (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Display version information",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		var components = map[string]string{
 			"Version":    info.CoreVersion,
 			"Build code": info.BuildCode,

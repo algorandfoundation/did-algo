@@ -13,11 +13,11 @@ import (
 var walletInfoCmd = &cobra.Command{
 	Use:     "info",
 	Short:   "Get account information",
-	Example: "algoid wallet info [wallet-name]",
+	Example: "algoid wallet info [wallet-name] [network]",
 	Aliases: []string{"details", "inspect", "more"},
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		// Get parameters
-		if len(args) != 1 {
+		if len(args) != 2 {
 			return errors.New("missing required parameters")
 		}
 		name := sanitize.Name(args[0])
@@ -54,13 +54,15 @@ var walletInfoCmd = &cobra.Command{
 			return err
 		}
 
+		network := args[1]
 		// Get account info
-		info, err := cl.AccountInformation(account.Address.String())
+		info, err := cl.Networks[network].AccountInformation(account.Address.String())
 		if err != nil {
 			return err
 		}
 
 		// Print results
+		fmt.Printf("network: %s\n", network)
 		fmt.Printf("address: %s\n", account.Address.String())
 		fmt.Printf("public key: %x\n", account.PublicKey)
 		fmt.Printf("status: %s\n", info.Status)

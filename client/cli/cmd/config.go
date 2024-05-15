@@ -33,9 +33,9 @@ func (ac *appConf) isProfileAvailable(name string) bool {
 	return false
 }
 
-func (ac *appConf) setAppID(appID uint) {
+func (ac *appConf) setAppID(network string, appID uint) {
 	for _, p := range ac.Network.Profiles {
-		if p.Name == ac.Network.Active {
+		if p.Name == network {
 			p.AppID = appID
 		}
 	}

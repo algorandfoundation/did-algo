@@ -18,7 +18,7 @@ var walletRestoreCmd = &cobra.Command{
 	Short:   "Restore a wallet using an existing mnemonic file",
 	Aliases: []string{"recover"},
 	Example: "algoid wallet restore [mnemonic-file]",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		// Get parameters
 		if len(args) != 1 {
 			return errors.New("missing required parameters")

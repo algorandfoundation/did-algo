@@ -50,7 +50,8 @@ func init() {
 	_ = clearFile.Close()
 }
 
-func loadContract() *abi.Contract {
+// LoadContract loads the AlgoDID smart contract ABI from JSON file.
+func LoadContract() *abi.Contract {
 	abiFile, _ := StorageContracts.Open("AlgoDID.abi.json")
 	abiContents, _ := io.ReadAll(abiFile)
 	contract := &abi.Contract{}

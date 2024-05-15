@@ -27,7 +27,7 @@ with the name "[wallet-name]-mnemonic.txt".
 Keep in mind that misplacing or sharing the mnemonic can
 result in catastrophic security issues and permanent loss
 of funds.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		// Get parameters
 		if len(args) != 1 {
 			return errors.New("missing required parameters")

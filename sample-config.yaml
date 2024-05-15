@@ -1,14 +1,12 @@
 network:
-  active: testnet
   profiles:
-    # to deploy your own storage provider contract
+    - name: mainnet
+      node: https://mainnet-api.algonode.cloud
+      node_token: ""
     - name: testnet
       node: https://testnet-api.algonode.cloud
       node_token: ""
-      app_id: 602746084
-    # to use a storage provider 3rd party
-    - name: using-provider
-      node: https://testnet-api.algonode.cloud
+      profiles:
+    - name: betanet
+      node: https://betanet-api.algonode.cloud
       node_token: ""
-      app_id: 591154170
-      store_provider: http://localhost:3000

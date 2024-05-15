@@ -17,14 +17,14 @@ func getClientStore() (*store.LocalStore, error) {
 }
 
 // Retrieve the application identifier for the active network profile.
-func getStorageAppID() (uint, error) {
+func getStorageAppID(network string) (uint, error) {
 	conf := new(internal.ClientSettings)
 	if err := viper.UnmarshalKey("network", &conf); err != nil {
 		return 0, err
 	}
 	var profile *internal.NetworkProfile
 	for _, p := range conf.Profiles {
-		if p.Name == conf.Active {
+		if p.Name == network {
 			profile = p
 			break
 		}
@@ -36,17 +36,11 @@ func getStorageAppID() (uint, error) {
 }
 
 // Get network client instance.
-func getAlgoClient() (*internal.AlgoClient, error) {
+func getAlgoClient() (*internal.AlgoDIDClient, error) {
 	conf := new(internal.ClientSettings)
 	if err := viper.UnmarshalKey("network", &conf); err != nil {
 		return nil, err
 	}
-	var profile *internal.NetworkProfile
-	for _, p := range conf.Profiles {
-		if p.Name == conf.Active {
-			profile = p
-			break
-		}
-	}
-	return internal.NewAlgoClient(profile, log)
+
+	return internal.NewAlgoClient(conf.Profiles, log)
 }

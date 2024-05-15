@@ -34,7 +34,7 @@ type IdentifierRecord struct {
 func NewLocalStore(home string) (*LocalStore, error) {
 	h := filepath.Clean(home)
 	if !dirExist(h) {
-		if err := os.Mkdir(h, 0700); err != nil {
+		if err := os.MkdirAll(h, 0700); err != nil {
 			return nil, fmt.Errorf("failed to create new home directory: %w", err)
 		}
 	}
@@ -43,6 +43,7 @@ func NewLocalStore(home string) (*LocalStore, error) {
 			return nil, fmt.Errorf("failed to create new wallets directory: %w", err)
 		}
 	}
+
 	return &LocalStore{home: h}, nil
 }
 
@@ -88,7 +89,7 @@ func (ls *LocalStore) Get(name string) (*did.Identifier, error) {
 func (ls *LocalStore) List() map[string]*did.Identifier {
 	// nolint: prealloc
 	var list = make(map[string]*did.Identifier)
-	_ = filepath.Walk(ls.home, func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk(ls.home, func(_ string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -167,7 +168,7 @@ func (ls *LocalStore) OpenWallet(name, passphrase string) (string, error) {
 
 // ListWallets returns a list of the names of all wallets locally stored.
 func (ls *LocalStore) ListWallets() (list []string) {
-	_ = filepath.Walk(filepath.Join(ls.home, "wallets"), func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk(filepath.Join(ls.home, "wallets"), func(_ string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

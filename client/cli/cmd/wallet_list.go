@@ -8,7 +8,7 @@ var walletListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "List your existing ALGO wallet(s)",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		store, err := getClientStore()
 		if err != nil {
 			return err

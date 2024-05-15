@@ -14,7 +14,7 @@ var walletDisconnectCmd = &cobra.Command{
 	Aliases: []string{"unlink"},
 	Short:   "Remove a linked ALGO address from your DID",
 	Example: "algoid wallet disconnect [did-name] [algo-address]",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if len(args) != 2 {
 			return errors.New("missing required parameters")
 		}

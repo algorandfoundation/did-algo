@@ -23,7 +23,6 @@ import (
 // ClientSettings defines the configuration options available when
 // interacting with an AlgoDID network agent.
 type ClientSettings struct {
-	Active   string            `json:"active" yaml:"active" mapstructure:"active"`
 	Profiles []*NetworkProfile `json:"profiles" yaml:"profiles" mapstructure:"profiles"`
 }
 
@@ -46,103 +45,121 @@ type NetworkProfile struct {
 	StoreProvider string `json:"store_provider,omitempty" yaml:"store_provider,omitempty" mapstructure:"store_provider"`
 }
 
-// AlgoClient provides a simplified interface to interact with the
+// NetworkClient is an interface for easily interacting with algod.
+type NetworkClient struct {
+	profile *NetworkProfile
+	algod   *algod.Client
+}
+
+// AlgoDIDClient provides a simplified interface to interact with the
 // Algorand network.
-type AlgoClient struct {
-	np    *NetworkProfile
-	log   xlog.Logger
-	httpC *http.Client
-	algod *algod.Client
+type AlgoDIDClient struct {
+	log      xlog.Logger
+	httpC    *http.Client
+	Networks map[string]*NetworkClient
 }
 
 // NewAlgoClient creates a new instance of the AlgoClient.
-func NewAlgoClient(profile *NetworkProfile, log xlog.Logger) (*AlgoClient, error) {
-	if profile == nil {
+func NewAlgoClient(profiles []*NetworkProfile, log xlog.Logger) (*AlgoDIDClient, error) {
+	if len(profiles) == 0 {
 		return nil, fmt.Errorf("no network profile provided")
 	}
-	client, err := algod.MakeClient(profile.Node, profile.NodeToken)
-	if err != nil {
-		return nil, err
+
+	client := &AlgoDIDClient{
+		log:      log,
+		httpC:    &http.Client{},
+		Networks: make(map[string]*NetworkClient),
 	}
-	return &AlgoClient{
-		np:    profile,
-		log:   log,
-		algod: client,
-		httpC: &http.Client{},
-	}, nil
+
+	for _, p := range profiles {
+		algod, err := algod.MakeClient(p.Node, p.NodeToken)
+		if err != nil {
+			return nil, err
+		}
+		client.Networks[p.Name] = &NetworkClient{
+			profile: p,
+			algod:   algod,
+		}
+	}
+
+	return client, nil
 }
 
 // StorageAppID returns the application ID for the AlgoDID storage.
-func (c *AlgoClient) StorageAppID() uint {
-	return c.np.AppID
+func (c *NetworkClient) StorageAppID() uint {
+	return c.profile.AppID
 }
 
 // SuggestedParams returns the suggested transaction parameters.
-func (c *AlgoClient) SuggestedParams() (types.SuggestedParams, error) {
+func (c *NetworkClient) SuggestedParams() (types.SuggestedParams, error) {
 	return c.algod.SuggestedParams().Do(context.TODO())
 }
 
 // SubmitTx sends a raw signed transaction to the network.
-func (c *AlgoClient) SubmitTx(stx []byte) (string, error) {
+func (c *NetworkClient) SubmitTx(stx []byte) (string, error) {
 	return c.algod.SendRawTransaction(stx).Do(context.TODO())
 }
 
 // AccountInformation returns the account information for the given address.
-func (c *AlgoClient) AccountInformation(address string) (models.Account, error) {
+func (c *NetworkClient) AccountInformation(address string) (models.Account, error) {
 	return c.algod.AccountInformation(address).Do(context.TODO())
 }
 
 // Ready returns true if the network is available.
-func (c *AlgoClient) Ready() bool {
+func (c *NetworkClient) Ready() bool {
 	return c.algod.HealthCheck().Do(context.TODO()) == nil
 }
 
 // DeployContract creates a new instance of the AlgoDID storage smart contract
 // on the network.
-func (c *AlgoClient) DeployContract(sender *crypto.Account) (uint64, error) {
-	contract := loadContract()
+func (c *NetworkClient) DeployContract(sender *crypto.Account) (uint64, error) {
+	contract := LoadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
-	return createApp(c.algod, contract, signer.Account.Address, signer)
+	return CreateApp(c.algod, contract, signer.Account.Address, signer)
 }
 
 // PublishDID sends a new DID document to the network
 // fot on-chain storage.
-func (c *AlgoClient) PublishDID(id *did.Identifier, sender *crypto.Account) error {
+func (c *AlgoDIDClient) PublishDID(id *did.Identifier, sender *crypto.Account) error {
 	c.log.WithFields(map[string]interface{}{
 		"did": id.String(),
 	}).Info("publishing DID document")
-	contract := loadContract()
+	contract := LoadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
 	doc, _ := json.Marshal(id.Document(true))
-	pub, appID, err := parseSubjectString(id.Subject())
+	pub, network, appID, err := parseSubjectString(id.Subject())
 	if err != nil {
 		return err
 	}
-	if c.np.StoreProvider != "" {
-		return c.submitToProvider(pub, appID, http.MethodPost, doc)
+
+	networkClient := c.Networks[network]
+	if networkClient.profile.StoreProvider != "" {
+		return c.submitToProvider(network, pub, appID, http.MethodPost, doc)
 	}
-	return publishDID(c.algod, appID, contract, sender.Address, signer, doc, pub)
+	return publishDID(networkClient.algod, appID, contract, sender.Address, signer, doc, pub, network)
 }
 
 // DeleteDID removes a DID document from the network.
-func (c *AlgoClient) DeleteDID(id *did.Identifier, sender *crypto.Account) error {
+func (c *AlgoDIDClient) DeleteDID(id *did.Identifier, sender *crypto.Account) error {
 	c.log.WithFields(map[string]interface{}{
 		"did": id.String(),
 	}).Info("deleting DID document")
-	contract := loadContract()
+	contract := LoadContract()
 	signer := transaction.BasicAccountTransactionSigner{Account: *sender}
-	pub, appID, err := parseSubjectString(id.Subject())
+	pub, network, appID, err := parseSubjectString(id.Subject())
 	if err != nil {
 		return err
 	}
-	if c.np.StoreProvider != "" {
-		return c.submitToProvider(pub, appID, http.MethodDelete, nil)
+
+	networkClient := c.Networks[network]
+	if networkClient.profile.StoreProvider != "" {
+		return c.submitToProvider(network, pub, appID, http.MethodDelete, nil)
 	}
-	return deleteDID(appID, pub, sender.Address, c.algod, contract, signer)
+	return deleteDID(appID, pub, sender.Address, networkClient.algod, contract, signer, network)
 }
 
 // Resolve retrieves a DID document from the network.
-func (c *AlgoClient) Resolve(id string) (*did.Document, error) {
+func (c *AlgoDIDClient) Resolve(id string) (*did.Document, error) {
 	c.log.WithField("did", id).Info("retrieving DID document")
 
 	// Parse the DID
@@ -152,13 +169,15 @@ func (c *AlgoClient) Resolve(id string) (*did.Document, error) {
 	}
 
 	// Extract the public key and application ID from the subject
-	pub, appID, err := parseSubjectString(subject.Subject())
+	pub, network, appID, err := parseSubjectString(subject.Subject())
 	if err != nil {
 		return nil, err
 	}
 
+	networkClient := c.Networks[network]
+
 	// Retrieve the data from the network
-	data, err := resolveDID(appID, pub, c.algod)
+	data, err := ResolveDID(appID, pub, networkClient.algod, network)
 	if err != nil {
 		return nil, err
 	}
@@ -169,13 +188,15 @@ func (c *AlgoClient) Resolve(id string) (*did.Document, error) {
 	return doc, nil
 }
 
-func (c *AlgoClient) submitToProvider(pub []byte, appID uint64, method string, doc []byte) error {
-	c.log.Warning("using provider: ", c.np.StoreProvider)
+func (c *AlgoDIDClient) submitToProvider(network string, pub []byte, appID uint64, method string, doc []byte) error {
+	networkClient := c.Networks[network]
+
+	c.log.Warning("using provider: ", networkClient.profile.StoreProvider)
 	addr, err := addressFromPub(pub)
 	if err != nil {
 		return err
 	}
-	endpoint := fmt.Sprintf("%s/v1/%s/%d", c.np.StoreProvider, addr, appID)
+	endpoint := fmt.Sprintf("%s/v1/%s/%d", networkClient.profile.StoreProvider, addr, appID)
 	var payload io.Reader
 	if doc != nil {
 		payload = bytes.NewReader(doc)
@@ -202,22 +223,55 @@ func addressFromPub(pub []byte) (string, error) {
 	return types.EncodeAddress(pub)
 }
 
-func parseSubjectString(subject string) (pub []byte, appID uint64, err error) {
-	idSegments := strings.Split(subject, "-")
-	if len(idSegments) != 2 {
-		err = fmt.Errorf("invalid subject identifier")
-		return
+// parseSubjectString extracts the network, public key and application ID from a DID (network:appID:pubkey).
+func parseSubjectString(subject string) (pub []byte, network string, appID uint64, err error) {
+	idSegments := strings.Split(subject, ":")
+	if len(idSegments) != 4 && len(idSegments) != 3 {
+		err = fmt.Errorf("invalid subject identifier. Expected 3 or 4 segments, got %d", len(idSegments))
+		return pub, network, appID, err
 	}
-	pub, err = hex.DecodeString(idSegments[0])
+
+	idxOffset := 0
+
+	if len(idSegments) == 3 {
+		idxOffset = 1
+	}
+
+	if len(idSegments) == 3 {
+		network = "mainnet"
+	} else {
+		network = idSegments[0]
+	}
+
+	matchFound := false
+	for _, a := range []string{"mainnet", "testnet", "custom"} {
+		if a == network {
+			matchFound = true
+			break
+		}
+	}
+	if !matchFound {
+		err = fmt.Errorf("invalid network in subject identifier: %s", network)
+		return pub, network, appID, err
+	}
+
+	namespace := idSegments[1-idxOffset]
+	if namespace != "app" {
+		err = fmt.Errorf("invalid namespace in subject identifier: %s", namespace)
+		return pub, network, appID, err
+	}
+
+	pub, err = hex.DecodeString(idSegments[3-idxOffset])
 	if err != nil {
 		err = fmt.Errorf("invalid public key in subject identifier")
-		return
+		return pub, network, appID, err
 	}
-	app, err := strconv.Atoi(idSegments[1])
+
+	app, err := strconv.Atoi(idSegments[2-idxOffset])
 	if err != nil {
 		err = fmt.Errorf("invalid storage app ID in subject identifier")
-		return
+		return pub, network, appID, err
 	}
 	appID = uint64(app)
-	return
+	return pub, network, appID, err
 }

@@ -20,7 +20,7 @@ import (
 type Provider struct {
 	st     *store.LocalStore
 	log    xlog.Logger
-	client *internal.AlgoClient
+	client *internal.AlgoDIDClient
 }
 
 // LocalEntry represents a DID instance stored in the local
@@ -47,7 +47,11 @@ type LocalEntry struct {
 
 // Ready returns true if the network is available.
 func (p *Provider) Ready() bool {
-	return p.client.Ready()
+	ready := true
+	for _, n := range p.client.Networks {
+		ready = ready && n.Ready()
+	}
+	return ready
 }
 
 // List all DID instances in the local store.
@@ -69,7 +73,7 @@ func (p *Provider) List() []*LocalEntry {
 }
 
 // Register a new DID instance in the local store.
-func (p *Provider) Register(name string, passphrase string) error {
+func (p *Provider) Register(network string, name string, passphrase string) error {
 	// Check for duplicates
 	dup, _ := p.st.Get(name)
 	if dup != nil {
@@ -87,7 +91,7 @@ func (p *Provider) Register(name string, passphrase string) error {
 	}
 
 	// Generate base identifier instance
-	subject := fmt.Sprintf("%x-%d", account.PublicKey, p.client.StorageAppID())
+	subject := fmt.Sprintf("%s:app:%d:%x", network, p.client.Networks[network].StorageAppID(), account.PublicKey)
 	method := "algo"
 	p.log.WithFields(xlog.Fields{
 		"subject": subject,
@@ -190,11 +194,9 @@ func (p *Provider) Update(req *updateRequest) error {
 		}
 	}
 
-	// sync with the network in the background
-	go func() {
-		_ = p.Sync(req.Name, req.Passphrase)
-	}()
-	return nil
+	err = p.Sync(req.Name, req.Passphrase)
+
+	return err
 }
 
 // ServerHandler returns an HTTP handler that can be used to exposed
@@ -255,8 +257,14 @@ func (p *Provider) registerHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if err = p.Register(name, passphrase); err != nil {
+	network, ok := params["network"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err = p.Register(network, name, passphrase); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error())) //nolint:errcheck,gosec
 		return
 	}
 	_, _ = w.Write([]byte("ok"))

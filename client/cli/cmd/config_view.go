@@ -12,7 +12,7 @@ var configViewCmd = &cobra.Command{
 	Use:     "view",
 	Example: "algoid config view",
 	Short:   "View current configuration settings",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		conf := new(appConf)
 		if err := viper.Unmarshal(&conf); err != nil {
 			return err
