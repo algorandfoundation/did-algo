@@ -70,7 +70,7 @@ func getSandboxAccounts() ([]crypto.Account, error) {
 		return nil, fmt.Errorf("Failed to list keys: %w", err)
 	}
 
-	accts := make([]crypto.Account, len(addrResp.Addresses))
+	var accts []crypto.Account //nolint:prealloc
 	for _, addr := range addrResp.Addresses {
 		expResp, err := client.ExportKey(whResp.WalletHandleToken, "", addr)
 		if err != nil {
