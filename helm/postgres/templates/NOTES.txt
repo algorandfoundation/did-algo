@@ -1,9 +1,0 @@
-{{- $fullName := include "postgres.fullname" . -}}
-1. The release was installed as:
-{{ $fullName }}
-
-2. The credentials to access the database are stored in the secret:
-{{ printf "%s-credentials" $fullName }}
-
-3. You can access your database at:
-{{ $fullName }}.{{ .Release.Namespace }}:{{ .Values.service.port }}
