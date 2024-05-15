@@ -1,3 +1,9 @@
+# Authors
+
+- [Cosimo Bassi](mailto:cosimo.bassi@algorand.foundation?subject=did:algo)
+- [Joe Polny](mailto:joe@algorand.foundation?subject=did:algo)
+- [Bruno Martins](mailto:bruno.martins@algorand.foundation?subject=did:algo)
+
 # Abstract
 
 Decentralized Identifiers (DIDs) are a new type of identifier for that enable decentralized identification of various entities. DIDs are designed to enable individuals and organizations to generate their own identifiers using systems they trust. These new identifiers enable entities to prove control over them by authenticating using cryptographic proofs such as digital signatures.
