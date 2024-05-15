@@ -121,7 +121,6 @@ jobs:
     needs: protos
     strategy:
       matrix:
-        go-version: [1.19.x, 1.20.x, 1.21.x]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
@@ -141,7 +140,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: 1.21.x
 
       # Get commit message
       - name: Get commit message
