@@ -15,7 +15,7 @@ import (
 var syncCmd = &cobra.Command{
 	Use:     "sync",
 	Short:   "Publish a DID instance to the processing network",
-	Example: "algoid sync [DID name]",
+	Example: "algoid sync [did-name] [wallet-name]",
 	Aliases: []string{"publish", "update", "upload", "push"},
 	RunE:    runSyncCmd,
 }
@@ -37,7 +37,7 @@ func init() {
 }
 
 func runSyncCmd(_ *cobra.Command, args []string) error {
-	if len(args) != 1 {
+	if len(args) == 0 {
 		return errors.New("missing required parameters")
 	}
 
@@ -48,10 +48,17 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	}
 
 	// Retrieve identifier
-	name := sanitize.Name(args[0])
-	id, err := st.Get(name)
+	didName := sanitize.Name(args[0])
+
+	walletName := didName
+
+	if len(args) > 1 {
+		walletName = sanitize.Name(args[1])
+	}
+
+	id, err := st.Get(didName)
 	if err != nil {
-		return fmt.Errorf("no available record under reference name: %s", name)
+		return fmt.Errorf("no available record under reference name: %s", didName)
 	}
 
 	// Get wallet account
@@ -61,7 +68,7 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	}
 
 	// Decrypt wallet
-	seed, err := st.OpenWallet(name, wp)
+	seed, err := st.OpenWallet(walletName, wp)
 	if err != nil {
 		return err
 	}
@@ -85,14 +92,14 @@ func runSyncCmd(_ *cobra.Command, args []string) error {
 	// Submit request
 	log.Info("submitting request to the network")
 	if viper.GetBool("sync.delete") {
-		log.Infof("deleting: %s", name)
+		log.Infof("deleting: %s", didName)
 		if err = cl.DeleteDID(id, &account); err != nil {
 			return err
 		}
 		log.Info("DID instance deleted")
 		return nil
 	}
-	log.Infof("publishing: %s", name)
+	log.Infof("publishing: %s", didName)
 	if err := cl.PublishDID(id, &account); err != nil {
 		return err
 	}
