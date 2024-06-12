@@ -1,139 +1,69 @@
 <script lang="ts">
-  import WalletConnect from '@walletconnect/client';
-  import QRCodeModal from 'algorand-walletconnect-qrcode-modal';
+  import {SignalClient} from '@algorandfoundation/liquid-client'
   import { createEventDispatcher, onMount } from 'svelte';
   import { appState } from '~/store';
   import { GetContext } from '~/context';
-  import type { WalletMetadata } from '~/types';
+  import WalletModal from "~/lib/WalletModal.svelte";
+  import type {ModalOptions} from "~/types";
 
-  // component properties
-  export let mainnet = false;
-
-  // component event dispatcher
-  // will be used to dispatch the events:
-  //  - ready: wallet is connected and ready to use
-  //  - session_end: wallet was disconnected
-  //  - session_update: wallet details where updated
   const dispatch = createEventDispatcher();
 
   // get main application context
   const appCtx = GetContext();
 
   // connector instance
-  let connector: WalletConnect;
+  let client: SignalClient;
 
-  // setup the connector instance on component mount
+  // setup the SignalClient instance on component mount
   onMount(() => {
-    // setup the connector instance
-    connector = new WalletConnect({
-      bridge: 'https://bridge.walletconnect.org',
-      qrcodeModal: QRCodeModal,
-      clientMeta: {
-        name: 'AlgoID Connect (beta)',
-        description: 'AlgoID wallet connector',
-        url: 'http://github.com/algorandfoundation/did-algo',
-        icons: [
-          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_128x128.png',
-          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_192x192.png',
-          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_512x512.png'
-        ]
-      }
-    });
-
-    // no need to continue if no session is established
-    if (!connector.connected) {
-      return;
-    }
-
-    // recover existing session
-    let wallet: WalletMetadata = connector.peerMeta as WalletMetadata;
-    wallet.connected = true;
-    appState.setWallet(wallet);
-    appCtx.showAlert('success', `Connected to: ${wallet.name}`);
-
-    // start event processing
-    dispatch('ready');
+    console.log('mounting')
+    client = new SignalClient("https://liquid-auth.onrender.com")
     handleConnectorEvents();
   });
 
-  // setup the main wc connector instance
+  // peer with a wallet
   async function startSession() {
-    if (!connector.connected) {
-      resetConnector();
-      await connector.createSession({
-        chainId: mainnet ? 416001 : 416002
-      });
+    const requestId = SignalClient.generateRequestId()
+    if(!client.requestId){
+      client.peer(requestId, "offer").then((dc)=>{
+        dc.send('What up homie')
+        appState.setDataChannel(dc)
+    })
     }
-    handleConnectorEvents();
+    appCtx.showModal({
+      asPanel: false,
+      title: 'Connect Wallet',
+      subtitle: 'Scan the QR code with your wallet app to connect',
+      content: WalletModal,
+      props: {
+        src: await client.qrCode(),
+        hidden: false
+      }
+    } as ModalOptions);
   }
 
-  // manually terminate a wc session, if previously established
+  // manually terminate a session, if previously established
   function endSession(): void {
-    if (connector && connector.connected) {
-      connector.killSession();
-    }
+    client.close()
+    appState.removeWallet();
+    appCtx.showAlert('error', `Disconnected from wallet`);
   }
 
-  // handle wc session events
+  // handle events
   function handleConnectorEvents() {
-    connector.on('connect', (error, payload) => {
-      if (error) {
-        appCtx.showAlert('error', `Error connecting to wallet: ${error.message}`);
-        throw error;
-      }
-      let data = payload.params[0];
-      let wallet = data.peerMeta;
-      wallet.connected = true;
-      wallet.addresses = data.accounts;
-      appState.setWallet(wallet);
-      appCtx.showAlert('success', `Connected to: ${wallet.name}`);
+    client.on('link-message',(msg)=>{
+      appState.setWallet({
+        connected: true,
+        addresses: [msg.wallet],
+        name: `${msg.wallet.substring(0,4)}...${msg.wallet.substring(msg.wallet.length - 4, msg.wallet.length)}`,
+        description: "WebRTC Wallet",
+        url: "https://liquid-auth.onrender.com",
+        icons: []
+      });
+      appCtx.closeModal()
+      appCtx.showAlert('success', `Connected to: ${msg.wallet}`);
       dispatch('ready');
-    });
-
-    connector.on('disconnect', (error) => {
-      if (error) {
-        appCtx.showAlert('error', `Error disconnecting wallet: ${error.message}`);
-        throw error;
-      }
-      appState.removeWallet();
-      appCtx.showAlert('warning', `Disconnected from wallet`);
-      dispatch('session_end');
-    });
-
-    connector.on('session_update', (error, payload) => {
-      if (error) {
-        appCtx.showAlert('error', `Wallet Connect session error: ${error.message}`);
-        throw error;
-      }
-      let data = payload.params[0];
-      let wallet = data.peerMeta;
-      wallet.connected = true;
-      wallet.addresses = data.accounts;
-      appState.setWallet(wallet);
-      dispatch('session_update');
-    });
-  }
-
-  // reset the wc connector instance
-  function resetConnector() {
-    connector.off('connect');
-    connector.off('disconnect');
-    connector.off('session_update');
-    connector = null;
-    connector = new WalletConnect({
-      bridge: 'https://bridge.walletconnect.org',
-      qrcodeModal: QRCodeModal,
-      clientMeta: {
-        name: 'AlgoID Connect (beta)',
-        description: 'AlgoID wallet connector',
-        url: 'http://github.com/algorandfoundation/did-algo',
-        icons: [
-          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_128x128.png',
-          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_192x192.png',
-          'https://aid-tech.sfo2.digitaloceanspaces.com/public_assets/at_logo_512x512.png'
-        ]
-      }
-    });
+    })
   }
 </script>
 
