@@ -28,7 +28,7 @@ const (
 	betanetGenesisHash = "mFgazF+2uRS1tMiL9dsj01hJGySEmPN28B/TjjvpVW0="
 )
 
-// CreateApp is used to deploy the AlgoDID storage smart contract to the
+// CreateApp is used to deploy the DIDAlgoStorage smart contract to the
 // Algorand network.
 func CreateApp(
 	algodClient *algod.Client,
@@ -121,7 +121,7 @@ func CreateApp(
 	return confirmedTxn.ApplicationIndex, nil
 }
 
-// publishDID is used to upload a new DID document to the AlgoDID
+// publishDID is used to upload a new DID document to the DIDAlgoStorage
 // storage smart contract.
 func publishDID(
 	algodClient *algod.Client,
@@ -309,7 +309,7 @@ func checkNetwork(network string, algodClient *algod.Client) error {
 	return nil
 }
 
-// ResolveDID is used to read the DID document from the AlgoDID storage smart
+// ResolveDID is used to read the DID document from the DIDAlgoStorage smart
 // contract.
 func ResolveDID(appID uint64, pubKey []byte, algodClient *algod.Client, network string) ([]byte, error) {
 	err := checkNetwork(network, algodClient)
@@ -343,7 +343,7 @@ func ResolveDID(appID uint64, pubKey []byte, algodClient *algod.Client, network 
 	return data, nil
 }
 
-// DeleteDID is used to delete the DID document from the AlgoDID
+// DeleteDID is used to delete the DID document from the DIDAlgoStorage
 // storage smart contract.
 func deleteDID(
 	appID uint64,

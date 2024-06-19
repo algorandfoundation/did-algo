@@ -13,7 +13,7 @@ import (
 // https://developer.algorand.org/docs/get-details/encoding/
 
 // StorageContracts contains the pre-compiled smart contracts to
-// support AlgoDID's on-chain storage.
+// support DIDAlgoStorage's on-chain storage.
 var StorageContracts fs.FS
 
 //go:embed contracts
@@ -50,7 +50,7 @@ func init() {
 	_ = clearFile.Close()
 }
 
-// LoadContract loads the AlgoDID smart contract ABI from JSON file.
+// LoadContract loads the DIDAlgoStorage smart contract ABI from JSON file.
 func LoadContract() *abi.Contract {
 	abiFile, _ := StorageContracts.Open("DIDAlgoStorage.arc4.json")
 	abiContents, _ := io.ReadAll(abiFile)
