@@ -22,25 +22,32 @@ export type Metadata = {start: bigint, end: bigint, status: bigint, endSize: big
 export async function resolveDID(did: string, algodClient: algosdk.Algodv2): Promise<Buffer> {
   const splitDid = did.split(':');
 
-  if (splitDid[0] !== 'did') throw new Error(`Invalid protocol. Expected 'did', got ${splitDid[0]}`);
-  if (splitDid[1] !== 'algo') throw new Error(`Invalid DID method. Expected 'algod', got ${splitDid[1]}`);
+  const idxOffset = splitDid.length === 6 ? 0 : 1;
 
-  const splitID = splitDid[2].split('-');
-
-  let pubKey: Uint8Array;
-  try {
-    pubKey = algosdk.decodeAddress(splitID[0]).publicKey;
-  } catch (e) {
-    throw new Error(`Invalid public key. Expected Algorand address, got ${splitID[0]}`);
+  if (splitDid[0] !== 'did') {
+    throw new Error(`invalid protocol, expected 'did', got ${splitDid[0]}`);
   }
+  if (splitDid[1] !== 'algo') {
+    throw new Error(`invalid DID method, expected 'algo', got ${splitDid[1]}`);
+  }
+
+  const nameSpace = splitDid[3 - idxOffset];
+
+  if (nameSpace !== 'app') {
+    throw new Error(`invalid namespace, expected 'app', got ${nameSpace}`);
+  }
+
+  const pubKey = Buffer.from(splitDid[5 - idxOffset], 'hex');
 
   let appID: bigint;
 
   try {
-    appID = BigInt(splitID[1]);
+    appID = BigInt(splitDid[4 - idxOffset]);
     algosdk.encodeUint64(appID);
   } catch (e) {
-    throw new Error(`Invalid app ID. Expected uint64, got ${splitID[1]}`);
+    throw new Error(
+      `invalid app ID, expected uint64, got ${splitDid[4 - idxOffset]}`,
+    );
   }
 
   const appClient = new ApplicationClient({

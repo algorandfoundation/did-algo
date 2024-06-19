@@ -12,7 +12,7 @@ import {
   resolveDID, uploadDIDDocument, deleteDIDDocument, updateDIDDocument,
 } from '../src/index';
 
-jest.setTimeout(20000)
+jest.setTimeout(20000);
 
 describe('Algorand DID', () => {
   /**
@@ -68,39 +68,41 @@ describe('Algorand DID', () => {
   describe('uploadDIDDocument and Resolve', () => {
     it('(LARGE) DIDocument upload and resolve', async () => {
       const { appId } = await appClient.getAppReference();
-      const addr = algosdk.encodeAddress(bigDataUserKey);
+      const pubkeyHex = Buffer.from(bigDataUserKey).toString('hex');
 
       // Large upload
       await uploadDIDDocument(bigData, Number(appId), bigDataUserKey, sender, algodClient);
 
       // Reconstruct DID from several boxes
-      const resolvedData: Buffer = await resolveDID(`did:algo:${addr}-${appId}`, algodClient);
-      expect(resolvedData.toString('hex')).toEqual(bigData.toString('hex'))
-    })
+      const resolvedData: Buffer = await resolveDID(`did:algo:custom:app:${appId}:${pubkeyHex}`, algodClient);
+      expect(resolvedData.toString('hex')).toEqual(bigData.toString('hex'));
+    });
 
     it('(SMALL) DIDocument upload and resolve', async () => {
       const { appId } = await appClient.getAppReference();
-      const addr = algosdk.encodeAddress(smallDataUserKey);
+      const pubkeyHex = Buffer.from(smallDataUserKey).toString('hex');
 
       // Small upload
-      await uploadDIDDocument(Buffer.from(JSON.stringify(smallJSONObject)),
+      await uploadDIDDocument(
+        Buffer.from(JSON.stringify(smallJSONObject)),
         Number(appId),
         smallDataUserKey,
         sender,
-        algodClient);
+        algodClient,
+      );
 
       // Reconstruct DID from several boxes
-      const resolvedData: Buffer = await resolveDID(`did:algo:${addr}-${appId}`, algodClient);
-      expect(resolvedData.toString('hex')).toEqual(Buffer.from(JSON.stringify(smallJSONObject)).toString('hex'))
-    })
-  })
+      const resolvedData: Buffer = await resolveDID(`did:algo:custom:app:${appId}:${pubkeyHex}`, algodClient);
+      expect(resolvedData.toString('hex')).toEqual(Buffer.from(JSON.stringify(smallJSONObject)).toString('hex'));
+    });
+  });
 
   describe('deleteDIDDocument', () => {
     const deleteDIDDocumentTest = async (userKey: Uint8Array) => {
       await deleteDIDDocument(appId, userKey, sender, algodClient);
+      const pubkeyHex = Buffer.from(userKey).toString('hex');
 
-      const addr = algosdk.encodeAddress(userKey);
-      await expect(resolveDID(`did:algo:${addr}-${appId}`, algodClient)).rejects.toThrow();
+      await expect(resolveDID(`did:algo:custom:app:${appId}:${pubkeyHex}`, algodClient)).rejects.toThrow();
     };
 
     it('deletes big (multi-box) data', async () => {
@@ -142,8 +144,8 @@ describe('Algorand DID', () => {
         algodClient,
       );
 
-      const addr = algosdk.encodeAddress(updateDataUserKey);
-      const resolvedData = await resolveDID(`did:algo:${addr}-${appId}`, algodClient);
+      const pubkeyHex = Buffer.from(updateDataUserKey).toString('hex');
+      const resolvedData = await resolveDID(`did:algo:custom:app:${appId}:${pubkeyHex}`, algodClient);
 
       expect(resolvedData.toString()).toEqual(JSON.stringify(smallJSONObject));
     });
