@@ -23,20 +23,19 @@ type Metadata = {
 };
 
 /** Indicates the data is still being uploaded */
-const UPLOADING: uint<8> = 0;
+const UPLOADING = <uint<8>>0;
 
 /** Indicates the data is done uploading and can be safely read */
-const READY: uint<8> = 1;
+const READY = <uint<8>>1;
 
 /** Indicates the data is currently being deleted */
-const DELETING: uint<8> = 2;
+const DELETING = <uint<8>>2;
 
 const COST_PER_BYTE = 400;
 const COST_PER_BOX = 2500;
 const MAX_BOX_SIZE = 32768;
 
-// eslint-disable-next-line no-unused-vars
-class AlgoDID extends Contract {
+export class AlgoDID extends Contract {
   /** The boxes that contain the data, indexed by uint64 */
   dataBoxes = BoxMap<uint64, bytes>();
 
