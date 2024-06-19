@@ -1,11 +1,10 @@
 {
-  "name": "algo-did",
+  "name": "did-algo-storage",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "compile-contract": "tealscript contracts/algo-did.algo.ts contracts/artifacts",
-    "generate-client": "algokitgen generate -a contracts/artifacts/AlgoDID.json -o contracts/clients/AlgoDIDClient.ts",
-    "build": "npm run compile-contract && cp contracts/artifacts/AlgoDID* ../client/internal/contracts",
+    "compile-contract": "tealscript contracts/did-algo-storage.algo.ts contracts/artifacts",
+    "build": "npm run compile-contract && cp contracts/artifacts/* ../client/internal/contracts",
     "test": "npm run build && jest",
     "lint": "eslint . --ext .ts",
     "fix": "eslint . --ext .ts --fix"

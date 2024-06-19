@@ -35,7 +35,7 @@ const COST_PER_BYTE = 400;
 const COST_PER_BOX = 2500;
 const MAX_BOX_SIZE = 32768;
 
-export class AlgoDID extends Contract {
+export class DIDAlgoStorage extends Contract {
   /** The boxes that contain the data, indexed by uint64 */
   dataBoxes = BoxMap<uint64, bytes>();
 

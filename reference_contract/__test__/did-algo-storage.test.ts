@@ -7,7 +7,7 @@ import {
 } from '@jest/globals';
 import algosdk from 'algosdk';
 import { algodClient, kmdClient } from './common';
-import appSpec from '../contracts/artifacts/AlgoDID.json';
+import appSpec from '../contracts/artifacts/DIDAlgoStorage.arc32.json';
 import {
   resolveDID, uploadDIDDocument, deleteDIDDocument, updateDIDDocument,
 } from '../src/index';

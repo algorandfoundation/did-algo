@@ -28,7 +28,7 @@ func init() {
 	StorageContracts, _ = fs.Sub(dist, "contracts")
 
 	// load approval program
-	approvalFile, err := StorageContracts.Open("AlgoDID.approval.teal")
+	approvalFile, err := StorageContracts.Open("DIDAlgoStorage.approval.teal")
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func init() {
 	_ = approvalFile.Close()
 
 	// load clear program
-	clearFile, err := StorageContracts.Open("AlgoDID.clear.teal")
+	clearFile, err := StorageContracts.Open("DIDAlgoStorage.clear.teal")
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +52,7 @@ func init() {
 
 // LoadContract loads the AlgoDID smart contract ABI from JSON file.
 func LoadContract() *abi.Contract {
-	abiFile, _ := StorageContracts.Open("AlgoDID.abi.json")
+	abiFile, _ := StorageContracts.Open("DIDAlgoStorage.arc4.json")
 	abiContents, _ := io.ReadAll(abiFile)
 	contract := &abi.Contract{}
 	_ = json.Unmarshal(abiContents, contract)

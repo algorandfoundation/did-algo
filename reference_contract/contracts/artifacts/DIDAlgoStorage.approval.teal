@@ -75,20 +75,20 @@ startUpload:
 	byte 0x
 	dupn 3
 
-	// contracts/algo-did.algo.ts:63
+	// contracts/did-algo-storage.algo.ts:63
 	// assert(this.txn.sender === globals.creatorAddress)
 	txn Sender
 	global CreatorAddress
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:65
+	// contracts/did-algo-storage.algo.ts:65
 	// startBox = this.currentIndex.value
 	byte 0x63757272656e74496e646578 // "currentIndex"
 	app_global_get
 	frame_bury 0 // startBox: uint64
 
-	// contracts/algo-did.algo.ts:66
+	// contracts/did-algo-storage.algo.ts:66
 	// endBox = startBox + numBoxes - 1
 	frame_dig 0 // startBox: uint64
 	frame_dig -2 // numBoxes: uint64
@@ -97,7 +97,7 @@ startUpload:
 	-
 	frame_bury 1 // endBox: uint64
 
-	// contracts/algo-did.algo.ts:68
+	// contracts/did-algo-storage.algo.ts:68
 	// metadata: Metadata = {
 	//       start: startBox, end: endBox, status: UPLOADING, endSize: endBoxSize, lastDeleted: 0,
 	//     }
@@ -115,7 +115,7 @@ startUpload:
 	concat
 	frame_bury 2 // metadata: Metadata
 
-	// contracts/algo-did.algo.ts:72
+	// contracts/did-algo-storage.algo.ts:72
 	// assert(!this.metadata(pubKey).exists)
 	frame_dig -1 // pubKey: Address
 	box_len
@@ -124,13 +124,13 @@ startUpload:
 	!
 	assert
 
-	// contracts/algo-did.algo.ts:74
+	// contracts/did-algo-storage.algo.ts:74
 	// this.metadata(pubKey).value = metadata
 	frame_dig -1 // pubKey: Address
 	frame_dig 2 // metadata: Metadata
 	box_put
 
-	// contracts/algo-did.algo.ts:76
+	// contracts/did-algo-storage.algo.ts:76
 	// this.currentIndex.value = endBox + 1
 	byte 0x63757272656e74496e646578 // "currentIndex"
 	frame_dig 1 // endBox: uint64
@@ -138,7 +138,7 @@ startUpload:
 	+
 	app_global_put
 
-	// contracts/algo-did.algo.ts:78
+	// contracts/did-algo-storage.algo.ts:78
 	// totalCost = numBoxes * COST_PER_BOX // cost of data boxes
 	//     + (numBoxes - 1) * MAX_BOX_SIZE * COST_PER_BYTE // cost of data
 	//     + numBoxes * 8 * COST_PER_BYTE // cost of data keys
@@ -171,7 +171,7 @@ startUpload:
 	+
 	frame_bury 3 // totalCost: uint64
 
-	// contracts/algo-did.algo.ts:84
+	// contracts/did-algo-storage.algo.ts:84
 	// assert(mbrPayment.amount === totalCost)
 	frame_dig -4 // mbrPayment: PayTxn
 	gtxns Amount
@@ -179,7 +179,7 @@ startUpload:
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:85
+	// contracts/did-algo-storage.algo.ts:85
 	// assert(mbrPayment.receiver === this.app.address)
 	frame_dig -4 // mbrPayment: PayTxn
 	gtxns Receiver
@@ -232,19 +232,19 @@ upload:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts/algo-did.algo.ts:98
+	// contracts/did-algo-storage.algo.ts:98
 	// assert(this.txn.sender === globals.creatorAddress)
 	txn Sender
 	global CreatorAddress
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:100
+	// contracts/did-algo-storage.algo.ts:100
 	// metadata = this.metadata(pubKey).value
 	frame_dig -1 // pubKey: Address
 	frame_bury 0 // storage key//metadata
 
-	// contracts/algo-did.algo.ts:101
+	// contracts/did-algo-storage.algo.ts:101
 	// assert(metadata.status === UPLOADING)
 	frame_dig -1 // pubKey: Address
 	int 16 // headOffset
@@ -255,7 +255,7 @@ upload:
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:102
+	// contracts/did-algo-storage.algo.ts:102
 	// assert(metadata.start <= boxIndex && boxIndex <= metadata.end)
 	frame_dig -1 // pubKey: Address
 	int 0
@@ -279,7 +279,7 @@ upload:
 	assert
 
 	// *if0_condition
-	// contracts/algo-did.algo.ts:104
+	// contracts/did-algo-storage.algo.ts:104
 	// offset === 0
 	frame_dig -3 // offset: uint64
 	int 0
@@ -287,7 +287,7 @@ upload:
 	bz *if0_end
 
 	// *if0_consequent
-	// contracts/algo-did.algo.ts:105
+	// contracts/did-algo-storage.algo.ts:105
 	// this.dataBoxes(boxIndex).create(boxIndex === metadata.end ? metadata.endSize : MAX_BOX_SIZE)
 	frame_dig -2 // boxIndex: uint64
 	itob
@@ -314,7 +314,7 @@ upload:
 	pop
 
 *if0_end:
-	// contracts/algo-did.algo.ts:108
+	// contracts/did-algo-storage.algo.ts:108
 	// this.dataBoxes(boxIndex).replace(offset, data)
 	frame_dig -2 // boxIndex: uint64
 	itob
@@ -349,14 +349,14 @@ upload:
 finishUpload:
 	proto 1 0
 
-	// contracts/algo-did.algo.ts:118
+	// contracts/did-algo-storage.algo.ts:118
 	// assert(this.txn.sender === globals.creatorAddress)
 	txn Sender
 	global CreatorAddress
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:120
+	// contracts/did-algo-storage.algo.ts:120
 	// this.metadata(pubKey).value.status = READY
 	frame_dig -1 // pubKey: Address
 	int 16 // headOffset
@@ -392,19 +392,19 @@ startDelete:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// contracts/algo-did.algo.ts:129
+	// contracts/did-algo-storage.algo.ts:129
 	// assert(this.txn.sender === globals.creatorAddress)
 	txn Sender
 	global CreatorAddress
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:131
+	// contracts/did-algo-storage.algo.ts:131
 	// metadata = this.metadata(pubKey).value
 	frame_dig -1 // pubKey: Address
 	frame_bury 0 // storage key//metadata
 
-	// contracts/algo-did.algo.ts:132
+	// contracts/did-algo-storage.algo.ts:132
 	// assert(metadata.status === READY)
 	frame_dig -1 // pubKey: Address
 	int 16 // headOffset
@@ -415,7 +415,7 @@ startDelete:
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:134
+	// contracts/did-algo-storage.algo.ts:134
 	// metadata.status = DELETING
 	frame_dig 0 // storage key//metadata
 	int 16 // headOffset
@@ -457,19 +457,19 @@ deleteData:
 	byte 0x
 	dup
 
-	// contracts/algo-did.algo.ts:144
+	// contracts/did-algo-storage.algo.ts:144
 	// assert(this.txn.sender === globals.creatorAddress)
 	txn Sender
 	global CreatorAddress
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:146
+	// contracts/did-algo-storage.algo.ts:146
 	// metadata = this.metadata(pubKey).value
 	frame_dig -1 // pubKey: Address
 	frame_bury 0 // storage key//metadata
 
-	// contracts/algo-did.algo.ts:147
+	// contracts/did-algo-storage.algo.ts:147
 	// assert(metadata.status === DELETING)
 	frame_dig -1 // pubKey: Address
 	int 16 // headOffset
@@ -480,7 +480,7 @@ deleteData:
 	==
 	assert
 
-	// contracts/algo-did.algo.ts:148
+	// contracts/did-algo-storage.algo.ts:148
 	// assert(metadata.start <= boxIndex && boxIndex <= metadata.end)
 	frame_dig -1 // pubKey: Address
 	int 0
@@ -504,7 +504,7 @@ deleteData:
 	assert
 
 	// *if1_condition
-	// contracts/algo-did.algo.ts:150
+	// contracts/did-algo-storage.algo.ts:150
 	// boxIndex !== metadata.start
 	frame_dig -2 // boxIndex: uint64
 	frame_dig -1 // pubKey: Address
@@ -516,7 +516,7 @@ deleteData:
 	bz *if1_end
 
 	// *if1_consequent
-	// contracts/algo-did.algo.ts:150
+	// contracts/did-algo-storage.algo.ts:150
 	// assert(metadata.lastDeleted === boxIndex - 1)
 	frame_dig -1 // pubKey: Address
 	int 25 // headOffset
@@ -530,21 +530,21 @@ deleteData:
 	assert
 
 *if1_end:
-	// contracts/algo-did.algo.ts:152
+	// contracts/did-algo-storage.algo.ts:152
 	// preMBR = globals.currentApplicationAddress.minBalance
 	global CurrentApplicationAddress
 	acct_params_get AcctMinBalance
 	pop
 	frame_bury 1 // preMBR: uint64
 
-	// contracts/algo-did.algo.ts:154
+	// contracts/did-algo-storage.algo.ts:154
 	// this.dataBoxes(boxIndex).delete()
 	frame_dig -2 // boxIndex: uint64
 	itob
 	box_del
 
 	// *if2_condition
-	// contracts/algo-did.algo.ts:156
+	// contracts/did-algo-storage.algo.ts:156
 	// boxIndex === metadata.end
 	frame_dig -2 // boxIndex: uint64
 	frame_dig -1 // pubKey: Address
@@ -556,14 +556,14 @@ deleteData:
 	bz *if2_else
 
 	// *if2_consequent
-	// contracts/algo-did.algo.ts:156
+	// contracts/did-algo-storage.algo.ts:156
 	// this.metadata(pubKey).delete()
 	frame_dig -1 // pubKey: Address
 	box_del
 	b *if2_end
 
 *if2_else:
-	// contracts/algo-did.algo.ts:157
+	// contracts/did-algo-storage.algo.ts:157
 	// metadata.lastDeleted = boxIndex
 	int 25 // headOffset
 	frame_dig -2 // boxIndex: uint64
@@ -573,7 +573,7 @@ deleteData:
 	box_replace
 
 *if2_end:
-	// contracts/algo-did.algo.ts:159
+	// contracts/did-algo-storage.algo.ts:159
 	// sendPayment({
 	//       amount: preMBR - globals.currentApplicationAddress.minBalance,
 	//       receiver: this.txn.sender,
@@ -582,7 +582,7 @@ deleteData:
 	int pay
 	itxn_field TypeEnum
 
-	// contracts/algo-did.algo.ts:160
+	// contracts/did-algo-storage.algo.ts:160
 	// amount: preMBR - globals.currentApplicationAddress.minBalance
 	frame_dig 1 // preMBR: uint64
 	global CurrentApplicationAddress
@@ -591,7 +591,7 @@ deleteData:
 	-
 	itxn_field Amount
 
-	// contracts/algo-did.algo.ts:161
+	// contracts/did-algo-storage.algo.ts:161
 	// receiver: this.txn.sender
 	txn Sender
 	itxn_field Receiver
@@ -617,7 +617,7 @@ deleteData:
 updateApplication:
 	proto 0 0
 
-	// contracts/algo-did.algo.ts:169
+	// contracts/did-algo-storage.algo.ts:169
 	// assert(this.txn.sender === globals.creatorAddress)
 	txn Sender
 	global CreatorAddress

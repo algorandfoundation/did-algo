@@ -5,7 +5,7 @@ import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-c
 import { AppCallTransactionResult } from '@algorandfoundation/algokit-utils/types/app';
 import { expect } from '@jest/globals';
 import { SuggestedParamsWithMinFee } from 'algosdk/dist/types/types/transactions/base';
-import appSpec from '../contracts/artifacts/AlgoDID.json';
+import appSpec from '../contracts/artifacts/DIDAlgoStorage.arc32.json';
 
 const COST_PER_BYTE = 400;
 const COST_PER_BOX = 2500;
