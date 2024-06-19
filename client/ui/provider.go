@@ -20,7 +20,7 @@ import (
 type Provider struct {
 	st     *store.LocalStore
 	log    xlog.Logger
-	client *internal.AlgoDIDClient
+	client *internal.DIDAlgoStorageClient
 }
 
 // LocalEntry represents a DID instance stored in the local

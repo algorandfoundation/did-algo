@@ -36,7 +36,7 @@ func getStorageAppID(network string) (uint, error) {
 }
 
 // Get network client instance.
-func getAlgoClient() (*internal.AlgoDIDClient, error) {
+func getAlgoClient() (*internal.DIDAlgoStorageClient, error) {
 	conf := new(internal.ClientSettings)
 	if err := viper.UnmarshalKey("network", &conf); err != nil {
 		return nil, err

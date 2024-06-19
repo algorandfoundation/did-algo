@@ -13,7 +13,7 @@ import (
 var deployContractCmd = &cobra.Command{
 	Use:     "deploy",
 	Aliases: []string{"deploy-contract"},
-	Short:   "Deploy the AlgoDID storage smart contract",
+	Short:   "Deploy the DIDAlgoStorage smart contract",
 	Example: "algoid deploy [wallet-name] [network]",
 	RunE:    runDeployContractCmd,
 }

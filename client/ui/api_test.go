@@ -132,7 +132,7 @@ func TestMain(m *testing.M) {
 	// 	// Algod node access token.
 	// 	NodeToken string `json:"node_token,omitempty" yaml:"node_token,omitempty" mapstructure:"node_token"`
 
-	// 	// Application ID for the AlgoDID storage smart contract.
+	// 	// Application ID for the DIDAlgoStorage smart contract.
 	// 	AppID uint `json:"app_id" yaml:"app_id" mapstructure:"app_id"`
 
 	// 	// Storage contract provider server, if any.

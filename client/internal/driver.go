@@ -9,7 +9,7 @@ import (
 
 // Read a DID document from the Algorand network. The method complies
 // with the `resolver.Provider` interface.
-func (c *AlgoDIDClient) Read(id string) (*did.Document, *did.DocumentMetadata, error) {
+func (c *DIDAlgoStorageClient) Read(id string) (*did.Document, *did.DocumentMetadata, error) {
 	if _, err := did.Parse(id); err != nil {
 		return nil, nil, errors.New(resolver.ErrInvalidDID)
 	}
