@@ -4,6 +4,7 @@
   "methods": [
     {
       "name": "startUpload",
+      "desc": "Allocate boxes to begin data upload process",
       "args": [
         {
           "name": "pubKey",
@@ -26,14 +27,13 @@
           "desc": "Payment from the uploader to cover the box MBR"
         }
       ],
-      "desc": "Allocate boxes to begin data upload process",
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "upload",
+      "desc": "Upload data to a specific offset in a box",
       "args": [
         {
           "name": "pubKey",
@@ -56,14 +56,13 @@
           "desc": "The data to write"
         }
       ],
-      "desc": "Upload data to a specific offset in a box",
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "finishUpload",
+      "desc": "Mark uploading as false",
       "args": [
         {
           "name": "pubKey",
@@ -71,14 +70,13 @@
           "desc": "The address of the DID"
         }
       ],
-      "desc": "Mark uploading as false",
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "startDelete",
+      "desc": "Starts the deletion process for the data associated with a DID",
       "args": [
         {
           "name": "pubKey",
@@ -86,14 +84,13 @@
           "desc": "The address of the DID"
         }
       ],
-      "desc": "Starts the deletion process for the data associated with a DID",
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "deleteData",
+      "desc": "Deletes a box of data",
       "args": [
         {
           "name": "pubKey",
@@ -106,38 +103,32 @@
           "desc": "The index of the box to delete"
         }
       ],
-      "desc": "Deletes a box of data",
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "updateApplication",
-      "args": [],
       "desc": "Allow the contract to be updated by the creator",
+      "args": [],
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "dummy",
-      "args": [],
       "desc": "Dummy function to add extra box references for deleteData.Boxes are 32k, but a single app call can only inlcude enough references to read/write 8kat a time. Thus when a box is deleted, we need to add additional dummy calls with boxreferences to increase the total read/write budget to 32k.",
+      "args": [],
       "returns": {
-        "type": "void",
-        "desc": ""
+        "type": "void"
       }
     },
     {
       "name": "createApplication",
-      "desc": "",
+      "args": [],
       "returns": {
-        "type": "void",
-        "desc": ""
-      },
-      "args": []
+        "type": "void"
+      }
     }
   ]
 }
