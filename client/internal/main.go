@@ -188,7 +188,13 @@ func (c *DIDAlgoStorageClient) Resolve(id string) (*did.Document, error) {
 	return doc, nil
 }
 
-func (c *DIDAlgoStorageClient) submitToProvider(network string, pub []byte, appID uint64, method string, doc []byte) error {
+func (c *DIDAlgoStorageClient) submitToProvider(
+	network string,
+	pub []byte,
+	appID uint64,
+	method string,
+	doc []byte,
+) error {
 	networkClient := c.Networks[network]
 
 	c.log.Warning("using provider: ", networkClient.profile.StoreProvider)
