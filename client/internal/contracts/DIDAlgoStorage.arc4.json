@@ -117,7 +117,7 @@
     },
     {
       "name": "dummy",
-      "desc": "Dummy function to add extra box references for deleteData.Boxes are 32k, but a single app call can only inlcude enough references to read/write 8kat a time. Thus when a box is deleted, we need to add additional dummy calls with boxreferences to increase the total read/write budget to 32k.",
+      "desc": "Dummy function to add extra box references for deleteData.\nBoxes are 32k, but a single app call can only inlcude enough references to read/write 8k\nat a time. Thus when a box is deleted, we need to add additional dummy calls with box\nreferences to increase the total read/write budget to 32k.",
       "args": [],
       "returns": {
         "type": "void"

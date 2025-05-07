@@ -1,0 +1,3225 @@
+{
+  "name": "DIDAlgoStorage",
+  "desc": "",
+  "methods": [
+    {
+      "name": "startUpload",
+      "desc": "Allocate boxes to begin data upload process",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The pubkey of the DID"
+        },
+        {
+          "name": "numBoxes",
+          "type": "uint64",
+          "desc": "The number of boxes that the data will take up"
+        },
+        {
+          "name": "endBoxSize",
+          "type": "uint64",
+          "desc": "The size of the last box"
+        },
+        {
+          "name": "mbrPayment",
+          "type": "pay",
+          "desc": "Payment from the uploader to cover the box MBR"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "NoOp"
+        ]
+      }
+    },
+    {
+      "name": "upload",
+      "desc": "Upload data to a specific offset in a box",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The pubkey of the DID"
+        },
+        {
+          "name": "boxIndex",
+          "type": "uint64",
+          "desc": "The index of the box to upload the given chunk of data to"
+        },
+        {
+          "name": "offset",
+          "type": "uint64",
+          "desc": "The offset within the box to start writing the data"
+        },
+        {
+          "name": "data",
+          "type": "byte[]",
+          "desc": "The data to write"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "NoOp"
+        ]
+      }
+    },
+    {
+      "name": "finishUpload",
+      "desc": "Mark uploading as false",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The address of the DID"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "NoOp"
+        ]
+      }
+    },
+    {
+      "name": "startDelete",
+      "desc": "Starts the deletion process for the data associated with a DID",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The address of the DID"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "NoOp"
+        ]
+      }
+    },
+    {
+      "name": "deleteData",
+      "desc": "Deletes a box of data",
+      "args": [
+        {
+          "name": "pubKey",
+          "type": "address",
+          "desc": "The address of the DID"
+        },
+        {
+          "name": "boxIndex",
+          "type": "uint64",
+          "desc": "The index of the box to delete"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "NoOp"
+        ]
+      }
+    },
+    {
+      "name": "updateApplication",
+      "desc": "Allow the contract to be updated by the creator",
+      "args": [],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "UpdateApplication"
+        ]
+      }
+    },
+    {
+      "name": "dummy",
+      "desc": "Dummy function to add extra box references for deleteData.\nBoxes are 32k, but a single app call can only inlcude enough references to read/write 8k\nat a time. Thus when a box is deleted, we need to add additional dummy calls with box\nreferences to increase the total read/write budget to 32k.",
+      "args": [],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [],
+        "call": [
+          "NoOp"
+        ]
+      }
+    },
+    {
+      "name": "createApplication",
+      "args": [],
+      "returns": {
+        "type": "void"
+      },
+      "actions": {
+        "create": [
+          "NoOp"
+        ],
+        "call": []
+      }
+    }
+  ],
+  "arcs": [
+    4,
+    56
+  ],
+  "structs": {
+    "Metadata": [
+      {
+        "name": "start",
+        "type": "uint64"
+      },
+      {
+        "name": "end",
+        "type": "uint64"
+      },
+      {
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "name": "endSize",
+        "type": "uint64"
+      },
+      {
+        "name": "lastDeleted",
+        "type": "uint64"
+      }
+    ]
+  },
+  "state": {
+    "schema": {
+      "global": {
+        "bytes": 0,
+        "ints": 1
+      },
+      "local": {
+        "bytes": 0,
+        "ints": 0
+      }
+    },
+    "keys": {
+      "global": {
+        "currentIndex": {
+          "key": "Y3VycmVudEluZGV4",
+          "keyType": "AVMBytes",
+          "valueType": "uint64"
+        }
+      },
+      "local": {},
+      "box": {}
+    },
+    "maps": {
+      "global": {},
+      "local": {},
+      "box": {
+        "dataBoxes": {
+          "keyType": "uint64",
+          "valueType": "AVMBytes"
+        },
+        "metadata": {
+          "keyType": "address",
+          "valueType": "Metadata"
+        }
+      }
+    }
+  },
+  "bareActions": {
+    "create": [],
+    "call": []
+  },
+  "sourceInfo": {
+    "approval": {
+      "sourceInfo": [
+        {
+          "teal": 1,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            0
+          ]
+        },
+        {
+          "teal": 2,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "teal": 3,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ]
+        },
+        {
+          "teal": 15,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            32,
+            33
+          ]
+        },
+        {
+          "teal": 16,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            34
+          ]
+        },
+        {
+          "teal": 17,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            35,
+            36
+          ]
+        },
+        {
+          "teal": 18,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            37
+          ]
+        },
+        {
+          "teal": 19,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            38,
+            39
+          ]
+        },
+        {
+          "teal": 20,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            40
+          ]
+        },
+        {
+          "teal": 21,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66
+          ]
+        },
+        {
+          "teal": 25,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "errorMessage": "The requested action is not implemented in this contract. Are you using the correct OnComplete? Did you set your app ID?",
+          "pc": [
+            67
+          ]
+        },
+        {
+          "teal": 30,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            68,
+            69
+          ]
+        },
+        {
+          "teal": 31,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            70
+          ]
+        },
+        {
+          "teal": 32,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            71
+          ]
+        },
+        {
+          "teal": 33,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            72
+          ]
+        },
+        {
+          "teal": 34,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            73,
+            74
+          ]
+        },
+        {
+          "teal": 35,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            75
+          ]
+        },
+        {
+          "teal": 36,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "pc": [
+            76
+          ]
+        },
+        {
+          "teal": 39,
+          "source": "contracts/did-algo-storage.algo.ts:61",
+          "errorMessage": "argument 0 (mbrPayment) for startUpload must be a pay transaction",
+          "pc": [
+            77
+          ]
+        },
+        {
+          "teal": 42,
+          "source": "contracts/did-algo-storage.algo.ts:60",
+          "pc": [
+            78,
+            79,
+            80
+          ]
+        },
+        {
+          "teal": 43,
+          "source": "contracts/did-algo-storage.algo.ts:60",
+          "pc": [
+            81
+          ]
+        },
+        {
+          "teal": 46,
+          "source": "contracts/did-algo-storage.algo.ts:59",
+          "pc": [
+            82,
+            83,
+            84
+          ]
+        },
+        {
+          "teal": 47,
+          "source": "contracts/did-algo-storage.algo.ts:59",
+          "pc": [
+            85
+          ]
+        },
+        {
+          "teal": 50,
+          "source": "contracts/did-algo-storage.algo.ts:58",
+          "pc": [
+            86,
+            87,
+            88
+          ]
+        },
+        {
+          "teal": 51,
+          "source": "contracts/did-algo-storage.algo.ts:58",
+          "pc": [
+            89
+          ]
+        },
+        {
+          "teal": 52,
+          "source": "contracts/did-algo-storage.algo.ts:58",
+          "pc": [
+            90
+          ]
+        },
+        {
+          "teal": 53,
+          "source": "contracts/did-algo-storage.algo.ts:58",
+          "pc": [
+            91,
+            92
+          ]
+        },
+        {
+          "teal": 54,
+          "source": "contracts/did-algo-storage.algo.ts:58",
+          "pc": [
+            93
+          ]
+        },
+        {
+          "teal": 57,
+          "source": "contracts/did-algo-storage.algo.ts:58",
+          "errorMessage": "argument 3 (pubKey) for startUpload must be a address",
+          "pc": [
+            94
+          ]
+        },
+        {
+          "teal": 60,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            95,
+            96,
+            97
+          ]
+        },
+        {
+          "teal": 61,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            98
+          ]
+        },
+        {
+          "teal": 62,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            99
+          ]
+        },
+        {
+          "teal": 74,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            100,
+            101,
+            102
+          ]
+        },
+        {
+          "teal": 77,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            103
+          ]
+        },
+        {
+          "teal": 78,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            104,
+            105
+          ]
+        },
+        {
+          "teal": 82,
+          "source": "contracts/did-algo-storage.algo.ts:63",
+          "pc": [
+            106,
+            107
+          ]
+        },
+        {
+          "teal": 83,
+          "source": "contracts/did-algo-storage.algo.ts:63",
+          "pc": [
+            108,
+            109
+          ]
+        },
+        {
+          "teal": 84,
+          "source": "contracts/did-algo-storage.algo.ts:63",
+          "pc": [
+            110
+          ]
+        },
+        {
+          "teal": 85,
+          "source": "contracts/did-algo-storage.algo.ts:63",
+          "pc": [
+            111
+          ]
+        },
+        {
+          "teal": 89,
+          "source": "contracts/did-algo-storage.algo.ts:65",
+          "pc": [
+            112
+          ]
+        },
+        {
+          "teal": 90,
+          "source": "contracts/did-algo-storage.algo.ts:65",
+          "pc": [
+            113
+          ]
+        },
+        {
+          "teal": 91,
+          "source": "contracts/did-algo-storage.algo.ts:65",
+          "pc": [
+            114,
+            115
+          ]
+        },
+        {
+          "teal": 95,
+          "source": "contracts/did-algo-storage.algo.ts:66",
+          "pc": [
+            116,
+            117
+          ]
+        },
+        {
+          "teal": 96,
+          "source": "contracts/did-algo-storage.algo.ts:66",
+          "pc": [
+            118,
+            119
+          ]
+        },
+        {
+          "teal": 97,
+          "source": "contracts/did-algo-storage.algo.ts:66",
+          "pc": [
+            120
+          ]
+        },
+        {
+          "teal": 98,
+          "source": "contracts/did-algo-storage.algo.ts:66",
+          "pc": [
+            121
+          ]
+        },
+        {
+          "teal": 99,
+          "source": "contracts/did-algo-storage.algo.ts:66",
+          "pc": [
+            122
+          ]
+        },
+        {
+          "teal": 100,
+          "source": "contracts/did-algo-storage.algo.ts:66",
+          "pc": [
+            123,
+            124
+          ]
+        },
+        {
+          "teal": 106,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            125,
+            126
+          ]
+        },
+        {
+          "teal": 107,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            127
+          ]
+        },
+        {
+          "teal": 108,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            128,
+            129
+          ]
+        },
+        {
+          "teal": 109,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            130
+          ]
+        },
+        {
+          "teal": 110,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            131
+          ]
+        },
+        {
+          "teal": 111,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            132,
+            133,
+            134
+          ]
+        },
+        {
+          "teal": 112,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            135
+          ]
+        },
+        {
+          "teal": 113,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            136,
+            137
+          ]
+        },
+        {
+          "teal": 114,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            138
+          ]
+        },
+        {
+          "teal": 115,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            139
+          ]
+        },
+        {
+          "teal": 116,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            140,
+            141,
+            142,
+            143,
+            144,
+            145,
+            146,
+            147,
+            148,
+            149
+          ]
+        },
+        {
+          "teal": 117,
+          "source": "contracts/did-algo-storage.algo.ts:69",
+          "pc": [
+            150
+          ]
+        },
+        {
+          "teal": 118,
+          "source": "contracts/did-algo-storage.algo.ts:68",
+          "pc": [
+            151,
+            152
+          ]
+        },
+        {
+          "teal": 122,
+          "source": "contracts/did-algo-storage.algo.ts:72",
+          "pc": [
+            153,
+            154
+          ]
+        },
+        {
+          "teal": 123,
+          "source": "contracts/did-algo-storage.algo.ts:72",
+          "pc": [
+            155
+          ]
+        },
+        {
+          "teal": 124,
+          "source": "contracts/did-algo-storage.algo.ts:72",
+          "pc": [
+            156
+          ]
+        },
+        {
+          "teal": 125,
+          "source": "contracts/did-algo-storage.algo.ts:72",
+          "pc": [
+            157
+          ]
+        },
+        {
+          "teal": 126,
+          "source": "contracts/did-algo-storage.algo.ts:72",
+          "pc": [
+            158
+          ]
+        },
+        {
+          "teal": 127,
+          "source": "contracts/did-algo-storage.algo.ts:72",
+          "pc": [
+            159
+          ]
+        },
+        {
+          "teal": 131,
+          "source": "contracts/did-algo-storage.algo.ts:74",
+          "pc": [
+            160,
+            161
+          ]
+        },
+        {
+          "teal": 132,
+          "source": "contracts/did-algo-storage.algo.ts:74",
+          "pc": [
+            162,
+            163
+          ]
+        },
+        {
+          "teal": 133,
+          "source": "contracts/did-algo-storage.algo.ts:74",
+          "pc": [
+            164
+          ]
+        },
+        {
+          "teal": 137,
+          "source": "contracts/did-algo-storage.algo.ts:76",
+          "pc": [
+            165
+          ]
+        },
+        {
+          "teal": 138,
+          "source": "contracts/did-algo-storage.algo.ts:76",
+          "pc": [
+            166,
+            167
+          ]
+        },
+        {
+          "teal": 139,
+          "source": "contracts/did-algo-storage.algo.ts:76",
+          "pc": [
+            168
+          ]
+        },
+        {
+          "teal": 140,
+          "source": "contracts/did-algo-storage.algo.ts:76",
+          "pc": [
+            169
+          ]
+        },
+        {
+          "teal": 141,
+          "source": "contracts/did-algo-storage.algo.ts:76",
+          "pc": [
+            170
+          ]
+        },
+        {
+          "teal": 149,
+          "source": "contracts/did-algo-storage.algo.ts:78",
+          "pc": [
+            171,
+            172
+          ]
+        },
+        {
+          "teal": 150,
+          "source": "contracts/did-algo-storage.algo.ts:78",
+          "pc": [
+            173,
+            174
+          ]
+        },
+        {
+          "teal": 151,
+          "source": "contracts/did-algo-storage.algo.ts:78",
+          "pc": [
+            175
+          ]
+        },
+        {
+          "teal": 152,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            176,
+            177
+          ]
+        },
+        {
+          "teal": 153,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            178
+          ]
+        },
+        {
+          "teal": 154,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            179
+          ]
+        },
+        {
+          "teal": 155,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            180,
+            181
+          ]
+        },
+        {
+          "teal": 156,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            182
+          ]
+        },
+        {
+          "teal": 157,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            183,
+            184
+          ]
+        },
+        {
+          "teal": 158,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            185
+          ]
+        },
+        {
+          "teal": 159,
+          "source": "contracts/did-algo-storage.algo.ts:79",
+          "pc": [
+            186
+          ]
+        },
+        {
+          "teal": 160,
+          "source": "contracts/did-algo-storage.algo.ts:80",
+          "pc": [
+            187,
+            188
+          ]
+        },
+        {
+          "teal": 161,
+          "source": "contracts/did-algo-storage.algo.ts:80",
+          "pc": [
+            189
+          ]
+        },
+        {
+          "teal": 162,
+          "source": "contracts/did-algo-storage.algo.ts:80",
+          "pc": [
+            190
+          ]
+        },
+        {
+          "teal": 163,
+          "source": "contracts/did-algo-storage.algo.ts:80",
+          "pc": [
+            191,
+            192
+          ]
+        },
+        {
+          "teal": 164,
+          "source": "contracts/did-algo-storage.algo.ts:80",
+          "pc": [
+            193
+          ]
+        },
+        {
+          "teal": 165,
+          "source": "contracts/did-algo-storage.algo.ts:80",
+          "pc": [
+            194
+          ]
+        },
+        {
+          "teal": 166,
+          "source": "contracts/did-algo-storage.algo.ts:81",
+          "pc": [
+            195,
+            196
+          ]
+        },
+        {
+          "teal": 167,
+          "source": "contracts/did-algo-storage.algo.ts:81",
+          "pc": [
+            197,
+            198
+          ]
+        },
+        {
+          "teal": 168,
+          "source": "contracts/did-algo-storage.algo.ts:81",
+          "pc": [
+            199
+          ]
+        },
+        {
+          "teal": 169,
+          "source": "contracts/did-algo-storage.algo.ts:81",
+          "pc": [
+            200
+          ]
+        },
+        {
+          "teal": 170,
+          "source": "contracts/did-algo-storage.algo.ts:82",
+          "pc": [
+            201,
+            202
+          ]
+        },
+        {
+          "teal": 171,
+          "source": "contracts/did-algo-storage.algo.ts:82",
+          "pc": [
+            203
+          ]
+        },
+        {
+          "teal": 172,
+          "source": "contracts/did-algo-storage.algo.ts:82",
+          "pc": [
+            204,
+            205,
+            206,
+            207
+          ]
+        },
+        {
+          "teal": 173,
+          "source": "contracts/did-algo-storage.algo.ts:82",
+          "pc": [
+            208
+          ]
+        },
+        {
+          "teal": 174,
+          "source": "contracts/did-algo-storage.algo.ts:78",
+          "pc": [
+            209,
+            210
+          ]
+        },
+        {
+          "teal": 178,
+          "source": "contracts/did-algo-storage.algo.ts:84",
+          "pc": [
+            211,
+            212
+          ]
+        },
+        {
+          "teal": 179,
+          "source": "contracts/did-algo-storage.algo.ts:84",
+          "pc": [
+            213,
+            214
+          ]
+        },
+        {
+          "teal": 180,
+          "source": "contracts/did-algo-storage.algo.ts:84",
+          "pc": [
+            215,
+            216
+          ]
+        },
+        {
+          "teal": 181,
+          "source": "contracts/did-algo-storage.algo.ts:84",
+          "pc": [
+            217
+          ]
+        },
+        {
+          "teal": 182,
+          "source": "contracts/did-algo-storage.algo.ts:84",
+          "pc": [
+            218
+          ]
+        },
+        {
+          "teal": 186,
+          "source": "contracts/did-algo-storage.algo.ts:85",
+          "pc": [
+            219,
+            220
+          ]
+        },
+        {
+          "teal": 187,
+          "source": "contracts/did-algo-storage.algo.ts:85",
+          "pc": [
+            221,
+            222
+          ]
+        },
+        {
+          "teal": 188,
+          "source": "contracts/did-algo-storage.algo.ts:85",
+          "pc": [
+            223,
+            224
+          ]
+        },
+        {
+          "teal": 189,
+          "source": "contracts/did-algo-storage.algo.ts:85",
+          "pc": [
+            225
+          ]
+        },
+        {
+          "teal": 190,
+          "source": "contracts/did-algo-storage.algo.ts:85",
+          "pc": [
+            226
+          ]
+        },
+        {
+          "teal": 191,
+          "source": "contracts/did-algo-storage.algo.ts:57",
+          "pc": [
+            227
+          ]
+        },
+        {
+          "teal": 196,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            228,
+            229,
+            230
+          ]
+        },
+        {
+          "teal": 197,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            231,
+            232,
+            233
+          ]
+        },
+        {
+          "teal": 200,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            234,
+            235,
+            236
+          ]
+        },
+        {
+          "teal": 201,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            237
+          ]
+        },
+        {
+          "teal": 204,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            238,
+            239,
+            240
+          ]
+        },
+        {
+          "teal": 205,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            241
+          ]
+        },
+        {
+          "teal": 208,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            242,
+            243,
+            244
+          ]
+        },
+        {
+          "teal": 209,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            245
+          ]
+        },
+        {
+          "teal": 210,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            246
+          ]
+        },
+        {
+          "teal": 211,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            247,
+            248
+          ]
+        },
+        {
+          "teal": 212,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            249
+          ]
+        },
+        {
+          "teal": 215,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "errorMessage": "argument 3 (pubKey) for upload must be a address",
+          "pc": [
+            250
+          ]
+        },
+        {
+          "teal": 218,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            251,
+            252,
+            253
+          ]
+        },
+        {
+          "teal": 219,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            254
+          ]
+        },
+        {
+          "teal": 220,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            255
+          ]
+        },
+        {
+          "teal": 232,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            256,
+            257,
+            258
+          ]
+        },
+        {
+          "teal": 235,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            259
+          ]
+        },
+        {
+          "teal": 239,
+          "source": "contracts/did-algo-storage.algo.ts:98",
+          "pc": [
+            260,
+            261
+          ]
+        },
+        {
+          "teal": 240,
+          "source": "contracts/did-algo-storage.algo.ts:98",
+          "pc": [
+            262,
+            263
+          ]
+        },
+        {
+          "teal": 241,
+          "source": "contracts/did-algo-storage.algo.ts:98",
+          "pc": [
+            264
+          ]
+        },
+        {
+          "teal": 242,
+          "source": "contracts/did-algo-storage.algo.ts:98",
+          "pc": [
+            265
+          ]
+        },
+        {
+          "teal": 246,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            266,
+            267
+          ]
+        },
+        {
+          "teal": 247,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            268,
+            269
+          ]
+        },
+        {
+          "teal": 251,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            270,
+            271
+          ]
+        },
+        {
+          "teal": 252,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            272
+          ]
+        },
+        {
+          "teal": 253,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            273
+          ]
+        },
+        {
+          "teal": 254,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            274
+          ]
+        },
+        {
+          "teal": 255,
+          "source": "contracts/did-algo-storage.algo.ts:101",
+          "pc": [
+            275
+          ]
+        },
+        {
+          "teal": 256,
+          "source": "contracts/did-algo-storage.algo.ts:26",
+          "pc": [
+            276
+          ]
+        },
+        {
+          "teal": 257,
+          "source": "contracts/did-algo-storage.algo.ts:101",
+          "pc": [
+            277
+          ]
+        },
+        {
+          "teal": 258,
+          "source": "contracts/did-algo-storage.algo.ts:101",
+          "pc": [
+            278
+          ]
+        },
+        {
+          "teal": 262,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            279,
+            280
+          ]
+        },
+        {
+          "teal": 263,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            281
+          ]
+        },
+        {
+          "teal": 264,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            282
+          ]
+        },
+        {
+          "teal": 265,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            283
+          ]
+        },
+        {
+          "teal": 266,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            284
+          ]
+        },
+        {
+          "teal": 267,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            285,
+            286
+          ]
+        },
+        {
+          "teal": 268,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            287
+          ]
+        },
+        {
+          "teal": 269,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            288
+          ]
+        },
+        {
+          "teal": 270,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            289,
+            290,
+            291
+          ]
+        },
+        {
+          "teal": 271,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            292,
+            293
+          ]
+        },
+        {
+          "teal": 272,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            294,
+            295
+          ]
+        },
+        {
+          "teal": 273,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            296
+          ]
+        },
+        {
+          "teal": 274,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            297
+          ]
+        },
+        {
+          "teal": 275,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            298
+          ]
+        },
+        {
+          "teal": 276,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            299
+          ]
+        },
+        {
+          "teal": 277,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            300
+          ]
+        },
+        {
+          "teal": 278,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            301
+          ]
+        },
+        {
+          "teal": 281,
+          "source": "contracts/did-algo-storage.algo.ts:102",
+          "pc": [
+            302
+          ]
+        },
+        {
+          "teal": 286,
+          "source": "contracts/did-algo-storage.algo.ts:104",
+          "pc": [
+            303,
+            304
+          ]
+        },
+        {
+          "teal": 287,
+          "source": "contracts/did-algo-storage.algo.ts:104",
+          "pc": [
+            305
+          ]
+        },
+        {
+          "teal": 288,
+          "source": "contracts/did-algo-storage.algo.ts:104",
+          "pc": [
+            306
+          ]
+        },
+        {
+          "teal": 289,
+          "source": "contracts/did-algo-storage.algo.ts:104",
+          "pc": [
+            307,
+            308,
+            309
+          ]
+        },
+        {
+          "teal": 294,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            310,
+            311
+          ]
+        },
+        {
+          "teal": 295,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            312
+          ]
+        },
+        {
+          "teal": 296,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            313,
+            314
+          ]
+        },
+        {
+          "teal": 297,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            315,
+            316
+          ]
+        },
+        {
+          "teal": 298,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            317
+          ]
+        },
+        {
+          "teal": 299,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            318
+          ]
+        },
+        {
+          "teal": 300,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            319
+          ]
+        },
+        {
+          "teal": 301,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            320
+          ]
+        },
+        {
+          "teal": 302,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            321
+          ]
+        },
+        {
+          "teal": 303,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            322,
+            323,
+            324
+          ]
+        },
+        {
+          "teal": 304,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            325,
+            326
+          ]
+        },
+        {
+          "teal": 305,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            327,
+            328
+          ]
+        },
+        {
+          "teal": 306,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            329
+          ]
+        },
+        {
+          "teal": 307,
+          "source": "contracts/did-algo-storage.algo.ts:100",
+          "pc": [
+            330
+          ]
+        },
+        {
+          "teal": 308,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            331
+          ]
+        },
+        {
+          "teal": 309,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            332,
+            333,
+            334
+          ]
+        },
+        {
+          "teal": 312,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            335,
+            336
+          ]
+        },
+        {
+          "teal": 315,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            337
+          ]
+        },
+        {
+          "teal": 316,
+          "source": "contracts/did-algo-storage.algo.ts:105",
+          "pc": [
+            338
+          ]
+        },
+        {
+          "teal": 321,
+          "source": "contracts/did-algo-storage.algo.ts:108",
+          "pc": [
+            339,
+            340
+          ]
+        },
+        {
+          "teal": 322,
+          "source": "contracts/did-algo-storage.algo.ts:108",
+          "pc": [
+            341
+          ]
+        },
+        {
+          "teal": 323,
+          "source": "contracts/did-algo-storage.algo.ts:108",
+          "pc": [
+            342,
+            343
+          ]
+        },
+        {
+          "teal": 324,
+          "source": "contracts/did-algo-storage.algo.ts:108",
+          "pc": [
+            344,
+            345
+          ]
+        },
+        {
+          "teal": 325,
+          "source": "contracts/did-algo-storage.algo.ts:108",
+          "pc": [
+            346
+          ]
+        },
+        {
+          "teal": 326,
+          "source": "contracts/did-algo-storage.algo.ts:97",
+          "pc": [
+            347
+          ]
+        },
+        {
+          "teal": 331,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            348,
+            349,
+            350
+          ]
+        },
+        {
+          "teal": 332,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            351
+          ]
+        },
+        {
+          "teal": 333,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            352
+          ]
+        },
+        {
+          "teal": 334,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            353,
+            354
+          ]
+        },
+        {
+          "teal": 335,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            355
+          ]
+        },
+        {
+          "teal": 338,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "errorMessage": "argument 0 (pubKey) for finishUpload must be a address",
+          "pc": [
+            356
+          ]
+        },
+        {
+          "teal": 341,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            357,
+            358,
+            359
+          ]
+        },
+        {
+          "teal": 342,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            360
+          ]
+        },
+        {
+          "teal": 343,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            361
+          ]
+        },
+        {
+          "teal": 352,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            362,
+            363,
+            364
+          ]
+        },
+        {
+          "teal": 356,
+          "source": "contracts/did-algo-storage.algo.ts:118",
+          "pc": [
+            365,
+            366
+          ]
+        },
+        {
+          "teal": 357,
+          "source": "contracts/did-algo-storage.algo.ts:118",
+          "pc": [
+            367,
+            368
+          ]
+        },
+        {
+          "teal": 358,
+          "source": "contracts/did-algo-storage.algo.ts:118",
+          "pc": [
+            369
+          ]
+        },
+        {
+          "teal": 359,
+          "source": "contracts/did-algo-storage.algo.ts:118",
+          "pc": [
+            370
+          ]
+        },
+        {
+          "teal": 363,
+          "source": "contracts/did-algo-storage.algo.ts:120",
+          "pc": [
+            371,
+            372
+          ]
+        },
+        {
+          "teal": 364,
+          "source": "contracts/did-algo-storage.algo.ts:120",
+          "pc": [
+            373
+          ]
+        },
+        {
+          "teal": 365,
+          "source": "contracts/did-algo-storage.algo.ts:120",
+          "pc": [
+            374,
+            375,
+            376
+          ]
+        },
+        {
+          "teal": 366,
+          "source": "contracts/did-algo-storage.algo.ts:120",
+          "pc": [
+            377
+          ]
+        },
+        {
+          "teal": 367,
+          "source": "contracts/did-algo-storage.algo.ts:117",
+          "pc": [
+            378
+          ]
+        },
+        {
+          "teal": 372,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            379,
+            380,
+            381
+          ]
+        },
+        {
+          "teal": 373,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            382
+          ]
+        },
+        {
+          "teal": 374,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            383
+          ]
+        },
+        {
+          "teal": 375,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            384,
+            385
+          ]
+        },
+        {
+          "teal": 376,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            386
+          ]
+        },
+        {
+          "teal": 379,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "errorMessage": "argument 0 (pubKey) for startDelete must be a address",
+          "pc": [
+            387
+          ]
+        },
+        {
+          "teal": 382,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            388,
+            389,
+            390
+          ]
+        },
+        {
+          "teal": 383,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            391
+          ]
+        },
+        {
+          "teal": 384,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            392
+          ]
+        },
+        {
+          "teal": 392,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            393,
+            394,
+            395
+          ]
+        },
+        {
+          "teal": 395,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            396
+          ]
+        },
+        {
+          "teal": 399,
+          "source": "contracts/did-algo-storage.algo.ts:129",
+          "pc": [
+            397,
+            398
+          ]
+        },
+        {
+          "teal": 400,
+          "source": "contracts/did-algo-storage.algo.ts:129",
+          "pc": [
+            399,
+            400
+          ]
+        },
+        {
+          "teal": 401,
+          "source": "contracts/did-algo-storage.algo.ts:129",
+          "pc": [
+            401
+          ]
+        },
+        {
+          "teal": 402,
+          "source": "contracts/did-algo-storage.algo.ts:129",
+          "pc": [
+            402
+          ]
+        },
+        {
+          "teal": 406,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            403,
+            404
+          ]
+        },
+        {
+          "teal": 407,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            405,
+            406
+          ]
+        },
+        {
+          "teal": 411,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            407,
+            408
+          ]
+        },
+        {
+          "teal": 412,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            409
+          ]
+        },
+        {
+          "teal": 413,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            410
+          ]
+        },
+        {
+          "teal": 414,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            411
+          ]
+        },
+        {
+          "teal": 415,
+          "source": "contracts/did-algo-storage.algo.ts:132",
+          "pc": [
+            412
+          ]
+        },
+        {
+          "teal": 416,
+          "source": "contracts/did-algo-storage.algo.ts:29",
+          "pc": [
+            413
+          ]
+        },
+        {
+          "teal": 417,
+          "source": "contracts/did-algo-storage.algo.ts:132",
+          "pc": [
+            414
+          ]
+        },
+        {
+          "teal": 418,
+          "source": "contracts/did-algo-storage.algo.ts:132",
+          "pc": [
+            415
+          ]
+        },
+        {
+          "teal": 422,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            416,
+            417
+          ]
+        },
+        {
+          "teal": 423,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            418
+          ]
+        },
+        {
+          "teal": 424,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            419,
+            420,
+            421
+          ]
+        },
+        {
+          "teal": 425,
+          "source": "contracts/did-algo-storage.algo.ts:131",
+          "pc": [
+            422
+          ]
+        },
+        {
+          "teal": 426,
+          "source": "contracts/did-algo-storage.algo.ts:128",
+          "pc": [
+            423
+          ]
+        },
+        {
+          "teal": 431,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            424,
+            425,
+            426
+          ]
+        },
+        {
+          "teal": 432,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            427
+          ]
+        },
+        {
+          "teal": 435,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            428,
+            429,
+            430
+          ]
+        },
+        {
+          "teal": 436,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            431
+          ]
+        },
+        {
+          "teal": 437,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            432
+          ]
+        },
+        {
+          "teal": 438,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            433,
+            434
+          ]
+        },
+        {
+          "teal": 439,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            435
+          ]
+        },
+        {
+          "teal": 442,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "errorMessage": "argument 1 (pubKey) for deleteData must be a address",
+          "pc": [
+            436
+          ]
+        },
+        {
+          "teal": 445,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            437,
+            438,
+            439
+          ]
+        },
+        {
+          "teal": 446,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            440
+          ]
+        },
+        {
+          "teal": 447,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            441
+          ]
+        },
+        {
+          "teal": 456,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            442,
+            443,
+            444
+          ]
+        },
+        {
+          "teal": 459,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            445
+          ]
+        },
+        {
+          "teal": 460,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            446
+          ]
+        },
+        {
+          "teal": 464,
+          "source": "contracts/did-algo-storage.algo.ts:144",
+          "pc": [
+            447,
+            448
+          ]
+        },
+        {
+          "teal": 465,
+          "source": "contracts/did-algo-storage.algo.ts:144",
+          "pc": [
+            449,
+            450
+          ]
+        },
+        {
+          "teal": 466,
+          "source": "contracts/did-algo-storage.algo.ts:144",
+          "pc": [
+            451
+          ]
+        },
+        {
+          "teal": 467,
+          "source": "contracts/did-algo-storage.algo.ts:144",
+          "pc": [
+            452
+          ]
+        },
+        {
+          "teal": 471,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            453,
+            454
+          ]
+        },
+        {
+          "teal": 472,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            455,
+            456
+          ]
+        },
+        {
+          "teal": 476,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            457,
+            458
+          ]
+        },
+        {
+          "teal": 477,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            459
+          ]
+        },
+        {
+          "teal": 478,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            460
+          ]
+        },
+        {
+          "teal": 479,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            461
+          ]
+        },
+        {
+          "teal": 480,
+          "source": "contracts/did-algo-storage.algo.ts:147",
+          "pc": [
+            462
+          ]
+        },
+        {
+          "teal": 481,
+          "source": "contracts/did-algo-storage.algo.ts:32",
+          "pc": [
+            463,
+            464
+          ]
+        },
+        {
+          "teal": 482,
+          "source": "contracts/did-algo-storage.algo.ts:147",
+          "pc": [
+            465
+          ]
+        },
+        {
+          "teal": 483,
+          "source": "contracts/did-algo-storage.algo.ts:147",
+          "pc": [
+            466
+          ]
+        },
+        {
+          "teal": 487,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            467,
+            468
+          ]
+        },
+        {
+          "teal": 488,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            469
+          ]
+        },
+        {
+          "teal": 489,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            470
+          ]
+        },
+        {
+          "teal": 490,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            471
+          ]
+        },
+        {
+          "teal": 491,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            472
+          ]
+        },
+        {
+          "teal": 492,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            473,
+            474
+          ]
+        },
+        {
+          "teal": 493,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            475
+          ]
+        },
+        {
+          "teal": 494,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            476
+          ]
+        },
+        {
+          "teal": 495,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            477,
+            478,
+            479
+          ]
+        },
+        {
+          "teal": 496,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            480,
+            481
+          ]
+        },
+        {
+          "teal": 497,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            482,
+            483
+          ]
+        },
+        {
+          "teal": 498,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            484
+          ]
+        },
+        {
+          "teal": 499,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            485
+          ]
+        },
+        {
+          "teal": 500,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            486
+          ]
+        },
+        {
+          "teal": 501,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            487
+          ]
+        },
+        {
+          "teal": 502,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            488
+          ]
+        },
+        {
+          "teal": 503,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            489
+          ]
+        },
+        {
+          "teal": 506,
+          "source": "contracts/did-algo-storage.algo.ts:148",
+          "pc": [
+            490
+          ]
+        },
+        {
+          "teal": 511,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            491,
+            492
+          ]
+        },
+        {
+          "teal": 512,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            493,
+            494
+          ]
+        },
+        {
+          "teal": 513,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            495
+          ]
+        },
+        {
+          "teal": 514,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            496
+          ]
+        },
+        {
+          "teal": 515,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            497
+          ]
+        },
+        {
+          "teal": 516,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            498
+          ]
+        },
+        {
+          "teal": 517,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            499
+          ]
+        },
+        {
+          "teal": 518,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            500,
+            501,
+            502
+          ]
+        },
+        {
+          "teal": 523,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            503,
+            504
+          ]
+        },
+        {
+          "teal": 524,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            505,
+            506
+          ]
+        },
+        {
+          "teal": 525,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            507
+          ]
+        },
+        {
+          "teal": 526,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            508
+          ]
+        },
+        {
+          "teal": 527,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            509
+          ]
+        },
+        {
+          "teal": 528,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            510,
+            511
+          ]
+        },
+        {
+          "teal": 529,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            512
+          ]
+        },
+        {
+          "teal": 530,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            513
+          ]
+        },
+        {
+          "teal": 531,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            514
+          ]
+        },
+        {
+          "teal": 532,
+          "source": "contracts/did-algo-storage.algo.ts:150",
+          "pc": [
+            515
+          ]
+        },
+        {
+          "teal": 537,
+          "source": "contracts/did-algo-storage.algo.ts:152",
+          "pc": [
+            516,
+            517
+          ]
+        },
+        {
+          "teal": 538,
+          "source": "contracts/did-algo-storage.algo.ts:152",
+          "pc": [
+            518,
+            519
+          ]
+        },
+        {
+          "teal": 539,
+          "source": "contracts/did-algo-storage.algo.ts:152",
+          "pc": [
+            520
+          ]
+        },
+        {
+          "teal": 540,
+          "source": "contracts/did-algo-storage.algo.ts:152",
+          "pc": [
+            521,
+            522
+          ]
+        },
+        {
+          "teal": 544,
+          "source": "contracts/did-algo-storage.algo.ts:154",
+          "pc": [
+            523,
+            524
+          ]
+        },
+        {
+          "teal": 545,
+          "source": "contracts/did-algo-storage.algo.ts:154",
+          "pc": [
+            525
+          ]
+        },
+        {
+          "teal": 546,
+          "source": "contracts/did-algo-storage.algo.ts:154",
+          "pc": [
+            526
+          ]
+        },
+        {
+          "teal": 551,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            527,
+            528
+          ]
+        },
+        {
+          "teal": 552,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            529,
+            530
+          ]
+        },
+        {
+          "teal": 553,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            531
+          ]
+        },
+        {
+          "teal": 554,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            532
+          ]
+        },
+        {
+          "teal": 555,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            533
+          ]
+        },
+        {
+          "teal": 556,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            534
+          ]
+        },
+        {
+          "teal": 557,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            535
+          ]
+        },
+        {
+          "teal": 558,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            536,
+            537,
+            538
+          ]
+        },
+        {
+          "teal": 563,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            539,
+            540
+          ]
+        },
+        {
+          "teal": 564,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            541
+          ]
+        },
+        {
+          "teal": 565,
+          "source": "contracts/did-algo-storage.algo.ts:156",
+          "pc": [
+            542,
+            543,
+            544
+          ]
+        },
+        {
+          "teal": 570,
+          "source": "contracts/did-algo-storage.algo.ts:157",
+          "pc": [
+            545,
+            546
+          ]
+        },
+        {
+          "teal": 571,
+          "source": "contracts/did-algo-storage.algo.ts:157",
+          "pc": [
+            547,
+            548
+          ]
+        },
+        {
+          "teal": 572,
+          "source": "contracts/did-algo-storage.algo.ts:157",
+          "pc": [
+            549
+          ]
+        },
+        {
+          "teal": 573,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            550,
+            551
+          ]
+        },
+        {
+          "teal": 574,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            552,
+            553
+          ]
+        },
+        {
+          "teal": 575,
+          "source": "contracts/did-algo-storage.algo.ts:146",
+          "pc": [
+            554
+          ]
+        },
+        {
+          "teal": 583,
+          "source": "contracts/did-algo-storage.algo.ts:159",
+          "pc": [
+            555
+          ]
+        },
+        {
+          "teal": 584,
+          "source": "contracts/did-algo-storage.algo.ts:159",
+          "pc": [
+            556
+          ]
+        },
+        {
+          "teal": 585,
+          "source": "contracts/did-algo-storage.algo.ts:159",
+          "pc": [
+            557,
+            558
+          ]
+        },
+        {
+          "teal": 589,
+          "source": "contracts/did-algo-storage.algo.ts:160",
+          "pc": [
+            559,
+            560
+          ]
+        },
+        {
+          "teal": 590,
+          "source": "contracts/did-algo-storage.algo.ts:160",
+          "pc": [
+            561,
+            562
+          ]
+        },
+        {
+          "teal": 591,
+          "source": "contracts/did-algo-storage.algo.ts:160",
+          "pc": [
+            563,
+            564
+          ]
+        },
+        {
+          "teal": 592,
+          "source": "contracts/did-algo-storage.algo.ts:160",
+          "pc": [
+            565
+          ]
+        },
+        {
+          "teal": 593,
+          "source": "contracts/did-algo-storage.algo.ts:160",
+          "pc": [
+            566
+          ]
+        },
+        {
+          "teal": 594,
+          "source": "contracts/did-algo-storage.algo.ts:160",
+          "pc": [
+            567,
+            568
+          ]
+        },
+        {
+          "teal": 598,
+          "source": "contracts/did-algo-storage.algo.ts:161",
+          "pc": [
+            569,
+            570
+          ]
+        },
+        {
+          "teal": 599,
+          "source": "contracts/did-algo-storage.algo.ts:161",
+          "pc": [
+            571,
+            572
+          ]
+        },
+        {
+          "teal": 602,
+          "source": "contracts/did-algo-storage.algo.ts:159",
+          "pc": [
+            573
+          ]
+        },
+        {
+          "teal": 603,
+          "source": "contracts/did-algo-storage.algo.ts:159",
+          "pc": [
+            574,
+            575
+          ]
+        },
+        {
+          "teal": 606,
+          "source": "contracts/did-algo-storage.algo.ts:159",
+          "pc": [
+            576
+          ]
+        },
+        {
+          "teal": 607,
+          "source": "contracts/did-algo-storage.algo.ts:143",
+          "pc": [
+            577
+          ]
+        },
+        {
+          "teal": 612,
+          "source": "contracts/did-algo-storage.algo.ts:168",
+          "pc": [
+            578,
+            579,
+            580
+          ]
+        },
+        {
+          "teal": 613,
+          "source": "contracts/did-algo-storage.algo.ts:168",
+          "pc": [
+            581
+          ]
+        },
+        {
+          "teal": 614,
+          "source": "contracts/did-algo-storage.algo.ts:168",
+          "pc": [
+            582
+          ]
+        },
+        {
+          "teal": 620,
+          "source": "contracts/did-algo-storage.algo.ts:168",
+          "pc": [
+            583,
+            584,
+            585
+          ]
+        },
+        {
+          "teal": 624,
+          "source": "contracts/did-algo-storage.algo.ts:169",
+          "pc": [
+            586,
+            587
+          ]
+        },
+        {
+          "teal": 625,
+          "source": "contracts/did-algo-storage.algo.ts:169",
+          "pc": [
+            588,
+            589
+          ]
+        },
+        {
+          "teal": 626,
+          "source": "contracts/did-algo-storage.algo.ts:169",
+          "pc": [
+            590
+          ]
+        },
+        {
+          "teal": 627,
+          "source": "contracts/did-algo-storage.algo.ts:169",
+          "pc": [
+            591
+          ]
+        },
+        {
+          "teal": 628,
+          "source": "contracts/did-algo-storage.algo.ts:168",
+          "pc": [
+            592
+          ]
+        },
+        {
+          "teal": 633,
+          "source": "contracts/did-algo-storage.algo.ts:178",
+          "pc": [
+            593,
+            594,
+            595
+          ]
+        },
+        {
+          "teal": 634,
+          "source": "contracts/did-algo-storage.algo.ts:178",
+          "pc": [
+            596
+          ]
+        },
+        {
+          "teal": 635,
+          "source": "contracts/did-algo-storage.algo.ts:178",
+          "pc": [
+            597
+          ]
+        },
+        {
+          "teal": 644,
+          "source": "contracts/did-algo-storage.algo.ts:178",
+          "pc": [
+            598,
+            599,
+            600
+          ]
+        },
+        {
+          "teal": 645,
+          "source": "contracts/did-algo-storage.algo.ts:178",
+          "pc": [
+            601
+          ]
+        },
+        {
+          "teal": 648,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            602
+          ]
+        },
+        {
+          "teal": 649,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            603
+          ]
+        },
+        {
+          "teal": 652,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            604,
+            605,
+            606,
+            607,
+            608,
+            609
+          ]
+        },
+        {
+          "teal": 653,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            610,
+            611,
+            612
+          ]
+        },
+        {
+          "teal": 654,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            613,
+            614,
+            615,
+            616
+          ]
+        },
+        {
+          "teal": 657,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "errorMessage": "this contract does not implement the given ABI method for create NoOp",
+          "pc": [
+            617
+          ]
+        },
+        {
+          "teal": 660,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            618,
+            619,
+            620,
+            621,
+            622,
+            623
+          ]
+        },
+        {
+          "teal": 661,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            624,
+            625,
+            626,
+            627,
+            628,
+            629
+          ]
+        },
+        {
+          "teal": 662,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            630,
+            631,
+            632,
+            633,
+            634,
+            635
+          ]
+        },
+        {
+          "teal": 663,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            636,
+            637,
+            638,
+            639,
+            640,
+            641
+          ]
+        },
+        {
+          "teal": 664,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            642,
+            643,
+            644,
+            645,
+            646,
+            647
+          ]
+        },
+        {
+          "teal": 665,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            648,
+            649,
+            650,
+            651,
+            652,
+            653
+          ]
+        },
+        {
+          "teal": 666,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            654,
+            655,
+            656
+          ]
+        },
+        {
+          "teal": 667,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            657,
+            658,
+            659,
+            660,
+            661,
+            662,
+            663,
+            664,
+            665,
+            666,
+            667,
+            668,
+            669,
+            670
+          ]
+        },
+        {
+          "teal": 670,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "errorMessage": "this contract does not implement the given ABI method for call NoOp",
+          "pc": [
+            671
+          ]
+        },
+        {
+          "teal": 673,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            672,
+            673,
+            674,
+            675,
+            676,
+            677
+          ]
+        },
+        {
+          "teal": 674,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            678,
+            679,
+            680
+          ]
+        },
+        {
+          "teal": 675,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "pc": [
+            681,
+            682,
+            683,
+            684
+          ]
+        },
+        {
+          "teal": 678,
+          "source": "contracts/did-algo-storage.algo.ts:38",
+          "errorMessage": "this contract does not implement the given ABI method for call UpdateApplication",
+          "pc": [
+            685
+          ]
+        }
+      ],
+      "pcOffsetMethod": "none"
+    },
+    "clear": {
+      "sourceInfo": [],
+      "pcOffsetMethod": "none"
+    }
+  },
+  "source": {
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCmludGNibG9jayAxIDggMCAxNiAzMiA0MDAgMjUwMCAzMjc2OCAyNQpieXRlY2Jsb2NrIDB4IDB4NjM3NTcyNzI2NTZlNzQ0OTZlNjQ2NTc4CgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjEwNi4zCi8vIGh0dHBzOi8vZ2l0aHViLmNvbS9hbGdvcmFuZGZvdW5kYXRpb24vVEVBTFNjcmlwdAoKLy8gVGhpcyBjb250cmFjdCBpcyBjb21wbGlhbnQgd2l0aCBhbmQvb3IgaW1wbGVtZW50cyB0aGUgZm9sbG93aW5nIEFSQ3M6IFsgQVJDNCBdCgovLyBUaGUgZm9sbG93aW5nIHRlbiBsaW5lcyBvZiBURUFMIGhhbmRsZSBpbml0aWFsIHByb2dyYW0gZmxvdwovLyBUaGlzIHBhdHRlcm4gaXMgdXNlZCB0byBtYWtlIGl0IGVhc3kgZm9yIGFueW9uZSB0byBwYXJzZSB0aGUgc3RhcnQgb2YgdGhlIHByb2dyYW0gYW5kIGRldGVybWluZSBpZiBhIHNwZWNpZmljIGFjdGlvbiBpcyBhbGxvd2VkCi8vIEhlcmUsIGFjdGlvbiByZWZlcnMgdG8gdGhlIE9uQ29tcGxldGUgaW4gY29tYmluYXRpb24gd2l0aCB3aGV0aGVyIHRoZSBhcHAgaXMgYmVpbmcgY3JlYXRlZCBvciBjYWxsZWQKLy8gRXZlcnkgcG9zc2libGUgYWN0aW9uIGZvciB0aGlzIGNvbnRyYWN0IGlzIHJlcHJlc2VudGVkIGluIHRoZSBzd2l0Y2ggc3RhdGVtZW50Ci8vIElmIHRoZSBhY3Rpb24gaXMgbm90IGltcGxlbWVudGVkIGluIHRoZSBjb250cmFjdCwgaXRzIHJlc3BlY3RpdmUgYnJhbmNoIHdpbGwgYmUgIipOT1RfSU1QTEVNRU5URUQiIHdoaWNoIGp1c3QgY29udGFpbnMgImVyciIKdHhuIEFwcGxpY2F0aW9uSUQKIQpwdXNoaW50IDYKKgp0eG4gT25Db21wbGV0aW9uCisKc3dpdGNoICpjYWxsX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKmNhbGxfVXBkYXRlQXBwbGljYXRpb24gKk5PVF9JTVBMRU1FTlRFRCAqY3JlYXRlX05vT3AgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVECgoqTk9UX0lNUExFTUVOVEVEOgoJLy8gVGhlIHJlcXVlc3RlZCBhY3Rpb24gaXMgbm90IGltcGxlbWVudGVkIGluIHRoaXMgY29udHJhY3QuIEFyZSB5b3UgdXNpbmcgdGhlIGNvcnJlY3QgT25Db21wbGV0ZT8gRGlkIHlvdSBzZXQgeW91ciBhcHAgSUQ/CgllcnIKCi8vIHN0YXJ0VXBsb2FkKGFkZHJlc3MsdWludDY0LHVpbnQ2NCxwYXkpdm9pZAoqYWJpX3JvdXRlX3N0YXJ0VXBsb2FkOgoJLy8gbWJyUGF5bWVudDogcGF5Cgl0eG4gR3JvdXBJbmRleAoJaW50YyAwIC8vIDEKCS0KCWR1cAoJZ3R4bnMgVHlwZUVudW0KCWludGMgMCAvLyAgcGF5Cgk9PQoKCS8vIGFyZ3VtZW50IDAgKG1iclBheW1lbnQpIGZvciBzdGFydFVwbG9hZCBtdXN0IGJlIGEgcGF5IHRyYW5zYWN0aW9uCglhc3NlcnQKCgkvLyBlbmRCb3hTaXplOiB1aW50NjQKCXR4bmEgQXBwbGljYXRpb25BcmdzIDMKCWJ0b2kKCgkvLyBudW1Cb3hlczogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAyCglidG9pCgoJLy8gcHViS2V5OiBhZGRyZXNzCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglkdXAKCWxlbgoJaW50YyA0IC8vIDMyCgk9PQoKCS8vIGFyZ3VtZW50IDMgKHB1YktleSkgZm9yIHN0YXJ0VXBsb2FkIG11c3QgYmUgYSBhZGRyZXNzCglhc3NlcnQKCgkvLyBleGVjdXRlIHN0YXJ0VXBsb2FkKGFkZHJlc3MsdWludDY0LHVpbnQ2NCxwYXkpdm9pZAoJY2FsbHN1YiBzdGFydFVwbG9hZAoJaW50YyAwIC8vIDEKCXJldHVybgoKLy8gc3RhcnRVcGxvYWQocHViS2V5OiBBZGRyZXNzLCBudW1Cb3hlczogdWludDY0LCBlbmRCb3hTaXplOiB1aW50NjQsIG1iclBheW1lbnQ6IFBheVR4bik6IHZvaWQKLy8KLy8KLy8gQWxsb2NhdGUgYm94ZXMgdG8gYmVnaW4gZGF0YSB1cGxvYWQgcHJvY2VzcwovLwovLyBAcGFyYW0gcHViS2V5IFRoZSBwdWJrZXkgb2YgdGhlIERJRAovLyBAcGFyYW0gbnVtQm94ZXMgVGhlIG51bWJlciBvZiBib3hlcyB0aGF0IHRoZSBkYXRhIHdpbGwgdGFrZSB1cAovLyBAcGFyYW0gZW5kQm94U2l6ZSBUaGUgc2l6ZSBvZiB0aGUgbGFzdCBib3gKLy8gQHBhcmFtIG1iclBheW1lbnQgUGF5bWVudCBmcm9tIHRoZSB1cGxvYWRlciB0byBjb3ZlciB0aGUgYm94IE1CUgpzdGFydFVwbG9hZDoKCXByb3RvIDQgMAoKCS8vIFB1c2ggZW1wdHkgYnl0ZXMgYWZ0ZXIgdGhlIGZyYW1lIHBvaW50ZXIgdG8gcmVzZXJ2ZSBzcGFjZSBmb3IgbG9jYWwgdmFyaWFibGVzCglieXRlYyAwIC8vIDB4CglkdXBuIDMKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjYzCgkvLyBhc3NlcnQodGhpcy50eG4uc2VuZGVyID09PSBnbG9iYWxzLmNyZWF0b3JBZGRyZXNzKQoJdHhuIFNlbmRlcgoJZ2xvYmFsIENyZWF0b3JBZGRyZXNzCgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czo2NQoJLy8gc3RhcnRCb3ggPSB0aGlzLmN1cnJlbnRJbmRleC52YWx1ZQoJYnl0ZWMgMSAvLyAgImN1cnJlbnRJbmRleCIKCWFwcF9nbG9iYWxfZ2V0CglmcmFtZV9idXJ5IDAgLy8gc3RhcnRCb3g6IHVpbnQ2NAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6NjYKCS8vIGVuZEJveCA9IHN0YXJ0Qm94ICsgbnVtQm94ZXMgLSAxCglmcmFtZV9kaWcgMCAvLyBzdGFydEJveDogdWludDY0CglmcmFtZV9kaWcgLTIgLy8gbnVtQm94ZXM6IHVpbnQ2NAoJKwoJaW50YyAwIC8vIDEKCS0KCWZyYW1lX2J1cnkgMSAvLyBlbmRCb3g6IHVpbnQ2NAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6NjgKCS8vIG1ldGFkYXRhOiBNZXRhZGF0YSA9IHsKCS8vICAgICAgIHN0YXJ0OiBzdGFydEJveCwgZW5kOiBlbmRCb3gsIHN0YXR1czogVVBMT0FESU5HLCBlbmRTaXplOiBlbmRCb3hTaXplLCBsYXN0RGVsZXRlZDogMCwKCS8vICAgICB9CglmcmFtZV9kaWcgMCAvLyBzdGFydEJveDogdWludDY0CglpdG9iCglmcmFtZV9kaWcgMSAvLyBlbmRCb3g6IHVpbnQ2NAoJaXRvYgoJY29uY2F0CglwdXNoYnl0ZXMgMHgwMAoJY29uY2F0CglmcmFtZV9kaWcgLTMgLy8gZW5kQm94U2l6ZTogdWludDY0CglpdG9iCgljb25jYXQKCXB1c2hieXRlcyAweDAwMDAwMDAwMDAwMDAwMDAKCWNvbmNhdAoJZnJhbWVfYnVyeSAyIC8vIG1ldGFkYXRhOiBNZXRhZGF0YQoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6NzIKCS8vIGFzc2VydCghdGhpcy5tZXRhZGF0YShwdWJLZXkpLmV4aXN0cykKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWJveF9sZW4KCXN3YXAKCXBvcAoJIQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czo3NAoJLy8gdGhpcy5tZXRhZGF0YShwdWJLZXkpLnZhbHVlID0gbWV0YWRhdGEKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWZyYW1lX2RpZyAyIC8vIG1ldGFkYXRhOiBNZXRhZGF0YQoJYm94X3B1dAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6NzYKCS8vIHRoaXMuY3VycmVudEluZGV4LnZhbHVlID0gZW5kQm94ICsgMQoJYnl0ZWMgMSAvLyAgImN1cnJlbnRJbmRleCIKCWZyYW1lX2RpZyAxIC8vIGVuZEJveDogdWludDY0CglpbnRjIDAgLy8gMQoJKwoJYXBwX2dsb2JhbF9wdXQKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjc4CgkvLyB0b3RhbENvc3QgPSBudW1Cb3hlcyAqIENPU1RfUEVSX0JPWCAvLyBjb3N0IG9mIGRhdGEgYm94ZXMKCS8vICAgICArIChudW1Cb3hlcyAtIDEpICogTUFYX0JPWF9TSVpFICogQ09TVF9QRVJfQllURSAvLyBjb3N0IG9mIGRhdGEKCS8vICAgICArIG51bUJveGVzICogOCAqIENPU1RfUEVSX0JZVEUgLy8gY29zdCBvZiBkYXRhIGtleXMKCS8vICAgICArIGVuZEJveFNpemUgKiBDT1NUX1BFUl9CWVRFIC8vIGNvc3Qgb2YgbGFzdCBkYXRhIGJveAoJLy8gICAgICsgQ09TVF9QRVJfQk9YICsgKDggKyA4ICsgMSArIDggKyAzMiArIDgpICogQ09TVF9QRVJfQllURQoJZnJhbWVfZGlnIC0yIC8vIG51bUJveGVzOiB1aW50NjQKCWludGMgNiAvLyAyNTAwCgkqCglmcmFtZV9kaWcgLTIgLy8gbnVtQm94ZXM6IHVpbnQ2NAoJaW50YyAwIC8vIDEKCS0KCWludGMgNyAvLyAzMjc2OAoJKgoJaW50YyA1IC8vIDQwMAoJKgoJKwoJZnJhbWVfZGlnIC0yIC8vIG51bUJveGVzOiB1aW50NjQKCWludGMgMSAvLyA4CgkqCglpbnRjIDUgLy8gNDAwCgkqCgkrCglmcmFtZV9kaWcgLTMgLy8gZW5kQm94U2l6ZTogdWludDY0CglpbnRjIDUgLy8gNDAwCgkqCgkrCglpbnRjIDYgLy8gMjUwMAoJKwoJcHVzaGludCAyNjAwMAoJKwoJZnJhbWVfYnVyeSAzIC8vIHRvdGFsQ29zdDogdWludDY0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czo4NAoJLy8gYXNzZXJ0KG1iclBheW1lbnQuYW1vdW50ID09PSB0b3RhbENvc3QpCglmcmFtZV9kaWcgLTQgLy8gbWJyUGF5bWVudDogUGF5VHhuCglndHhucyBBbW91bnQKCWZyYW1lX2RpZyAzIC8vIHRvdGFsQ29zdDogdWludDY0Cgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czo4NQoJLy8gYXNzZXJ0KG1iclBheW1lbnQucmVjZWl2ZXIgPT09IHRoaXMuYXBwLmFkZHJlc3MpCglmcmFtZV9kaWcgLTQgLy8gbWJyUGF5bWVudDogUGF5VHhuCglndHhucyBSZWNlaXZlcgoJZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKCT09Cglhc3NlcnQKCXJldHN1YgoKLy8gdXBsb2FkKGFkZHJlc3MsdWludDY0LHVpbnQ2NCxieXRlW10pdm9pZAoqYWJpX3JvdXRlX3VwbG9hZDoKCS8vIGRhdGE6IGJ5dGVbXQoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNAoJZXh0cmFjdCAyIDAKCgkvLyBvZmZzZXQ6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwoJYnRvaQoKCS8vIGJveEluZGV4OiB1aW50NjQKCXR4bmEgQXBwbGljYXRpb25BcmdzIDIKCWJ0b2kKCgkvLyBwdWJLZXk6IGFkZHJlc3MKCXR4bmEgQXBwbGljYXRpb25BcmdzIDEKCWR1cAoJbGVuCglpbnRjIDQgLy8gMzIKCT09CgoJLy8gYXJndW1lbnQgMyAocHViS2V5KSBmb3IgdXBsb2FkIG11c3QgYmUgYSBhZGRyZXNzCglhc3NlcnQKCgkvLyBleGVjdXRlIHVwbG9hZChhZGRyZXNzLHVpbnQ2NCx1aW50NjQsYnl0ZVtdKXZvaWQKCWNhbGxzdWIgdXBsb2FkCglpbnRjIDAgLy8gMQoJcmV0dXJuCgovLyB1cGxvYWQocHViS2V5OiBBZGRyZXNzLCBib3hJbmRleDogdWludDY0LCBvZmZzZXQ6IHVpbnQ2NCwgZGF0YTogYnl0ZXMpOiB2b2lkCi8vCi8vCi8vIFVwbG9hZCBkYXRhIHRvIGEgc3BlY2lmaWMgb2Zmc2V0IGluIGEgYm94Ci8vCi8vIEBwYXJhbSBwdWJLZXkgVGhlIHB1YmtleSBvZiB0aGUgRElECi8vIEBwYXJhbSBib3hJbmRleCBUaGUgaW5kZXggb2YgdGhlIGJveCB0byB1cGxvYWQgdGhlIGdpdmVuIGNodW5rIG9mIGRhdGEgdG8KLy8gQHBhcmFtIG9mZnNldCBUaGUgb2Zmc2V0IHdpdGhpbiB0aGUgYm94IHRvIHN0YXJ0IHdyaXRpbmcgdGhlIGRhdGEKLy8gQHBhcmFtIGRhdGEgVGhlIGRhdGEgdG8gd3JpdGUKdXBsb2FkOgoJcHJvdG8gNCAwCgoJLy8gUHVzaCBlbXB0eSBieXRlcyBhZnRlciB0aGUgZnJhbWUgcG9pbnRlciB0byByZXNlcnZlIHNwYWNlIGZvciBsb2NhbCB2YXJpYWJsZXMKCWJ5dGVjIDAgLy8gMHgKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjk4CgkvLyBhc3NlcnQodGhpcy50eG4uc2VuZGVyID09PSBnbG9iYWxzLmNyZWF0b3JBZGRyZXNzKQoJdHhuIFNlbmRlcgoJZ2xvYmFsIENyZWF0b3JBZGRyZXNzCgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMDAKCS8vIG1ldGFkYXRhID0gdGhpcy5tZXRhZGF0YShwdWJLZXkpLnZhbHVlCglmcmFtZV9kaWcgLTEgLy8gcHViS2V5OiBBZGRyZXNzCglmcmFtZV9idXJ5IDAgLy8gc3RvcmFnZSBrZXkvL21ldGFkYXRhCgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMDEKCS8vIGFzc2VydChtZXRhZGF0YS5zdGF0dXMgPT09IFVQTE9BRElORykKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWludGMgMyAvLyAgaGVhZE9mZnNldAoJaW50YyAwIC8vIDEKCWJveF9leHRyYWN0CglidG9pCglpbnRjIDIgLy8gMAoJPT0KCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTAyCgkvLyBhc3NlcnQobWV0YWRhdGEuc3RhcnQgPD0gYm94SW5kZXggJiYgYm94SW5kZXggPD0gbWV0YWRhdGEuZW5kKQoJZnJhbWVfZGlnIC0xIC8vIHB1YktleTogQWRkcmVzcwoJaW50YyAyIC8vIDAKCWludGMgMSAvLyA4Cglib3hfZXh0cmFjdAoJYnRvaQoJZnJhbWVfZGlnIC0yIC8vIGJveEluZGV4OiB1aW50NjQKCTw9CglkdXAKCWJ6ICpza2lwX2FuZDAKCWZyYW1lX2RpZyAtMiAvLyBib3hJbmRleDogdWludDY0CglmcmFtZV9kaWcgLTEgLy8gcHViS2V5OiBBZGRyZXNzCglpbnRjIDEgLy8gIGhlYWRPZmZzZXQKCWludGMgMSAvLyA4Cglib3hfZXh0cmFjdAoJYnRvaQoJPD0KCSYmCgoqc2tpcF9hbmQwOgoJYXNzZXJ0CgoJLy8gKmlmMF9jb25kaXRpb24KCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTA0CgkvLyBvZmZzZXQgPT09IDAKCWZyYW1lX2RpZyAtMyAvLyBvZmZzZXQ6IHVpbnQ2NAoJaW50YyAyIC8vIDAKCT09CglieiAqaWYwX2VuZAoKCS8vICppZjBfY29uc2VxdWVudAoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMDUKCS8vIHRoaXMuZGF0YUJveGVzKGJveEluZGV4KS5jcmVhdGUoYm94SW5kZXggPT09IG1ldGFkYXRhLmVuZCA/IG1ldGFkYXRhLmVuZFNpemUgOiBNQVhfQk9YX1NJWkUpCglmcmFtZV9kaWcgLTIgLy8gYm94SW5kZXg6IHVpbnQ2NAoJaXRvYgoJZnJhbWVfZGlnIC0yIC8vIGJveEluZGV4OiB1aW50NjQKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWludGMgMSAvLyAgaGVhZE9mZnNldAoJaW50YyAxIC8vIDgKCWJveF9leHRyYWN0CglidG9pCgk9PQoJYnogKnRlcm5hcnkwX2ZhbHNlCglmcmFtZV9kaWcgLTEgLy8gcHViS2V5OiBBZGRyZXNzCglwdXNoaW50IDE3IC8vIGhlYWRPZmZzZXQKCWludGMgMSAvLyA4Cglib3hfZXh0cmFjdAoJYnRvaQoJYiAqdGVybmFyeTBfZW5kCgoqdGVybmFyeTBfZmFsc2U6CglpbnRjIDcgLy8gMzI3NjgKCip0ZXJuYXJ5MF9lbmQ6Cglib3hfY3JlYXRlCglwb3AKCippZjBfZW5kOgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMDgKCS8vIHRoaXMuZGF0YUJveGVzKGJveEluZGV4KS5yZXBsYWNlKG9mZnNldCwgZGF0YSkKCWZyYW1lX2RpZyAtMiAvLyBib3hJbmRleDogdWludDY0CglpdG9iCglmcmFtZV9kaWcgLTMgLy8gb2Zmc2V0OiB1aW50NjQKCWZyYW1lX2RpZyAtNCAvLyBkYXRhOiBieXRlcwoJYm94X3JlcGxhY2UKCXJldHN1YgoKLy8gZmluaXNoVXBsb2FkKGFkZHJlc3Mpdm9pZAoqYWJpX3JvdXRlX2ZpbmlzaFVwbG9hZDoKCS8vIHB1YktleTogYWRkcmVzcwoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJZHVwCglsZW4KCWludGMgNCAvLyAzMgoJPT0KCgkvLyBhcmd1bWVudCAwIChwdWJLZXkpIGZvciBmaW5pc2hVcGxvYWQgbXVzdCBiZSBhIGFkZHJlc3MKCWFzc2VydAoKCS8vIGV4ZWN1dGUgZmluaXNoVXBsb2FkKGFkZHJlc3Mpdm9pZAoJY2FsbHN1YiBmaW5pc2hVcGxvYWQKCWludGMgMCAvLyAxCglyZXR1cm4KCi8vIGZpbmlzaFVwbG9hZChwdWJLZXk6IEFkZHJlc3MpOiB2b2lkCi8vCi8vCi8vIE1hcmsgdXBsb2FkaW5nIGFzIGZhbHNlCi8vCi8vIEBwYXJhbSBwdWJLZXkgVGhlIGFkZHJlc3Mgb2YgdGhlIERJRApmaW5pc2hVcGxvYWQ6Cglwcm90byAxIDAKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjExOAoJLy8gYXNzZXJ0KHRoaXMudHhuLnNlbmRlciA9PT0gZ2xvYmFscy5jcmVhdG9yQWRkcmVzcykKCXR4biBTZW5kZXIKCWdsb2JhbCBDcmVhdG9yQWRkcmVzcwoJPT0KCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTIwCgkvLyB0aGlzLm1ldGFkYXRhKHB1YktleSkudmFsdWUuc3RhdHVzID0gUkVBRFkKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWludGMgMyAvLyAgaGVhZE9mZnNldAoJcHVzaGJ5dGVzIDB4MDEKCWJveF9yZXBsYWNlCglyZXRzdWIKCi8vIHN0YXJ0RGVsZXRlKGFkZHJlc3Mpdm9pZAoqYWJpX3JvdXRlX3N0YXJ0RGVsZXRlOgoJLy8gcHViS2V5OiBhZGRyZXNzCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglkdXAKCWxlbgoJaW50YyA0IC8vIDMyCgk9PQoKCS8vIGFyZ3VtZW50IDAgKHB1YktleSkgZm9yIHN0YXJ0RGVsZXRlIG11c3QgYmUgYSBhZGRyZXNzCglhc3NlcnQKCgkvLyBleGVjdXRlIHN0YXJ0RGVsZXRlKGFkZHJlc3Mpdm9pZAoJY2FsbHN1YiBzdGFydERlbGV0ZQoJaW50YyAwIC8vIDEKCXJldHVybgoKLy8gc3RhcnREZWxldGUocHViS2V5OiBBZGRyZXNzKTogdm9pZAovLwovLyBTdGFydHMgdGhlIGRlbGV0aW9uIHByb2Nlc3MgZm9yIHRoZSBkYXRhIGFzc29jaWF0ZWQgd2l0aCBhIERJRAovLwovLyBAcGFyYW0gcHViS2V5IFRoZSBhZGRyZXNzIG9mIHRoZSBESUQKc3RhcnREZWxldGU6Cglwcm90byAxIDAKCgkvLyBQdXNoIGVtcHR5IGJ5dGVzIGFmdGVyIHRoZSBmcmFtZSBwb2ludGVyIHRvIHJlc2VydmUgc3BhY2UgZm9yIGxvY2FsIHZhcmlhYmxlcwoJYnl0ZWMgMCAvLyAweAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTI5CgkvLyBhc3NlcnQodGhpcy50eG4uc2VuZGVyID09PSBnbG9iYWxzLmNyZWF0b3JBZGRyZXNzKQoJdHhuIFNlbmRlcgoJZ2xvYmFsIENyZWF0b3JBZGRyZXNzCgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMzEKCS8vIG1ldGFkYXRhID0gdGhpcy5tZXRhZGF0YShwdWJLZXkpLnZhbHVlCglmcmFtZV9kaWcgLTEgLy8gcHViS2V5OiBBZGRyZXNzCglmcmFtZV9idXJ5IDAgLy8gc3RvcmFnZSBrZXkvL21ldGFkYXRhCgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMzIKCS8vIGFzc2VydChtZXRhZGF0YS5zdGF0dXMgPT09IFJFQURZKQoJZnJhbWVfZGlnIC0xIC8vIHB1YktleTogQWRkcmVzcwoJaW50YyAzIC8vICBoZWFkT2Zmc2V0CglpbnRjIDAgLy8gMQoJYm94X2V4dHJhY3QKCWJ0b2kKCWludGMgMCAvLyAxCgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxMzQKCS8vIG1ldGFkYXRhLnN0YXR1cyA9IERFTEVUSU5HCglmcmFtZV9kaWcgMCAvLyBzdG9yYWdlIGtleS8vbWV0YWRhdGEKCWludGMgMyAvLyAgaGVhZE9mZnNldAoJcHVzaGJ5dGVzIDB4MDIKCWJveF9yZXBsYWNlCglyZXRzdWIKCi8vIGRlbGV0ZURhdGEoYWRkcmVzcyx1aW50NjQpdm9pZAoqYWJpX3JvdXRlX2RlbGV0ZURhdGE6CgkvLyBib3hJbmRleDogdWludDY0Cgl0eG5hIEFwcGxpY2F0aW9uQXJncyAyCglidG9pCgoJLy8gcHViS2V5OiBhZGRyZXNzCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAxCglkdXAKCWxlbgoJaW50YyA0IC8vIDMyCgk9PQoKCS8vIGFyZ3VtZW50IDEgKHB1YktleSkgZm9yIGRlbGV0ZURhdGEgbXVzdCBiZSBhIGFkZHJlc3MKCWFzc2VydAoKCS8vIGV4ZWN1dGUgZGVsZXRlRGF0YShhZGRyZXNzLHVpbnQ2NCl2b2lkCgljYWxsc3ViIGRlbGV0ZURhdGEKCWludGMgMCAvLyAxCglyZXR1cm4KCi8vIGRlbGV0ZURhdGEocHViS2V5OiBBZGRyZXNzLCBib3hJbmRleDogdWludDY0KTogdm9pZAovLwovLyBEZWxldGVzIGEgYm94IG9mIGRhdGEKLy8KLy8gQHBhcmFtIHB1YktleSBUaGUgYWRkcmVzcyBvZiB0aGUgRElECi8vIEBwYXJhbSBib3hJbmRleCBUaGUgaW5kZXggb2YgdGhlIGJveCB0byBkZWxldGUKZGVsZXRlRGF0YToKCXByb3RvIDIgMAoKCS8vIFB1c2ggZW1wdHkgYnl0ZXMgYWZ0ZXIgdGhlIGZyYW1lIHBvaW50ZXIgdG8gcmVzZXJ2ZSBzcGFjZSBmb3IgbG9jYWwgdmFyaWFibGVzCglieXRlYyAwIC8vIDB4CglkdXAKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE0NAoJLy8gYXNzZXJ0KHRoaXMudHhuLnNlbmRlciA9PT0gZ2xvYmFscy5jcmVhdG9yQWRkcmVzcykKCXR4biBTZW5kZXIKCWdsb2JhbCBDcmVhdG9yQWRkcmVzcwoJPT0KCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTQ2CgkvLyBtZXRhZGF0YSA9IHRoaXMubWV0YWRhdGEocHViS2V5KS52YWx1ZQoJZnJhbWVfZGlnIC0xIC8vIHB1YktleTogQWRkcmVzcwoJZnJhbWVfYnVyeSAwIC8vIHN0b3JhZ2Uga2V5Ly9tZXRhZGF0YQoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTQ3CgkvLyBhc3NlcnQobWV0YWRhdGEuc3RhdHVzID09PSBERUxFVElORykKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWludGMgMyAvLyAgaGVhZE9mZnNldAoJaW50YyAwIC8vIDEKCWJveF9leHRyYWN0CglidG9pCglwdXNoaW50IDIKCT09Cglhc3NlcnQKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE0OAoJLy8gYXNzZXJ0KG1ldGFkYXRhLnN0YXJ0IDw9IGJveEluZGV4ICYmIGJveEluZGV4IDw9IG1ldGFkYXRhLmVuZCkKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWludGMgMiAvLyAwCglpbnRjIDEgLy8gOAoJYm94X2V4dHJhY3QKCWJ0b2kKCWZyYW1lX2RpZyAtMiAvLyBib3hJbmRleDogdWludDY0Cgk8PQoJZHVwCglieiAqc2tpcF9hbmQxCglmcmFtZV9kaWcgLTIgLy8gYm94SW5kZXg6IHVpbnQ2NAoJZnJhbWVfZGlnIC0xIC8vIHB1YktleTogQWRkcmVzcwoJaW50YyAxIC8vICBoZWFkT2Zmc2V0CglpbnRjIDEgLy8gOAoJYm94X2V4dHJhY3QKCWJ0b2kKCTw9CgkmJgoKKnNraXBfYW5kMToKCWFzc2VydAoKCS8vICppZjFfY29uZGl0aW9uCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1MAoJLy8gYm94SW5kZXggIT09IG1ldGFkYXRhLnN0YXJ0CglmcmFtZV9kaWcgLTIgLy8gYm94SW5kZXg6IHVpbnQ2NAoJZnJhbWVfZGlnIC0xIC8vIHB1YktleTogQWRkcmVzcwoJaW50YyAyIC8vIDAKCWludGMgMSAvLyA4Cglib3hfZXh0cmFjdAoJYnRvaQoJIT0KCWJ6ICppZjFfZW5kCgoJLy8gKmlmMV9jb25zZXF1ZW50CgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1MAoJLy8gYXNzZXJ0KG1ldGFkYXRhLmxhc3REZWxldGVkID09PSBib3hJbmRleCAtIDEpCglmcmFtZV9kaWcgLTEgLy8gcHViS2V5OiBBZGRyZXNzCglpbnRjIDggLy8gIGhlYWRPZmZzZXQKCWludGMgMSAvLyA4Cglib3hfZXh0cmFjdAoJYnRvaQoJZnJhbWVfZGlnIC0yIC8vIGJveEluZGV4OiB1aW50NjQKCWludGMgMCAvLyAxCgktCgk9PQoJYXNzZXJ0CgoqaWYxX2VuZDoKCS8vIGNvbnRyYWN0cy9kaWQtYWxnby1zdG9yYWdlLmFsZ28udHM6MTUyCgkvLyBwcmVNQlIgPSBnbG9iYWxzLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MubWluQmFsYW5jZQoJZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKCWFjY3RfcGFyYW1zX2dldCBBY2N0TWluQmFsYW5jZQoJcG9wCglmcmFtZV9idXJ5IDEgLy8gcHJlTUJSOiB1aW50NjQKCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1NAoJLy8gdGhpcy5kYXRhQm94ZXMoYm94SW5kZXgpLmRlbGV0ZSgpCglmcmFtZV9kaWcgLTIgLy8gYm94SW5kZXg6IHVpbnQ2NAoJaXRvYgoJYm94X2RlbAoKCS8vICppZjJfY29uZGl0aW9uCgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1NgoJLy8gYm94SW5kZXggPT09IG1ldGFkYXRhLmVuZAoJZnJhbWVfZGlnIC0yIC8vIGJveEluZGV4OiB1aW50NjQKCWZyYW1lX2RpZyAtMSAvLyBwdWJLZXk6IEFkZHJlc3MKCWludGMgMSAvLyAgaGVhZE9mZnNldAoJaW50YyAxIC8vIDgKCWJveF9leHRyYWN0CglidG9pCgk9PQoJYnogKmlmMl9lbHNlCgoJLy8gKmlmMl9jb25zZXF1ZW50CgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1NgoJLy8gdGhpcy5tZXRhZGF0YShwdWJLZXkpLmRlbGV0ZSgpCglmcmFtZV9kaWcgLTEgLy8gcHViS2V5OiBBZGRyZXNzCglib3hfZGVsCgliICppZjJfZW5kCgoqaWYyX2Vsc2U6CgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1NwoJLy8gbWV0YWRhdGEubGFzdERlbGV0ZWQgPSBib3hJbmRleAoJaW50YyA4IC8vICBoZWFkT2Zmc2V0CglmcmFtZV9kaWcgLTIgLy8gYm94SW5kZXg6IHVpbnQ2NAoJaXRvYgoJZnJhbWVfZGlnIDAgLy8gc3RvcmFnZSBrZXkvL21ldGFkYXRhCgljb3ZlciAyCglib3hfcmVwbGFjZQoKKmlmMl9lbmQ6CgkvLyBjb250cmFjdHMvZGlkLWFsZ28tc3RvcmFnZS5hbGdvLnRzOjE1OQoJLy8gc2VuZFBheW1lbnQoewoJLy8gICAgICAgYW1vdW50OiBwcmVNQlIgLSBnbG9iYWxzLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MubWluQmFsYW5jZSwKCS8vICAgICAgIHJlY2VpdmVyOiB0aGlzLnR4bi5zZW5kZXIsCgkvLyAgICAgfSkKCWl0eG5fYmVnaW4KCWludGMgMCAvLyAgcGF5CglpdHhuX2ZpZWxkIFR5cGVFbnVtCgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxNjAKCS8vIGFtb3VudDogcHJlTUJSIC0gZ2xvYmFscy5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLm1pbkJhbGFuY2UKCWZyYW1lX2RpZyAxIC8vIHByZU1CUjogdWludDY0CglnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwoJYWNjdF9wYXJhbXNfZ2V0IEFjY3RNaW5CYWxhbmNlCglwb3AKCS0KCWl0eG5fZmllbGQgQW1vdW50CgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxNjEKCS8vIHJlY2VpdmVyOiB0aGlzLnR4bi5zZW5kZXIKCXR4biBTZW5kZXIKCWl0eG5fZmllbGQgUmVjZWl2ZXIKCgkvLyBGZWUgZmllbGQgbm90IHNldCwgZGVmYXVsdGluZyB0byAwCglpbnRjIDIgLy8gMAoJaXR4bl9maWVsZCBGZWUKCgkvLyBTdWJtaXQgaW5uZXIgdHJhbnNhY3Rpb24KCWl0eG5fc3VibWl0CglyZXRzdWIKCi8vIHVwZGF0ZUFwcGxpY2F0aW9uKCl2b2lkCiphYmlfcm91dGVfdXBkYXRlQXBwbGljYXRpb246CgkvLyBleGVjdXRlIHVwZGF0ZUFwcGxpY2F0aW9uKCl2b2lkCgljYWxsc3ViIHVwZGF0ZUFwcGxpY2F0aW9uCglpbnRjIDAgLy8gMQoJcmV0dXJuCgovLyB1cGRhdGVBcHBsaWNhdGlvbigpOiB2b2lkCi8vCi8vIEFsbG93IHRoZSBjb250cmFjdCB0byBiZSB1cGRhdGVkIGJ5IHRoZSBjcmVhdG9yCnVwZGF0ZUFwcGxpY2F0aW9uOgoJcHJvdG8gMCAwCgoJLy8gY29udHJhY3RzL2RpZC1hbGdvLXN0b3JhZ2UuYWxnby50czoxNjkKCS8vIGFzc2VydCh0aGlzLnR4bi5zZW5kZXIgPT09IGdsb2JhbHMuY3JlYXRvckFkZHJlc3MpCgl0eG4gU2VuZGVyCglnbG9iYWwgQ3JlYXRvckFkZHJlc3MKCT09Cglhc3NlcnQKCXJldHN1YgoKLy8gZHVtbXkoKXZvaWQKKmFiaV9yb3V0ZV9kdW1teToKCS8vIGV4ZWN1dGUgZHVtbXkoKXZvaWQKCWNhbGxzdWIgZHVtbXkKCWludGMgMCAvLyAxCglyZXR1cm4KCi8vIGR1bW15KCk6IHZvaWQKLy8KLy8gRHVtbXkgZnVuY3Rpb24gdG8gYWRkIGV4dHJhIGJveCByZWZlcmVuY2VzIGZvciBkZWxldGVEYXRhLgovLyBCb3hlcyBhcmUgMzJrLCBidXQgYSBzaW5nbGUgYXBwIGNhbGwgY2FuIG9ubHkgaW5sY3VkZSBlbm91Z2ggcmVmZXJlbmNlcyB0byByZWFkL3dyaXRlIDhrCi8vIGF0IGEgdGltZS4gVGh1cyB3aGVuIGEgYm94IGlzIGRlbGV0ZWQsIHdlIG5lZWQgdG8gYWRkIGFkZGl0aW9uYWwgZHVtbXkgY2FsbHMgd2l0aCBib3gKLy8gcmVmZXJlbmNlcyB0byBpbmNyZWFzZSB0aGUgdG90YWwgcmVhZC93cml0ZSBidWRnZXQgdG8gMzJrLgpkdW1teToKCXByb3RvIDAgMAoJcmV0c3ViCgoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJaW50YyAwIC8vIDEKCXJldHVybgoKKmNyZWF0ZV9Ob09wOgoJcHVzaGJ5dGVzIDB4Yjg0NDdiMzYgLy8gbWV0aG9kICJjcmVhdGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb24KCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY3JlYXRlIE5vT3AKCWVycgoKKmNhbGxfTm9PcDoKCXB1c2hieXRlcyAweDU2NWM2NzVkIC8vIG1ldGhvZCAic3RhcnRVcGxvYWQoYWRkcmVzcyx1aW50NjQsdWludDY0LHBheSl2b2lkIgoJcHVzaGJ5dGVzIDB4NGRiMWM0MTggLy8gbWV0aG9kICJ1cGxvYWQoYWRkcmVzcyx1aW50NjQsdWludDY0LGJ5dGVbXSl2b2lkIgoJcHVzaGJ5dGVzIDB4MGU3ODcyNTcgLy8gbWV0aG9kICJmaW5pc2hVcGxvYWQoYWRkcmVzcyl2b2lkIgoJcHVzaGJ5dGVzIDB4YmQyYzg0ZTIgLy8gbWV0aG9kICJzdGFydERlbGV0ZShhZGRyZXNzKXZvaWQiCglwdXNoYnl0ZXMgMHg2ODkxYmE5MCAvLyBtZXRob2QgImRlbGV0ZURhdGEoYWRkcmVzcyx1aW50NjQpdm9pZCIKCXB1c2hieXRlcyAweGEzMGNlN2ZmIC8vIG1ldGhvZCAiZHVtbXkoKXZvaWQiCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAwCgltYXRjaCAqYWJpX3JvdXRlX3N0YXJ0VXBsb2FkICphYmlfcm91dGVfdXBsb2FkICphYmlfcm91dGVfZmluaXNoVXBsb2FkICphYmlfcm91dGVfc3RhcnREZWxldGUgKmFiaV9yb3V0ZV9kZWxldGVEYXRhICphYmlfcm91dGVfZHVtbXkKCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY2FsbCBOb09wCgllcnIKCipjYWxsX1VwZGF0ZUFwcGxpY2F0aW9uOgoJcHVzaGJ5dGVzIDB4NDZmNzY1MzMgLy8gbWV0aG9kICJ1cGRhdGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfdXBkYXRlQXBwbGljYXRpb24KCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY2FsbCBVcGRhdGVBcHBsaWNhdGlvbgoJZXJy",
+    "clear": "I3ByYWdtYSB2ZXJzaW9uIDEw"
+  },
+  "byteCode": {
+    "approval": "CiAJAQgAECCQA8QTgIACGSYCAAxjdXJyZW50SW5kZXgxGBSBBgsxGQiNDAInAAAAAAAAAl0AAAIZAAAAAAAAAAAAAAAxFiIJSTgQIhJENhoDFzYaAhc2GgFJFSEEEkSIAAIiQ4oEAChHAzEAMgkSRClkjACLAIv+CCIJjAGLABaLARZQgAEAUIv9FlCACAAAAAAAAAAAUIwCi/+9TEgURIv/iwK/KYsBIghni/4hBguL/iIJIQcLIQULCIv+IwshBQsIi/0hBQsIIQYIgZDLAQiMA4v8OAiLAxJEi/w4BzIKEkSJNhoEVwIANhoDFzYaAhc2GgFJFSEEEkSIAAIiQ4oEACgxADIJEkSL/4wAi/8lIroXJBJEi/8kI7oXi/4OSUEACov+i/8jI7oXDhBEi/0kEkEAHYv+Fov+i/8jI7oXEkEACov/gREjuhdCAAIhB7lIi/4Wi/2L/LuJNhoBSRUhBBJEiAACIkOKAQAxADIJEkSL/yWAAQG7iTYaAUkVIQQSRIgAAiJDigEAKDEAMgkSRIv/jACL/yUiuhciEkSLACWAAQK7iTYaAhc2GgFJFSEEEkSIAAIiQ4oCAChJMQAyCRJEi/+MAIv/JSK6F4ECEkSL/yQjuheL/g5JQQAKi/6L/yMjuhcOEESL/ov/JCO6FxNBAA2L/yEII7oXi/4iCRJEMgpzAUiMAYv+FryL/ov/IyO6FxJBAAaL/7xCAAohCIv+FosATgK7sSKyEIsBMgpzAUgJsggxALIHJLIBs4mIAAIiQ4oAADEAMgkSRImIAAIiQ4oAAIkiQ4AEuER7NjYaAI4B//EAgARWXGddgARNscQYgAQOeHJXgAS9LITigARokbqQgASjDOf/NhoAjgb9pf5F/r3+3P8J/7IAgARG92UzNhoAjgH/lQA=",
+    "clear": "Cg=="
+  },
+  "compilerInfo": {
+    "compiler": "algod",
+    "compilerVersion": {
+      "major": 4,
+      "minor": 0,
+      "patch": 2,
+      "commitHash": "6b940281"
+    }
+  }
+}

@@ -1,9 +1,15 @@
 [
   {
     "teal": 1,
-    "source": 38,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
-      0,
+      0
+    ]
+  },
+  {
+    "teal": 2,
+    "source": "contracts/did-algo-storage.algo.ts:38",
+    "pc": [
       1,
       2,
       3,
@@ -18,7 +24,13 @@
       12,
       13,
       14,
-      15,
+      15
+    ]
+  },
+  {
+    "teal": 3,
+    "source": "contracts/did-algo-storage.algo.ts:38",
+    "pc": [
       16,
       17,
       18,
@@ -38,53 +50,53 @@
     ]
   },
   {
-    "teal": 13,
-    "source": 38,
+    "teal": 15,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       32,
       33
     ]
   },
   {
-    "teal": 14,
-    "source": 38,
+    "teal": 16,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       34
     ]
   },
   {
-    "teal": 15,
-    "source": 38,
+    "teal": 17,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       35,
       36
     ]
   },
   {
-    "teal": 16,
-    "source": 38,
+    "teal": 18,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       37
     ]
   },
   {
-    "teal": 17,
-    "source": 38,
+    "teal": 19,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       38,
       39
     ]
   },
   {
-    "teal": 18,
-    "source": 38,
+    "teal": 20,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       40
     ]
   },
   {
-    "teal": 19,
-    "source": 38,
+    "teal": 21,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       41,
       42,
@@ -115,75 +127,75 @@
     ]
   },
   {
-    "teal": 23,
-    "source": 38,
+    "teal": 25,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "errorMessage": "The requested action is not implemented in this contract. Are you using the correct OnComplete? Did you set your app ID?",
     "pc": [
       67
     ]
   },
   {
-    "teal": 28,
-    "source": 61,
+    "teal": 30,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       68,
       69
     ]
   },
   {
-    "teal": 29,
-    "source": 61,
+    "teal": 31,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       70
     ]
   },
   {
-    "teal": 30,
-    "source": 61,
+    "teal": 32,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       71
     ]
   },
   {
-    "teal": 31,
-    "source": 61,
+    "teal": 33,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       72
     ]
   },
   {
-    "teal": 32,
-    "source": 61,
+    "teal": 34,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       73,
       74
     ]
   },
   {
-    "teal": 33,
-    "source": 61,
+    "teal": 35,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       75
     ]
   },
   {
-    "teal": 34,
-    "source": 61,
+    "teal": 36,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "pc": [
       76
     ]
   },
   {
-    "teal": 37,
-    "source": 61,
+    "teal": 39,
+    "source": "contracts/did-algo-storage.algo.ts:61",
     "errorMessage": "argument 0 (mbrPayment) for startUpload must be a pay transaction",
     "pc": [
       77
     ]
   },
   {
-    "teal": 40,
-    "source": 60,
+    "teal": 42,
+    "source": "contracts/did-algo-storage.algo.ts:60",
     "pc": [
       78,
       79,
@@ -191,15 +203,15 @@
     ]
   },
   {
-    "teal": 41,
-    "source": 60,
+    "teal": 43,
+    "source": "contracts/did-algo-storage.algo.ts:60",
     "pc": [
       81
     ]
   },
   {
-    "teal": 44,
-    "source": 59,
+    "teal": 46,
+    "source": "contracts/did-algo-storage.algo.ts:59",
     "pc": [
       82,
       83,
@@ -207,15 +219,15 @@
     ]
   },
   {
-    "teal": 45,
-    "source": 59,
+    "teal": 47,
+    "source": "contracts/did-algo-storage.algo.ts:59",
     "pc": [
       85
     ]
   },
   {
-    "teal": 48,
-    "source": 58,
+    "teal": 50,
+    "source": "contracts/did-algo-storage.algo.ts:58",
     "pc": [
       86,
       87,
@@ -223,265 +235,265 @@
     ]
   },
   {
-    "teal": 49,
-    "source": 58,
+    "teal": 51,
+    "source": "contracts/did-algo-storage.algo.ts:58",
     "pc": [
       89
     ]
   },
   {
-    "teal": 50,
-    "source": 58,
+    "teal": 52,
+    "source": "contracts/did-algo-storage.algo.ts:58",
     "pc": [
       90
     ]
   },
   {
-    "teal": 51,
-    "source": 58,
+    "teal": 53,
+    "source": "contracts/did-algo-storage.algo.ts:58",
     "pc": [
-      91
-    ]
-  },
-  {
-    "teal": 52,
-    "source": 58,
-    "pc": [
+      91,
       92
     ]
   },
   {
-    "teal": 55,
-    "source": 58,
-    "errorMessage": "argument 3 (pubKey) for startUpload must be a address",
+    "teal": 54,
+    "source": "contracts/did-algo-storage.algo.ts:58",
     "pc": [
       93
     ]
   },
   {
-    "teal": 58,
-    "source": 57,
+    "teal": 57,
+    "source": "contracts/did-algo-storage.algo.ts:58",
+    "errorMessage": "argument 3 (pubKey) for startUpload must be a address",
     "pc": [
-      94,
-      95,
-      96
-    ]
-  },
-  {
-    "teal": 59,
-    "source": 57,
-    "pc": [
-      97
+      94
     ]
   },
   {
     "teal": 60,
-    "source": 57,
+    "source": "contracts/did-algo-storage.algo.ts:57",
+    "pc": [
+      95,
+      96,
+      97
+    ]
+  },
+  {
+    "teal": 61,
+    "source": "contracts/did-algo-storage.algo.ts:57",
     "pc": [
       98
     ]
   },
   {
-    "teal": 72,
-    "source": 57,
+    "teal": 62,
+    "source": "contracts/did-algo-storage.algo.ts:57",
     "pc": [
-      99,
-      100,
-      101
+      99
     ]
   },
   {
-    "teal": 75,
-    "source": 57,
+    "teal": 74,
+    "source": "contracts/did-algo-storage.algo.ts:57",
     "pc": [
+      100,
+      101,
       102
     ]
   },
   {
-    "teal": 76,
-    "source": 57,
+    "teal": 77,
+    "source": "contracts/did-algo-storage.algo.ts:57",
     "pc": [
-      103,
-      104
+      103
     ]
   },
   {
-    "teal": 80,
-    "source": 63,
+    "teal": 78,
+    "source": "contracts/did-algo-storage.algo.ts:57",
     "pc": [
-      105,
-      106
-    ]
-  },
-  {
-    "teal": 81,
-    "source": 63,
-    "pc": [
-      107,
-      108
+      104,
+      105
     ]
   },
   {
     "teal": 82,
-    "source": 63,
+    "source": "contracts/did-algo-storage.algo.ts:63",
     "pc": [
-      109
+      106,
+      107
     ]
   },
   {
     "teal": 83,
-    "source": 63,
+    "source": "contracts/did-algo-storage.algo.ts:63",
+    "pc": [
+      108,
+      109
+    ]
+  },
+  {
+    "teal": 84,
+    "source": "contracts/did-algo-storage.algo.ts:63",
     "pc": [
       110
     ]
   },
   {
-    "teal": 87,
-    "source": 65,
+    "teal": 85,
+    "source": "contracts/did-algo-storage.algo.ts:63",
     "pc": [
       111
     ]
   },
   {
-    "teal": 88,
-    "source": 65,
+    "teal": 89,
+    "source": "contracts/did-algo-storage.algo.ts:65",
     "pc": [
       112
     ]
   },
   {
-    "teal": 89,
-    "source": 65,
+    "teal": 90,
+    "source": "contracts/did-algo-storage.algo.ts:65",
     "pc": [
-      113,
-      114
+      113
     ]
   },
   {
-    "teal": 93,
-    "source": 66,
+    "teal": 91,
+    "source": "contracts/did-algo-storage.algo.ts:65",
     "pc": [
-      115,
-      116
-    ]
-  },
-  {
-    "teal": 94,
-    "source": 66,
-    "pc": [
-      117,
-      118
+      114,
+      115
     ]
   },
   {
     "teal": 95,
-    "source": 66,
+    "source": "contracts/did-algo-storage.algo.ts:66",
     "pc": [
-      119
+      116,
+      117
     ]
   },
   {
     "teal": 96,
-    "source": 66,
+    "source": "contracts/did-algo-storage.algo.ts:66",
+    "pc": [
+      118,
+      119
+    ]
+  },
+  {
+    "teal": 97,
+    "source": "contracts/did-algo-storage.algo.ts:66",
     "pc": [
       120
     ]
   },
   {
-    "teal": 97,
-    "source": 66,
+    "teal": 98,
+    "source": "contracts/did-algo-storage.algo.ts:66",
     "pc": [
       121
     ]
   },
   {
-    "teal": 98,
-    "source": 66,
+    "teal": 99,
+    "source": "contracts/did-algo-storage.algo.ts:66",
     "pc": [
-      122,
-      123
+      122
     ]
   },
   {
-    "teal": 104,
-    "source": 69,
+    "teal": 100,
+    "source": "contracts/did-algo-storage.algo.ts:66",
     "pc": [
-      124,
-      125
-    ]
-  },
-  {
-    "teal": 105,
-    "source": 69,
-    "pc": [
-      126
+      123,
+      124
     ]
   },
   {
     "teal": 106,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      127,
-      128
+      125,
+      126
     ]
   },
   {
     "teal": 107,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      129
+      127
     ]
   },
   {
     "teal": 108,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
+    "pc": [
+      128,
+      129
+    ]
+  },
+  {
+    "teal": 109,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
       130
     ]
   },
   {
-    "teal": 109,
-    "source": 69,
-    "pc": [
-      131,
-      132,
-      133
-    ]
-  },
-  {
     "teal": 110,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      134
+      131
     ]
   },
   {
     "teal": 111,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      135,
-      136
+      132,
+      133,
+      134
     ]
   },
   {
     "teal": 112,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      137
+      135
     ]
   },
   {
     "teal": 113,
-    "source": 69,
+    "source": "contracts/did-algo-storage.algo.ts:69",
+    "pc": [
+      136,
+      137
+    ]
+  },
+  {
+    "teal": 114,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
       138
     ]
   },
   {
-    "teal": 114,
-    "source": 69,
+    "teal": 115,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      139,
+      139
+    ]
+  },
+  {
+    "teal": 116,
+    "source": "contracts/did-algo-storage.algo.ts:69",
+    "pc": [
       140,
       141,
       142,
@@ -490,1347 +502,1347 @@
       145,
       146,
       147,
-      148
-    ]
-  },
-  {
-    "teal": 115,
-    "source": 69,
-    "pc": [
+      148,
       149
     ]
   },
   {
-    "teal": 116,
-    "source": 68,
+    "teal": 117,
+    "source": "contracts/did-algo-storage.algo.ts:69",
     "pc": [
-      150,
-      151
+      150
     ]
   },
   {
-    "teal": 120,
-    "source": 72,
+    "teal": 118,
+    "source": "contracts/did-algo-storage.algo.ts:68",
     "pc": [
-      152,
-      153
-    ]
-  },
-  {
-    "teal": 121,
-    "source": 72,
-    "pc": [
-      154
+      151,
+      152
     ]
   },
   {
     "teal": 122,
-    "source": 72,
+    "source": "contracts/did-algo-storage.algo.ts:72",
+    "pc": [
+      153,
+      154
+    ]
+  },
+  {
+    "teal": 123,
+    "source": "contracts/did-algo-storage.algo.ts:72",
     "pc": [
       155
     ]
   },
   {
-    "teal": 123,
-    "source": 72,
+    "teal": 124,
+    "source": "contracts/did-algo-storage.algo.ts:72",
     "pc": [
       156
     ]
   },
   {
-    "teal": 124,
-    "source": 72,
+    "teal": 125,
+    "source": "contracts/did-algo-storage.algo.ts:72",
     "pc": [
       157
     ]
   },
   {
-    "teal": 125,
-    "source": 72,
+    "teal": 126,
+    "source": "contracts/did-algo-storage.algo.ts:72",
     "pc": [
       158
     ]
   },
   {
-    "teal": 129,
-    "source": 74,
+    "teal": 127,
+    "source": "contracts/did-algo-storage.algo.ts:72",
     "pc": [
-      159,
-      160
-    ]
-  },
-  {
-    "teal": 130,
-    "source": 74,
-    "pc": [
-      161,
-      162
+      159
     ]
   },
   {
     "teal": 131,
-    "source": 74,
+    "source": "contracts/did-algo-storage.algo.ts:74",
     "pc": [
+      160,
+      161
+    ]
+  },
+  {
+    "teal": 132,
+    "source": "contracts/did-algo-storage.algo.ts:74",
+    "pc": [
+      162,
       163
     ]
   },
   {
-    "teal": 135,
-    "source": 76,
+    "teal": 133,
+    "source": "contracts/did-algo-storage.algo.ts:74",
     "pc": [
       164
     ]
   },
   {
-    "teal": 136,
-    "source": 76,
-    "pc": [
-      165,
-      166
-    ]
-  },
-  {
     "teal": 137,
-    "source": 76,
+    "source": "contracts/did-algo-storage.algo.ts:76",
     "pc": [
-      167
+      165
     ]
   },
   {
     "teal": 138,
-    "source": 76,
+    "source": "contracts/did-algo-storage.algo.ts:76",
+    "pc": [
+      166,
+      167
+    ]
+  },
+  {
+    "teal": 139,
+    "source": "contracts/did-algo-storage.algo.ts:76",
     "pc": [
       168
     ]
   },
   {
-    "teal": 139,
-    "source": 76,
+    "teal": 140,
+    "source": "contracts/did-algo-storage.algo.ts:76",
     "pc": [
       169
     ]
   },
   {
-    "teal": 147,
-    "source": 78,
+    "teal": 141,
+    "source": "contracts/did-algo-storage.algo.ts:76",
     "pc": [
-      170,
-      171
-    ]
-  },
-  {
-    "teal": 148,
-    "source": 78,
-    "pc": [
-      172,
-      173
+      170
     ]
   },
   {
     "teal": 149,
-    "source": 78,
+    "source": "contracts/did-algo-storage.algo.ts:78",
     "pc": [
-      174
+      171,
+      172
     ]
   },
   {
     "teal": 150,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:78",
     "pc": [
-      175,
-      176
+      173,
+      174
     ]
   },
   {
     "teal": 151,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:78",
     "pc": [
-      177
+      175
     ]
   },
   {
     "teal": 152,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:79",
+    "pc": [
+      176,
+      177
+    ]
+  },
+  {
+    "teal": 153,
+    "source": "contracts/did-algo-storage.algo.ts:79",
     "pc": [
       178
     ]
   },
   {
-    "teal": 153,
-    "source": 79,
-    "pc": [
-      179,
-      180
-    ]
-  },
-  {
     "teal": 154,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:79",
     "pc": [
-      181
+      179
     ]
   },
   {
     "teal": 155,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:79",
     "pc": [
-      182,
-      183
+      180,
+      181
     ]
   },
   {
     "teal": 156,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:79",
     "pc": [
-      184
+      182
     ]
   },
   {
     "teal": 157,
-    "source": 79,
+    "source": "contracts/did-algo-storage.algo.ts:79",
+    "pc": [
+      183,
+      184
+    ]
+  },
+  {
+    "teal": 158,
+    "source": "contracts/did-algo-storage.algo.ts:79",
     "pc": [
       185
     ]
   },
   {
-    "teal": 158,
-    "source": 80,
-    "pc": [
-      186,
-      187
-    ]
-  },
-  {
     "teal": 159,
-    "source": 80,
+    "source": "contracts/did-algo-storage.algo.ts:79",
     "pc": [
-      188
+      186
     ]
   },
   {
     "teal": 160,
-    "source": 80,
+    "source": "contracts/did-algo-storage.algo.ts:80",
+    "pc": [
+      187,
+      188
+    ]
+  },
+  {
+    "teal": 161,
+    "source": "contracts/did-algo-storage.algo.ts:80",
     "pc": [
       189
     ]
   },
   {
-    "teal": 161,
-    "source": 80,
-    "pc": [
-      190,
-      191
-    ]
-  },
-  {
     "teal": 162,
-    "source": 80,
+    "source": "contracts/did-algo-storage.algo.ts:80",
     "pc": [
-      192
+      190
     ]
   },
   {
     "teal": 163,
-    "source": 80,
+    "source": "contracts/did-algo-storage.algo.ts:80",
+    "pc": [
+      191,
+      192
+    ]
+  },
+  {
+    "teal": 164,
+    "source": "contracts/did-algo-storage.algo.ts:80",
     "pc": [
       193
     ]
   },
   {
-    "teal": 164,
-    "source": 81,
-    "pc": [
-      194,
-      195
-    ]
-  },
-  {
     "teal": 165,
-    "source": 81,
+    "source": "contracts/did-algo-storage.algo.ts:80",
     "pc": [
-      196,
-      197
+      194
     ]
   },
   {
     "teal": 166,
-    "source": 81,
+    "source": "contracts/did-algo-storage.algo.ts:81",
     "pc": [
-      198
+      195,
+      196
     ]
   },
   {
     "teal": 167,
-    "source": 81,
+    "source": "contracts/did-algo-storage.algo.ts:81",
+    "pc": [
+      197,
+      198
+    ]
+  },
+  {
+    "teal": 168,
+    "source": "contracts/did-algo-storage.algo.ts:81",
     "pc": [
       199
     ]
   },
   {
-    "teal": 168,
-    "source": 82,
-    "pc": [
-      200,
-      201
-    ]
-  },
-  {
     "teal": 169,
-    "source": 82,
+    "source": "contracts/did-algo-storage.algo.ts:81",
     "pc": [
-      202
+      200
     ]
   },
   {
     "teal": 170,
-    "source": 82,
+    "source": "contracts/did-algo-storage.algo.ts:82",
     "pc": [
-      203,
-      204,
-      205,
-      206
+      201,
+      202
     ]
   },
   {
     "teal": 171,
-    "source": 82,
+    "source": "contracts/did-algo-storage.algo.ts:82",
     "pc": [
-      207
+      203
     ]
   },
   {
     "teal": 172,
-    "source": 78,
+    "source": "contracts/did-algo-storage.algo.ts:82",
     "pc": [
-      208,
-      209
+      204,
+      205,
+      206,
+      207
     ]
   },
   {
-    "teal": 176,
-    "source": 84,
+    "teal": 173,
+    "source": "contracts/did-algo-storage.algo.ts:82",
     "pc": [
-      210,
-      211
+      208
     ]
   },
   {
-    "teal": 177,
-    "source": 84,
+    "teal": 174,
+    "source": "contracts/did-algo-storage.algo.ts:78",
     "pc": [
-      212,
-      213
+      209,
+      210
     ]
   },
   {
     "teal": 178,
-    "source": 84,
+    "source": "contracts/did-algo-storage.algo.ts:84",
     "pc": [
-      214,
-      215
+      211,
+      212
     ]
   },
   {
     "teal": 179,
-    "source": 84,
+    "source": "contracts/did-algo-storage.algo.ts:84",
     "pc": [
-      216
+      213,
+      214
     ]
   },
   {
     "teal": 180,
-    "source": 84,
+    "source": "contracts/did-algo-storage.algo.ts:84",
+    "pc": [
+      215,
+      216
+    ]
+  },
+  {
+    "teal": 181,
+    "source": "contracts/did-algo-storage.algo.ts:84",
     "pc": [
       217
     ]
   },
   {
-    "teal": 184,
-    "source": 85,
+    "teal": 182,
+    "source": "contracts/did-algo-storage.algo.ts:84",
     "pc": [
-      218,
-      219
-    ]
-  },
-  {
-    "teal": 185,
-    "source": 85,
-    "pc": [
-      220,
-      221
+      218
     ]
   },
   {
     "teal": 186,
-    "source": 85,
+    "source": "contracts/did-algo-storage.algo.ts:85",
     "pc": [
-      222,
-      223
+      219,
+      220
     ]
   },
   {
     "teal": 187,
-    "source": 85,
+    "source": "contracts/did-algo-storage.algo.ts:85",
     "pc": [
-      224
+      221,
+      222
     ]
   },
   {
     "teal": 188,
-    "source": 85,
+    "source": "contracts/did-algo-storage.algo.ts:85",
+    "pc": [
+      223,
+      224
+    ]
+  },
+  {
+    "teal": 189,
+    "source": "contracts/did-algo-storage.algo.ts:85",
     "pc": [
       225
     ]
   },
   {
-    "teal": 189,
-    "source": 57,
+    "teal": 190,
+    "source": "contracts/did-algo-storage.algo.ts:85",
     "pc": [
       226
     ]
   },
   {
-    "teal": 194,
-    "source": 97,
+    "teal": 191,
+    "source": "contracts/did-algo-storage.algo.ts:57",
     "pc": [
-      227,
+      227
+    ]
+  },
+  {
+    "teal": 196,
+    "source": "contracts/did-algo-storage.algo.ts:97",
+    "pc": [
       228,
-      229
+      229,
+      230
     ]
   },
   {
-    "teal": 195,
-    "source": 97,
+    "teal": 197,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      230,
       231,
-      232
+      232,
+      233
     ]
   },
   {
-    "teal": 198,
-    "source": 97,
+    "teal": 200,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      233,
       234,
-      235
-    ]
-  },
-  {
-    "teal": 199,
-    "source": 97,
-    "pc": [
+      235,
       236
     ]
   },
   {
-    "teal": 202,
-    "source": 97,
+    "teal": 201,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      237,
-      238,
-      239
+      237
     ]
   },
   {
-    "teal": 203,
-    "source": 97,
+    "teal": 204,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
+      238,
+      239,
       240
     ]
   },
   {
-    "teal": 206,
-    "source": 97,
+    "teal": 205,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      241,
-      242,
-      243
-    ]
-  },
-  {
-    "teal": 207,
-    "source": 97,
-    "pc": [
-      244
+      241
     ]
   },
   {
     "teal": 208,
-    "source": 97,
+    "source": "contracts/did-algo-storage.algo.ts:97",
+    "pc": [
+      242,
+      243,
+      244
+    ]
+  },
+  {
+    "teal": 209,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
       245
     ]
   },
   {
-    "teal": 209,
-    "source": 97,
+    "teal": 210,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
       246
     ]
   },
   {
-    "teal": 210,
-    "source": 97,
+    "teal": 211,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      247
-    ]
-  },
-  {
-    "teal": 213,
-    "source": 97,
-    "errorMessage": "argument 3 (pubKey) for upload must be a address",
-    "pc": [
+      247,
       248
     ]
   },
   {
-    "teal": 216,
-    "source": 97,
+    "teal": 212,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      249,
-      250,
-      251
+      249
     ]
   },
   {
-    "teal": 217,
-    "source": 97,
+    "teal": 215,
+    "source": "contracts/did-algo-storage.algo.ts:97",
+    "errorMessage": "argument 3 (pubKey) for upload must be a address",
     "pc": [
-      252
+      250
     ]
   },
   {
     "teal": 218,
-    "source": 97,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
+      251,
+      252,
       253
     ]
   },
   {
-    "teal": 230,
-    "source": 97,
+    "teal": 219,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      254,
-      255,
-      256
+      254
     ]
   },
   {
-    "teal": 233,
-    "source": 97,
+    "teal": 220,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      257
+      255
     ]
   },
   {
-    "teal": 237,
-    "source": 98,
+    "teal": 232,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      258,
+      256,
+      257,
+      258
+    ]
+  },
+  {
+    "teal": 235,
+    "source": "contracts/did-algo-storage.algo.ts:97",
+    "pc": [
       259
     ]
   },
   {
-    "teal": 238,
-    "source": 98,
+    "teal": 239,
+    "source": "contracts/did-algo-storage.algo.ts:98",
     "pc": [
       260,
       261
     ]
   },
   {
-    "teal": 239,
-    "source": 98,
-    "pc": [
-      262
-    ]
-  },
-  {
     "teal": 240,
-    "source": 98,
+    "source": "contracts/did-algo-storage.algo.ts:98",
     "pc": [
+      262,
       263
     ]
   },
   {
-    "teal": 244,
-    "source": 100,
+    "teal": 241,
+    "source": "contracts/did-algo-storage.algo.ts:98",
     "pc": [
-      264,
+      264
+    ]
+  },
+  {
+    "teal": 242,
+    "source": "contracts/did-algo-storage.algo.ts:98",
+    "pc": [
       265
     ]
   },
   {
-    "teal": 245,
-    "source": 100,
+    "teal": 246,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       266,
       267
     ]
   },
   {
-    "teal": 249,
-    "source": 100,
+    "teal": 247,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       268,
       269
     ]
   },
   {
-    "teal": 250,
-    "source": 100,
+    "teal": 251,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       270,
       271
     ]
   },
   {
-    "teal": 251,
-    "source": 100,
+    "teal": 252,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       272
     ]
   },
   {
-    "teal": 252,
-    "source": 100,
+    "teal": 253,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       273
     ]
   },
   {
-    "teal": 253,
-    "source": 101,
+    "teal": 254,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       274
     ]
   },
   {
-    "teal": 254,
-    "source": 26,
+    "teal": 255,
+    "source": "contracts/did-algo-storage.algo.ts:101",
     "pc": [
       275
     ]
   },
   {
-    "teal": 255,
-    "source": 101,
+    "teal": 256,
+    "source": "contracts/did-algo-storage.algo.ts:26",
     "pc": [
       276
     ]
   },
   {
-    "teal": 256,
-    "source": 101,
+    "teal": 257,
+    "source": "contracts/did-algo-storage.algo.ts:101",
     "pc": [
       277
     ]
   },
   {
-    "teal": 260,
-    "source": 100,
+    "teal": 258,
+    "source": "contracts/did-algo-storage.algo.ts:101",
     "pc": [
-      278,
-      279
-    ]
-  },
-  {
-    "teal": 261,
-    "source": 100,
-    "pc": [
-      280
+      278
     ]
   },
   {
     "teal": 262,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:100",
+    "pc": [
+      279,
+      280
+    ]
+  },
+  {
+    "teal": 263,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       281
     ]
   },
   {
-    "teal": 263,
-    "source": 100,
+    "teal": 264,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       282
     ]
   },
   {
-    "teal": 264,
-    "source": 102,
+    "teal": 265,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       283
     ]
   },
   {
-    "teal": 265,
-    "source": 102,
-    "pc": [
-      284,
-      285
-    ]
-  },
-  {
     "teal": 266,
-    "source": 102,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
-      286
+      284
     ]
   },
   {
     "teal": 267,
-    "source": 102,
+    "source": "contracts/did-algo-storage.algo.ts:102",
+    "pc": [
+      285,
+      286
+    ]
+  },
+  {
+    "teal": 268,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
       287
     ]
   },
   {
-    "teal": 268,
-    "source": 102,
-    "pc": [
-      288,
-      289,
-      290
-    ]
-  },
-  {
     "teal": 269,
-    "source": 102,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
-      291,
-      292
+      288
     ]
   },
   {
     "teal": 270,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
-      293,
-      294
+      289,
+      290,
+      291
     ]
   },
   {
     "teal": 271,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
-      295
+      292,
+      293
     ]
   },
   {
     "teal": 272,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:100",
+    "pc": [
+      294,
+      295
+    ]
+  },
+  {
+    "teal": 273,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       296
     ]
   },
   {
-    "teal": 273,
-    "source": 100,
+    "teal": 274,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       297
     ]
   },
   {
-    "teal": 274,
-    "source": 102,
+    "teal": 275,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       298
     ]
   },
   {
-    "teal": 275,
-    "source": 102,
+    "teal": 276,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
       299
     ]
   },
   {
-    "teal": 276,
-    "source": 102,
+    "teal": 277,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
       300
     ]
   },
   {
-    "teal": 279,
-    "source": 102,
+    "teal": 278,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
       301
     ]
   },
   {
-    "teal": 284,
-    "source": 104,
+    "teal": 281,
+    "source": "contracts/did-algo-storage.algo.ts:102",
     "pc": [
-      302,
-      303
-    ]
-  },
-  {
-    "teal": 285,
-    "source": 104,
-    "pc": [
-      304
+      302
     ]
   },
   {
     "teal": 286,
-    "source": 104,
+    "source": "contracts/did-algo-storage.algo.ts:104",
+    "pc": [
+      303,
+      304
+    ]
+  },
+  {
+    "teal": 287,
+    "source": "contracts/did-algo-storage.algo.ts:104",
     "pc": [
       305
     ]
   },
   {
-    "teal": 287,
-    "source": 104,
+    "teal": 288,
+    "source": "contracts/did-algo-storage.algo.ts:104",
     "pc": [
-      306,
+      306
+    ]
+  },
+  {
+    "teal": 289,
+    "source": "contracts/did-algo-storage.algo.ts:104",
+    "pc": [
       307,
-      308
-    ]
-  },
-  {
-    "teal": 292,
-    "source": 105,
-    "pc": [
-      309,
-      310
-    ]
-  },
-  {
-    "teal": 293,
-    "source": 105,
-    "pc": [
-      311
+      308,
+      309
     ]
   },
   {
     "teal": 294,
-    "source": 105,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      312,
-      313
+      310,
+      311
     ]
   },
   {
     "teal": 295,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      314,
-      315
+      312
     ]
   },
   {
     "teal": 296,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      316
+      313,
+      314
     ]
   },
   {
     "teal": 297,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:100",
+    "pc": [
+      315,
+      316
+    ]
+  },
+  {
+    "teal": 298,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       317
     ]
   },
   {
-    "teal": 298,
-    "source": 100,
+    "teal": 299,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       318
     ]
   },
   {
-    "teal": 299,
-    "source": 105,
+    "teal": 300,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       319
     ]
   },
   {
-    "teal": 300,
-    "source": 105,
+    "teal": 301,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
       320
     ]
   },
   {
-    "teal": 301,
-    "source": 105,
-    "pc": [
-      321,
-      322,
-      323
-    ]
-  },
-  {
     "teal": 302,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      324,
-      325
+      321
     ]
   },
   {
     "teal": 303,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      326,
-      327
+      322,
+      323,
+      324
     ]
   },
   {
     "teal": 304,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
-      328
+      325,
+      326
     ]
   },
   {
     "teal": 305,
-    "source": 100,
+    "source": "contracts/did-algo-storage.algo.ts:100",
+    "pc": [
+      327,
+      328
+    ]
+  },
+  {
+    "teal": 306,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       329
     ]
   },
   {
-    "teal": 306,
-    "source": 105,
+    "teal": 307,
+    "source": "contracts/did-algo-storage.algo.ts:100",
     "pc": [
       330
     ]
   },
   {
-    "teal": 307,
-    "source": 105,
+    "teal": 308,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      331,
+      331
+    ]
+  },
+  {
+    "teal": 309,
+    "source": "contracts/did-algo-storage.algo.ts:105",
+    "pc": [
       332,
-      333
+      333,
+      334
     ]
   },
   {
-    "teal": 310,
-    "source": 105,
+    "teal": 312,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      334,
-      335
-    ]
-  },
-  {
-    "teal": 313,
-    "source": 105,
-    "pc": [
+      335,
       336
     ]
   },
   {
-    "teal": 314,
-    "source": 105,
+    "teal": 315,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
       337
     ]
   },
   {
-    "teal": 319,
-    "source": 108,
+    "teal": 316,
+    "source": "contracts/did-algo-storage.algo.ts:105",
     "pc": [
-      338,
-      339
-    ]
-  },
-  {
-    "teal": 320,
-    "source": 108,
-    "pc": [
-      340
+      338
     ]
   },
   {
     "teal": 321,
-    "source": 108,
+    "source": "contracts/did-algo-storage.algo.ts:108",
     "pc": [
-      341,
-      342
+      339,
+      340
     ]
   },
   {
     "teal": 322,
-    "source": 108,
+    "source": "contracts/did-algo-storage.algo.ts:108",
     "pc": [
-      343,
-      344
+      341
     ]
   },
   {
     "teal": 323,
-    "source": 108,
+    "source": "contracts/did-algo-storage.algo.ts:108",
     "pc": [
-      345
+      342,
+      343
     ]
   },
   {
     "teal": 324,
-    "source": 97,
+    "source": "contracts/did-algo-storage.algo.ts:108",
+    "pc": [
+      344,
+      345
+    ]
+  },
+  {
+    "teal": 325,
+    "source": "contracts/did-algo-storage.algo.ts:108",
     "pc": [
       346
     ]
   },
   {
-    "teal": 329,
-    "source": 117,
+    "teal": 326,
+    "source": "contracts/did-algo-storage.algo.ts:97",
     "pc": [
-      347,
-      348,
-      349
-    ]
-  },
-  {
-    "teal": 330,
-    "source": 117,
-    "pc": [
-      350
+      347
     ]
   },
   {
     "teal": 331,
-    "source": 117,
+    "source": "contracts/did-algo-storage.algo.ts:117",
+    "pc": [
+      348,
+      349,
+      350
+    ]
+  },
+  {
+    "teal": 332,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
       351
     ]
   },
   {
-    "teal": 332,
-    "source": 117,
+    "teal": 333,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
       352
     ]
   },
   {
-    "teal": 333,
-    "source": 117,
+    "teal": 334,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
-      353
-    ]
-  },
-  {
-    "teal": 336,
-    "source": 117,
-    "errorMessage": "argument 0 (pubKey) for finishUpload must be a address",
-    "pc": [
+      353,
       354
     ]
   },
   {
-    "teal": 339,
-    "source": 117,
+    "teal": 335,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
-      355,
-      356,
-      357
+      355
     ]
   },
   {
-    "teal": 340,
-    "source": 117,
+    "teal": 338,
+    "source": "contracts/did-algo-storage.algo.ts:117",
+    "errorMessage": "argument 0 (pubKey) for finishUpload must be a address",
     "pc": [
-      358
+      356
     ]
   },
   {
     "teal": 341,
-    "source": 117,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
+      357,
+      358,
       359
     ]
   },
   {
-    "teal": 350,
-    "source": 117,
+    "teal": 342,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
-      360,
-      361,
-      362
+      360
     ]
   },
   {
-    "teal": 354,
-    "source": 118,
+    "teal": 343,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
+      361
+    ]
+  },
+  {
+    "teal": 352,
+    "source": "contracts/did-algo-storage.algo.ts:117",
+    "pc": [
+      362,
       363,
       364
     ]
   },
   {
-    "teal": 355,
-    "source": 118,
+    "teal": 356,
+    "source": "contracts/did-algo-storage.algo.ts:118",
     "pc": [
       365,
       366
     ]
   },
   {
-    "teal": 356,
-    "source": 118,
-    "pc": [
-      367
-    ]
-  },
-  {
     "teal": 357,
-    "source": 118,
+    "source": "contracts/did-algo-storage.algo.ts:118",
     "pc": [
+      367,
       368
     ]
   },
   {
-    "teal": 361,
-    "source": 120,
+    "teal": 358,
+    "source": "contracts/did-algo-storage.algo.ts:118",
     "pc": [
-      369,
+      369
+    ]
+  },
+  {
+    "teal": 359,
+    "source": "contracts/did-algo-storage.algo.ts:118",
+    "pc": [
       370
     ]
   },
   {
-    "teal": 362,
-    "source": 120,
+    "teal": 363,
+    "source": "contracts/did-algo-storage.algo.ts:120",
     "pc": [
       371,
       372
     ]
   },
   {
-    "teal": 363,
-    "source": 120,
-    "pc": [
-      373,
-      374,
-      375
-    ]
-  },
-  {
     "teal": 364,
-    "source": 120,
+    "source": "contracts/did-algo-storage.algo.ts:120",
     "pc": [
-      376
+      373
     ]
   },
   {
     "teal": 365,
-    "source": 117,
+    "source": "contracts/did-algo-storage.algo.ts:120",
+    "pc": [
+      374,
+      375,
+      376
+    ]
+  },
+  {
+    "teal": 366,
+    "source": "contracts/did-algo-storage.algo.ts:120",
     "pc": [
       377
     ]
   },
   {
-    "teal": 370,
-    "source": 128,
+    "teal": 367,
+    "source": "contracts/did-algo-storage.algo.ts:117",
     "pc": [
-      378,
-      379,
-      380
-    ]
-  },
-  {
-    "teal": 371,
-    "source": 128,
-    "pc": [
-      381
+      378
     ]
   },
   {
     "teal": 372,
-    "source": 128,
+    "source": "contracts/did-algo-storage.algo.ts:128",
+    "pc": [
+      379,
+      380,
+      381
+    ]
+  },
+  {
+    "teal": 373,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
       382
     ]
   },
   {
-    "teal": 373,
-    "source": 128,
+    "teal": 374,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
       383
     ]
   },
   {
-    "teal": 374,
-    "source": 128,
+    "teal": 375,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
-      384
-    ]
-  },
-  {
-    "teal": 377,
-    "source": 128,
-    "errorMessage": "argument 0 (pubKey) for startDelete must be a address",
-    "pc": [
+      384,
       385
     ]
   },
   {
-    "teal": 380,
-    "source": 128,
+    "teal": 376,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
-      386,
-      387,
-      388
+      386
     ]
   },
   {
-    "teal": 381,
-    "source": 128,
+    "teal": 379,
+    "source": "contracts/did-algo-storage.algo.ts:128",
+    "errorMessage": "argument 0 (pubKey) for startDelete must be a address",
     "pc": [
-      389
+      387
     ]
   },
   {
     "teal": 382,
-    "source": 128,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
+      388,
+      389,
       390
     ]
   },
   {
-    "teal": 390,
-    "source": 128,
+    "teal": 383,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
-      391,
-      392,
-      393
+      391
     ]
   },
   {
-    "teal": 393,
-    "source": 128,
+    "teal": 384,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
-      394
+      392
     ]
   },
   {
-    "teal": 397,
-    "source": 129,
+    "teal": 392,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
-      395,
+      393,
+      394,
+      395
+    ]
+  },
+  {
+    "teal": 395,
+    "source": "contracts/did-algo-storage.algo.ts:128",
+    "pc": [
       396
     ]
   },
   {
-    "teal": 398,
-    "source": 129,
+    "teal": 399,
+    "source": "contracts/did-algo-storage.algo.ts:129",
     "pc": [
       397,
       398
     ]
   },
   {
-    "teal": 399,
-    "source": 129,
-    "pc": [
-      399
-    ]
-  },
-  {
     "teal": 400,
-    "source": 129,
+    "source": "contracts/did-algo-storage.algo.ts:129",
     "pc": [
+      399,
       400
     ]
   },
   {
-    "teal": 404,
-    "source": 131,
+    "teal": 401,
+    "source": "contracts/did-algo-storage.algo.ts:129",
     "pc": [
-      401,
+      401
+    ]
+  },
+  {
+    "teal": 402,
+    "source": "contracts/did-algo-storage.algo.ts:129",
+    "pc": [
       402
     ]
   },
   {
-    "teal": 405,
-    "source": 131,
+    "teal": 406,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       403,
       404
     ]
   },
   {
-    "teal": 409,
-    "source": 131,
+    "teal": 407,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       405,
       406
     ]
   },
   {
-    "teal": 410,
-    "source": 131,
+    "teal": 411,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       407,
       408
     ]
   },
   {
-    "teal": 411,
-    "source": 131,
+    "teal": 412,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       409
     ]
   },
   {
-    "teal": 412,
-    "source": 131,
+    "teal": 413,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       410
     ]
   },
   {
-    "teal": 413,
-    "source": 132,
+    "teal": 414,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       411
     ]
   },
   {
-    "teal": 414,
-    "source": 29,
+    "teal": 415,
+    "source": "contracts/did-algo-storage.algo.ts:132",
     "pc": [
       412
     ]
   },
   {
-    "teal": 415,
-    "source": 132,
+    "teal": 416,
+    "source": "contracts/did-algo-storage.algo.ts:29",
     "pc": [
       413
     ]
   },
   {
-    "teal": 416,
-    "source": 132,
+    "teal": 417,
+    "source": "contracts/did-algo-storage.algo.ts:132",
     "pc": [
       414
     ]
   },
   {
-    "teal": 420,
-    "source": 131,
+    "teal": 418,
+    "source": "contracts/did-algo-storage.algo.ts:132",
     "pc": [
-      415,
-      416
-    ]
-  },
-  {
-    "teal": 421,
-    "source": 131,
-    "pc": [
-      417,
-      418
+      415
     ]
   },
   {
     "teal": 422,
-    "source": 131,
+    "source": "contracts/did-algo-storage.algo.ts:131",
+    "pc": [
+      416,
+      417
+    ]
+  },
+  {
+    "teal": 423,
+    "source": "contracts/did-algo-storage.algo.ts:131",
+    "pc": [
+      418
+    ]
+  },
+  {
+    "teal": 424,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       419,
       420,
@@ -1838,22 +1850,22 @@
     ]
   },
   {
-    "teal": 423,
-    "source": 131,
+    "teal": 425,
+    "source": "contracts/did-algo-storage.algo.ts:131",
     "pc": [
       422
     ]
   },
   {
-    "teal": 424,
-    "source": 128,
+    "teal": 426,
+    "source": "contracts/did-algo-storage.algo.ts:128",
     "pc": [
       423
     ]
   },
   {
-    "teal": 429,
-    "source": 143,
+    "teal": 431,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       424,
       425,
@@ -1861,15 +1873,15 @@
     ]
   },
   {
-    "teal": 430,
-    "source": 143,
+    "teal": 432,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       427
     ]
   },
   {
-    "teal": 433,
-    "source": 143,
+    "teal": 435,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       428,
       429,
@@ -1877,253 +1889,253 @@
     ]
   },
   {
-    "teal": 434,
-    "source": 143,
+    "teal": 436,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       431
     ]
   },
   {
-    "teal": 435,
-    "source": 143,
+    "teal": 437,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       432
     ]
   },
   {
-    "teal": 436,
-    "source": 143,
+    "teal": 438,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
-      433
-    ]
-  },
-  {
-    "teal": 437,
-    "source": 143,
-    "pc": [
+      433,
       434
     ]
   },
   {
-    "teal": 440,
-    "source": 143,
-    "errorMessage": "argument 1 (pubKey) for deleteData must be a address",
+    "teal": 439,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       435
     ]
   },
   {
-    "teal": 443,
-    "source": 143,
+    "teal": 442,
+    "source": "contracts/did-algo-storage.algo.ts:143",
+    "errorMessage": "argument 1 (pubKey) for deleteData must be a address",
     "pc": [
-      436,
-      437,
-      438
-    ]
-  },
-  {
-    "teal": 444,
-    "source": 143,
-    "pc": [
-      439
+      436
     ]
   },
   {
     "teal": 445,
-    "source": 143,
+    "source": "contracts/did-algo-storage.algo.ts:143",
+    "pc": [
+      437,
+      438,
+      439
+    ]
+  },
+  {
+    "teal": 446,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       440
     ]
   },
   {
-    "teal": 454,
-    "source": 143,
+    "teal": 447,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
-      441,
-      442,
-      443
+      441
     ]
   },
   {
-    "teal": 457,
-    "source": 143,
+    "teal": 456,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
+      442,
+      443,
       444
     ]
   },
   {
-    "teal": 458,
-    "source": 143,
+    "teal": 459,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       445
     ]
   },
   {
-    "teal": 462,
-    "source": 144,
+    "teal": 460,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
-      446,
-      447
-    ]
-  },
-  {
-    "teal": 463,
-    "source": 144,
-    "pc": [
-      448,
-      449
+      446
     ]
   },
   {
     "teal": 464,
-    "source": 144,
+    "source": "contracts/did-algo-storage.algo.ts:144",
     "pc": [
-      450
+      447,
+      448
     ]
   },
   {
     "teal": 465,
-    "source": 144,
+    "source": "contracts/did-algo-storage.algo.ts:144",
+    "pc": [
+      449,
+      450
+    ]
+  },
+  {
+    "teal": 466,
+    "source": "contracts/did-algo-storage.algo.ts:144",
     "pc": [
       451
     ]
   },
   {
-    "teal": 469,
-    "source": 146,
+    "teal": 467,
+    "source": "contracts/did-algo-storage.algo.ts:144",
     "pc": [
-      452,
-      453
+      452
     ]
   },
   {
-    "teal": 470,
-    "source": 146,
+    "teal": 471,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
-      454,
-      455
+      453,
+      454
     ]
   },
   {
-    "teal": 474,
-    "source": 146,
+    "teal": 472,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
-      456,
-      457
-    ]
-  },
-  {
-    "teal": 475,
-    "source": 146,
-    "pc": [
-      458,
-      459
+      455,
+      456
     ]
   },
   {
     "teal": 476,
-    "source": 146,
+    "source": "contracts/did-algo-storage.algo.ts:146",
+    "pc": [
+      457,
+      458
+    ]
+  },
+  {
+    "teal": 477,
+    "source": "contracts/did-algo-storage.algo.ts:146",
+    "pc": [
+      459
+    ]
+  },
+  {
+    "teal": 478,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       460
     ]
   },
   {
-    "teal": 477,
-    "source": 146,
+    "teal": 479,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       461
     ]
   },
   {
-    "teal": 478,
-    "source": 147,
+    "teal": 480,
+    "source": "contracts/did-algo-storage.algo.ts:147",
     "pc": [
       462
     ]
   },
   {
-    "teal": 479,
-    "source": 32,
+    "teal": 481,
+    "source": "contracts/did-algo-storage.algo.ts:32",
     "pc": [
       463,
       464
     ]
   },
   {
-    "teal": 480,
-    "source": 147,
+    "teal": 482,
+    "source": "contracts/did-algo-storage.algo.ts:147",
     "pc": [
       465
     ]
   },
   {
-    "teal": 481,
-    "source": 147,
+    "teal": 483,
+    "source": "contracts/did-algo-storage.algo.ts:147",
     "pc": [
       466
     ]
   },
   {
-    "teal": 485,
-    "source": 146,
+    "teal": 487,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       467,
       468
     ]
   },
   {
-    "teal": 486,
-    "source": 146,
+    "teal": 488,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       469
     ]
   },
   {
-    "teal": 487,
-    "source": 146,
+    "teal": 489,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       470
     ]
   },
   {
-    "teal": 488,
-    "source": 146,
+    "teal": 490,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       471
     ]
   },
   {
-    "teal": 489,
-    "source": 148,
+    "teal": 491,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       472
     ]
   },
   {
-    "teal": 490,
-    "source": 148,
+    "teal": 492,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       473,
       474
     ]
   },
   {
-    "teal": 491,
-    "source": 148,
+    "teal": 493,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       475
     ]
   },
   {
-    "teal": 492,
-    "source": 148,
+    "teal": 494,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       476
     ]
   },
   {
-    "teal": 493,
-    "source": 148,
+    "teal": 495,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       477,
       478,
@@ -2131,124 +2143,124 @@
     ]
   },
   {
-    "teal": 494,
-    "source": 148,
+    "teal": 496,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       480,
       481
     ]
   },
   {
-    "teal": 495,
-    "source": 146,
+    "teal": 497,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       482,
       483
     ]
   },
   {
-    "teal": 496,
-    "source": 146,
+    "teal": 498,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       484
     ]
   },
   {
-    "teal": 497,
-    "source": 146,
+    "teal": 499,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       485
     ]
   },
   {
-    "teal": 498,
-    "source": 146,
+    "teal": 500,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       486
     ]
   },
   {
-    "teal": 499,
-    "source": 148,
+    "teal": 501,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       487
     ]
   },
   {
-    "teal": 500,
-    "source": 148,
+    "teal": 502,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       488
     ]
   },
   {
-    "teal": 501,
-    "source": 148,
+    "teal": 503,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       489
     ]
   },
   {
-    "teal": 504,
-    "source": 148,
+    "teal": 506,
+    "source": "contracts/did-algo-storage.algo.ts:148",
     "pc": [
       490
     ]
   },
   {
-    "teal": 509,
-    "source": 150,
+    "teal": 511,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       491,
       492
     ]
   },
   {
-    "teal": 510,
-    "source": 146,
+    "teal": 512,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       493,
       494
     ]
   },
   {
-    "teal": 511,
-    "source": 146,
+    "teal": 513,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       495
     ]
   },
   {
-    "teal": 512,
-    "source": 146,
+    "teal": 514,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       496
     ]
   },
   {
-    "teal": 513,
-    "source": 146,
+    "teal": 515,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       497
     ]
   },
   {
-    "teal": 514,
-    "source": 150,
+    "teal": 516,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       498
     ]
   },
   {
-    "teal": 515,
-    "source": 150,
+    "teal": 517,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       499
     ]
   },
   {
-    "teal": 516,
-    "source": 150,
+    "teal": 518,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       500,
       501,
@@ -2256,185 +2268,185 @@
     ]
   },
   {
-    "teal": 521,
-    "source": 146,
+    "teal": 523,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       503,
       504
     ]
   },
   {
-    "teal": 522,
-    "source": 146,
+    "teal": 524,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       505,
       506
     ]
   },
   {
-    "teal": 523,
-    "source": 146,
+    "teal": 525,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       507
     ]
   },
   {
-    "teal": 524,
-    "source": 146,
+    "teal": 526,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       508
     ]
   },
   {
-    "teal": 525,
-    "source": 150,
+    "teal": 527,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       509
     ]
   },
   {
-    "teal": 526,
-    "source": 150,
+    "teal": 528,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       510,
       511
     ]
   },
   {
-    "teal": 527,
-    "source": 150,
+    "teal": 529,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       512
     ]
   },
   {
-    "teal": 528,
-    "source": 150,
+    "teal": 530,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       513
     ]
   },
   {
-    "teal": 529,
-    "source": 150,
+    "teal": 531,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       514
     ]
   },
   {
-    "teal": 530,
-    "source": 150,
+    "teal": 532,
+    "source": "contracts/did-algo-storage.algo.ts:150",
     "pc": [
       515
     ]
   },
   {
-    "teal": 535,
-    "source": 152,
+    "teal": 537,
+    "source": "contracts/did-algo-storage.algo.ts:152",
     "pc": [
       516,
       517
     ]
   },
   {
-    "teal": 536,
-    "source": 152,
+    "teal": 538,
+    "source": "contracts/did-algo-storage.algo.ts:152",
     "pc": [
       518,
       519
     ]
   },
   {
-    "teal": 537,
-    "source": 152,
+    "teal": 539,
+    "source": "contracts/did-algo-storage.algo.ts:152",
     "pc": [
       520
     ]
   },
   {
-    "teal": 538,
-    "source": 152,
+    "teal": 540,
+    "source": "contracts/did-algo-storage.algo.ts:152",
     "pc": [
       521,
       522
     ]
   },
   {
-    "teal": 542,
-    "source": 154,
+    "teal": 544,
+    "source": "contracts/did-algo-storage.algo.ts:154",
     "pc": [
       523,
       524
     ]
   },
   {
-    "teal": 543,
-    "source": 154,
+    "teal": 545,
+    "source": "contracts/did-algo-storage.algo.ts:154",
     "pc": [
       525
     ]
   },
   {
-    "teal": 544,
-    "source": 154,
+    "teal": 546,
+    "source": "contracts/did-algo-storage.algo.ts:154",
     "pc": [
       526
     ]
   },
   {
-    "teal": 549,
-    "source": 156,
+    "teal": 551,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       527,
       528
     ]
   },
   {
-    "teal": 550,
-    "source": 146,
+    "teal": 552,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       529,
       530
     ]
   },
   {
-    "teal": 551,
-    "source": 146,
+    "teal": 553,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       531
     ]
   },
   {
-    "teal": 552,
-    "source": 146,
+    "teal": 554,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       532
     ]
   },
   {
-    "teal": 553,
-    "source": 146,
+    "teal": 555,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       533
     ]
   },
   {
-    "teal": 554,
-    "source": 156,
+    "teal": 556,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       534
     ]
   },
   {
-    "teal": 555,
-    "source": 156,
+    "teal": 557,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       535
     ]
   },
   {
-    "teal": 556,
-    "source": 156,
+    "teal": 558,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       536,
       537,
@@ -2442,23 +2454,23 @@
     ]
   },
   {
-    "teal": 561,
-    "source": 156,
+    "teal": 563,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       539,
       540
     ]
   },
   {
-    "teal": 562,
-    "source": 156,
+    "teal": 564,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       541
     ]
   },
   {
-    "teal": 563,
-    "source": 156,
+    "teal": 565,
+    "source": "contracts/did-algo-storage.algo.ts:156",
     "pc": [
       542,
       543,
@@ -2466,167 +2478,167 @@
     ]
   },
   {
-    "teal": 568,
-    "source": 157,
+    "teal": 570,
+    "source": "contracts/did-algo-storage.algo.ts:157",
     "pc": [
       545,
       546
     ]
   },
   {
-    "teal": 569,
-    "source": 157,
+    "teal": 571,
+    "source": "contracts/did-algo-storage.algo.ts:157",
     "pc": [
       547,
       548
     ]
   },
   {
-    "teal": 570,
-    "source": 157,
+    "teal": 572,
+    "source": "contracts/did-algo-storage.algo.ts:157",
     "pc": [
       549
     ]
   },
   {
-    "teal": 571,
-    "source": 146,
+    "teal": 573,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       550,
       551
     ]
   },
   {
-    "teal": 572,
-    "source": 146,
+    "teal": 574,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       552,
       553
     ]
   },
   {
-    "teal": 573,
-    "source": 146,
+    "teal": 575,
+    "source": "contracts/did-algo-storage.algo.ts:146",
     "pc": [
       554
     ]
   },
   {
-    "teal": 581,
-    "source": 159,
+    "teal": 583,
+    "source": "contracts/did-algo-storage.algo.ts:159",
     "pc": [
       555
     ]
   },
   {
-    "teal": 582,
-    "source": 159,
+    "teal": 584,
+    "source": "contracts/did-algo-storage.algo.ts:159",
     "pc": [
       556
     ]
   },
   {
-    "teal": 583,
-    "source": 159,
+    "teal": 585,
+    "source": "contracts/did-algo-storage.algo.ts:159",
     "pc": [
       557,
       558
     ]
   },
   {
-    "teal": 587,
-    "source": 160,
+    "teal": 589,
+    "source": "contracts/did-algo-storage.algo.ts:160",
     "pc": [
       559,
       560
     ]
   },
   {
-    "teal": 588,
-    "source": 160,
+    "teal": 590,
+    "source": "contracts/did-algo-storage.algo.ts:160",
     "pc": [
       561,
       562
     ]
   },
   {
-    "teal": 589,
-    "source": 160,
+    "teal": 591,
+    "source": "contracts/did-algo-storage.algo.ts:160",
     "pc": [
       563,
       564
     ]
   },
   {
-    "teal": 590,
-    "source": 160,
+    "teal": 592,
+    "source": "contracts/did-algo-storage.algo.ts:160",
     "pc": [
       565
     ]
   },
   {
-    "teal": 591,
-    "source": 160,
+    "teal": 593,
+    "source": "contracts/did-algo-storage.algo.ts:160",
     "pc": [
       566
     ]
   },
   {
-    "teal": 592,
-    "source": 160,
+    "teal": 594,
+    "source": "contracts/did-algo-storage.algo.ts:160",
     "pc": [
       567,
       568
     ]
   },
   {
-    "teal": 596,
-    "source": 161,
+    "teal": 598,
+    "source": "contracts/did-algo-storage.algo.ts:161",
     "pc": [
       569,
       570
     ]
   },
   {
-    "teal": 597,
-    "source": 161,
+    "teal": 599,
+    "source": "contracts/did-algo-storage.algo.ts:161",
     "pc": [
       571,
       572
     ]
   },
   {
-    "teal": 600,
-    "source": 159,
+    "teal": 602,
+    "source": "contracts/did-algo-storage.algo.ts:159",
     "pc": [
       573
     ]
   },
   {
-    "teal": 601,
-    "source": 159,
+    "teal": 603,
+    "source": "contracts/did-algo-storage.algo.ts:159",
     "pc": [
       574,
       575
     ]
   },
   {
-    "teal": 604,
-    "source": 159,
+    "teal": 606,
+    "source": "contracts/did-algo-storage.algo.ts:159",
     "pc": [
       576
     ]
   },
   {
-    "teal": 605,
-    "source": 143,
+    "teal": 607,
+    "source": "contracts/did-algo-storage.algo.ts:143",
     "pc": [
       577
     ]
   },
   {
-    "teal": 610,
-    "source": 168,
+    "teal": 612,
+    "source": "contracts/did-algo-storage.algo.ts:168",
     "pc": [
       578,
       579,
@@ -2634,22 +2646,22 @@
     ]
   },
   {
-    "teal": 611,
-    "source": 168,
+    "teal": 613,
+    "source": "contracts/did-algo-storage.algo.ts:168",
     "pc": [
       581
     ]
   },
   {
-    "teal": 612,
-    "source": 168,
+    "teal": 614,
+    "source": "contracts/did-algo-storage.algo.ts:168",
     "pc": [
       582
     ]
   },
   {
-    "teal": 618,
-    "source": 168,
+    "teal": 620,
+    "source": "contracts/did-algo-storage.algo.ts:168",
     "pc": [
       583,
       584,
@@ -2657,45 +2669,45 @@
     ]
   },
   {
-    "teal": 622,
-    "source": 169,
+    "teal": 624,
+    "source": "contracts/did-algo-storage.algo.ts:169",
     "pc": [
       586,
       587
     ]
   },
   {
-    "teal": 623,
-    "source": 169,
+    "teal": 625,
+    "source": "contracts/did-algo-storage.algo.ts:169",
     "pc": [
       588,
       589
     ]
   },
   {
-    "teal": 624,
-    "source": 169,
+    "teal": 626,
+    "source": "contracts/did-algo-storage.algo.ts:169",
     "pc": [
       590
     ]
   },
   {
-    "teal": 625,
-    "source": 169,
+    "teal": 627,
+    "source": "contracts/did-algo-storage.algo.ts:169",
     "pc": [
       591
     ]
   },
   {
-    "teal": 626,
-    "source": 168,
+    "teal": 628,
+    "source": "contracts/did-algo-storage.algo.ts:168",
     "pc": [
       592
     ]
   },
   {
-    "teal": 631,
-    "source": 178,
+    "teal": 633,
+    "source": "contracts/did-algo-storage.algo.ts:178",
     "pc": [
       593,
       594,
@@ -2703,22 +2715,22 @@
     ]
   },
   {
-    "teal": 632,
-    "source": 178,
+    "teal": 634,
+    "source": "contracts/did-algo-storage.algo.ts:178",
     "pc": [
       596
     ]
   },
   {
-    "teal": 633,
-    "source": 178,
+    "teal": 635,
+    "source": "contracts/did-algo-storage.algo.ts:178",
     "pc": [
       597
     ]
   },
   {
-    "teal": 642,
-    "source": 178,
+    "teal": 644,
+    "source": "contracts/did-algo-storage.algo.ts:178",
     "pc": [
       598,
       599,
@@ -2726,29 +2738,29 @@
     ]
   },
   {
-    "teal": 643,
-    "source": 178,
+    "teal": 645,
+    "source": "contracts/did-algo-storage.algo.ts:178",
     "pc": [
       601
     ]
   },
   {
-    "teal": 646,
-    "source": 38,
+    "teal": 648,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       602
     ]
   },
   {
-    "teal": 647,
-    "source": 38,
+    "teal": 649,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       603
     ]
   },
   {
-    "teal": 650,
-    "source": 38,
+    "teal": 652,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       604,
       605,
@@ -2759,8 +2771,8 @@
     ]
   },
   {
-    "teal": 651,
-    "source": 38,
+    "teal": 653,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       610,
       611,
@@ -2768,8 +2780,8 @@
     ]
   },
   {
-    "teal": 652,
-    "source": 38,
+    "teal": 654,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       613,
       614,
@@ -2778,16 +2790,16 @@
     ]
   },
   {
-    "teal": 655,
-    "source": 38,
+    "teal": 657,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "errorMessage": "this contract does not implement the given ABI method for create NoOp",
     "pc": [
       617
     ]
   },
   {
-    "teal": 658,
-    "source": 38,
+    "teal": 660,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       618,
       619,
@@ -2798,8 +2810,8 @@
     ]
   },
   {
-    "teal": 659,
-    "source": 38,
+    "teal": 661,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       624,
       625,
@@ -2810,8 +2822,8 @@
     ]
   },
   {
-    "teal": 660,
-    "source": 38,
+    "teal": 662,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       630,
       631,
@@ -2822,8 +2834,8 @@
     ]
   },
   {
-    "teal": 661,
-    "source": 38,
+    "teal": 663,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       636,
       637,
@@ -2834,8 +2846,8 @@
     ]
   },
   {
-    "teal": 662,
-    "source": 38,
+    "teal": 664,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       642,
       643,
@@ -2846,8 +2858,8 @@
     ]
   },
   {
-    "teal": 663,
-    "source": 38,
+    "teal": 665,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       648,
       649,
@@ -2858,8 +2870,8 @@
     ]
   },
   {
-    "teal": 664,
-    "source": 38,
+    "teal": 666,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       654,
       655,
@@ -2867,8 +2879,8 @@
     ]
   },
   {
-    "teal": 665,
-    "source": 38,
+    "teal": 667,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       657,
       658,
@@ -2887,16 +2899,16 @@
     ]
   },
   {
-    "teal": 668,
-    "source": 38,
+    "teal": 670,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "errorMessage": "this contract does not implement the given ABI method for call NoOp",
     "pc": [
       671
     ]
   },
   {
-    "teal": 671,
-    "source": 38,
+    "teal": 673,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       672,
       673,
@@ -2907,8 +2919,8 @@
     ]
   },
   {
-    "teal": 672,
-    "source": 38,
+    "teal": 674,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       678,
       679,
@@ -2916,8 +2928,8 @@
     ]
   },
   {
-    "teal": 673,
-    "source": 38,
+    "teal": 675,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "pc": [
       681,
       682,
@@ -2926,8 +2938,8 @@
     ]
   },
   {
-    "teal": 676,
-    "source": 38,
+    "teal": 678,
+    "source": "contracts/did-algo-storage.algo.ts:38",
     "errorMessage": "this contract does not implement the given ABI method for call UpdateApplication",
     "pc": [
       685
