@@ -136,6 +136,7 @@ app.get("/1.0/identifiers/:identifier", async (req, res) => {
     "did+json",
     "json",
     "did-resolution",
+    "ld+json",
   ].map((t) => `application/${t}`);
 
   let didDocument;
@@ -149,6 +150,7 @@ app.get("/1.0/identifiers/:identifier", async (req, res) => {
       "application/did",
       "application/did+ld+json",
       "application/did+json",
+      "application/ld+json",
       "application/json",
     )
   ) {
