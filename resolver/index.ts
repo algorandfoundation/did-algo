@@ -126,7 +126,9 @@ app.get("/1.0/identifiers/:identifier", async (req, res) => {
 
   const accept = req.get("Accept") ?? "application/did";
 
-  console.debug(accept);
+  const acceptedContentTypes = new Set(
+    accept.split(",").map((ct) => ct.trim()),
+  );
 
   const supportedContentTypes = [
     "did",
@@ -138,39 +140,44 @@ app.get("/1.0/identifiers/:identifier", async (req, res) => {
 
   let didDocument;
 
-  switch (accept) {
-    case "application/did":
-    case "application/did+ld+json":
-    case "application/did+json":
-    case "application/json":
-      try {
-        didDocument = JSON.parse(documentBytes.toString());
-      } catch (e) {
-        res.status(400).send(`Invalid JSON: ${e} `);
-      }
-      res.writeHead(200, { "Content-Type": "application/did" });
-      res.json(didDocument);
-      break;
-    case "application/did-resolution":
-      try {
-        didDocument = JSON.parse(documentBytes.toString());
-      } catch (e) {
-        res.status(400).send(`Invalid JSON: ${e} `);
-      }
+  const accepts = (...contentTypes: string[]) => {
+    return contentTypes.some((t) => acceptedContentTypes.has(t));
+  };
 
-      const resolution: components["schemas"]["ResolutionResult"] = {
-        didDocument,
-      };
+  if (
+    accepts(
+      "application/did",
+      "application/did+ld+json",
+      "application/did+json",
+      "application/json",
+    )
+  ) {
+    try {
+      didDocument = JSON.parse(documentBytes.toString());
+    } catch (e) {
+      res.status(400).send(`Invalid JSON: ${e} `);
+    }
+    res.writeHead(200, { "Content-Type": "application/did" });
+    res.json(didDocument);
+  } else if (accepts("application/did-resolution")) {
+    try {
+      didDocument = JSON.parse(documentBytes.toString());
+    } catch (e) {
+      res.status(400).send(`Invalid JSON: ${e} `);
+    }
 
-      res.writeHead(200, { "Content-Type": "application/did-resolution" });
-      res.json(resolution);
-      break;
-    default:
-      res
-        .status(406)
-        .send(
-          `representation not supported: ${accept}. Supported representations: ${supportedContentTypes.join(", ")}`,
-        );
+    const resolution: components["schemas"]["ResolutionResult"] = {
+      didDocument,
+    };
+
+    res.writeHead(200, { "Content-Type": "application/did-resolution" });
+    res.json(resolution);
+  } else {
+    res
+      .status(406)
+      .send(
+        `representation not supported: ${accept}. Supported representations: ${supportedContentTypes.join(", ")}`,
+      );
   }
 });
 
