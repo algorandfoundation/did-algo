@@ -273,11 +273,10 @@ func parseSubjectString(subject string) (pub []byte, network string, appID uint6
 		return pub, network, appID, err
 	}
 
-	app, err := strconv.Atoi(idSegments[2-idxOffset])
+	app, err := strconv.ParseUint(idSegments[2-idxOffset], 10, 64)
 	if err != nil {
 		err = fmt.Errorf("invalid storage app ID in subject identifier")
 		return pub, network, appID, err
 	}
-	appID = uint64(app)
-	return pub, network, appID, err
+	return pub, network, app, err
 }

@@ -98,7 +98,7 @@ func runWalletPayCmd(_ *cobra.Command, args []string) (err error) {
 	sender := account.Address.String()
 
 	// Build transaction
-	tx, err := transaction.MakePaymentTxn(sender, receiver, uint64(amount), nil, "", params)
+	tx, err := transaction.MakePaymentTxn(sender, receiver, amount, nil, "", params)
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func runWalletPayCmd(_ *cobra.Command, args []string) (err error) {
 	return nil
 }
 
-func getTxParameters(args []string) (wallet, receiver string, amount int, err error) {
+func getTxParameters(args []string) (wallet, receiver string, amount uint64, err error) {
 	// Wallet name
 	if len(args) != 1 {
 		wallet, err = readValue("enter wallet name")
@@ -145,13 +145,13 @@ func getTxParameters(args []string) (wallet, receiver string, amount int, err er
 	}
 
 	// Tx amount
-	amount = viper.GetInt("tx.amount")
+	amount = viper.GetUint64("tx.amount")
 	if amount == 0 {
 		a, err := readValue("enter amount to send")
 		if err != nil {
 			return "", "", 0, err
 		}
-		amount, err = strconv.Atoi(a)
+		amount, err = strconv.ParseUint(a, 10, 64)
 		if err != nil {
 			return "", "", 0, err
 		}
