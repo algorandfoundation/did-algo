@@ -43,3 +43,5 @@ config-*.yaml
 
 # Code coverage reports
 coverage.*
+
+node_modules/
