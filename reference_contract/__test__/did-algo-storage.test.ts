@@ -2,12 +2,12 @@
 import * as algokit from "@algorandfoundation/algokit-utils";
 import fs from "fs";
 import { describe, expect, beforeAll, it, jest } from "@jest/globals";
-import appSpec from "../contracts/artifacts/DIDAlgoStorage.arc56.json";
 import {
   resolveDID,
   uploadDIDDocument,
   deleteDIDDocument,
   updateDIDDocument,
+  appSpec,
 } from "../src/index";
 import { AppClient } from "@algorandfoundation/algokit-utils/types/app-client";
 import { AppFactory } from "@algorandfoundation/algokit-utils/types/app-factory";
@@ -53,7 +53,7 @@ describe("Algorand DID", () => {
     const factory = new AppFactory({
       algorand,
       defaultSender: sender,
-      appSpec: JSON.stringify(appSpec),
+      appSpec,
     });
 
     const deployment = await factory.send.create({

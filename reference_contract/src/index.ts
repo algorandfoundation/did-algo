@@ -3,11 +3,13 @@
 import algosdk, { ABIMethod, ABIResult, Address } from "algosdk";
 import { AppCallTransactionResult } from "@algorandfoundation/algokit-utils/types/app";
 import { expect } from "@jest/globals";
-import appSpec from "../contracts/artifacts/DIDAlgoStorage.arc56.json";
+import appSpecJson from "../contracts/artifacts/DIDAlgoStorage.arc56.json";
 import { AppClient } from "@algorandfoundation/algokit-utils/types/app-client";
 import { AlgorandClient, microAlgos } from "@algorandfoundation/algokit-utils";
 import { BoxReference } from "@algorandfoundation/algokit-utils/types/app-manager";
 import { TransactionComposer } from "@algorandfoundation/algokit-utils/types/composer";
+
+export const appSpec = JSON.stringify(appSpecJson);
 
 const COST_PER_BYTE = 400;
 const COST_PER_BOX = 2500;
@@ -64,7 +66,7 @@ export async function resolveDID(
   const appClient = new AppClient({
     appId: appID,
     defaultSender: algorand.account.random(),
-    appSpec: JSON.stringify(appSpec),
+    appSpec,
     algorand,
   });
 
@@ -179,7 +181,7 @@ export async function uploadDIDDocument(
   const appClient = new AppClient({
     appId: appID,
     defaultSender: sender,
-    appSpec: JSON.stringify(appSpec),
+    appSpec,
     algorand,
   });
 
@@ -311,7 +313,7 @@ export async function deleteDIDDocument(
   const appClient = new AppClient({
     appId: appID,
     defaultSender: algorand.account.random(),
-    appSpec: JSON.stringify(appSpec),
+    appSpec,
     algorand,
   });
 
