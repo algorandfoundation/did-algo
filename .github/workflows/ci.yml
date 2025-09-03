@@ -155,7 +155,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           args: --out-format=colored-line-number
-          version: v1.54.2
+          version: v1.64.8
 
       # Run algokit localnet for tests
       - name: Algokit localnet
