@@ -15,7 +15,7 @@ export type Metadata = {
 };
 
 const app = express();
-const port = 8080;
+const port = 9091;
 
 app.get("/1.0/identifiers/:identifier", async (req, res) => {
   const splitDid = req.params.identifier.split(":");
