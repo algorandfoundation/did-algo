@@ -3,6 +3,7 @@ import express from "express";
 import algosdk from "algosdk";
 import { AppClient } from "@algorandfoundation/algokit-utils/types/app-client";
 import appSpecJson from "../reference_contract/contracts/artifacts/DIDAlgoStorage.arc56.json";
+import type { components } from "./schema";
 
 const appSpec = JSON.stringify(appSpecJson);
 
@@ -127,9 +128,15 @@ app.get("/1.0/identifiers/:identifier", async (req, res) => {
 
   console.debug(accept);
 
-  const supportedContentTypes = ["did", "did+ld+json", "did+json", "json"].map(
-    (t) => `application/${t}`,
-  );
+  const supportedContentTypes = [
+    "did",
+    "did+ld+json",
+    "did+json",
+    "json",
+    "did-resolution",
+  ].map((t) => `application/${t}`);
+
+  let didDocument;
 
   switch (accept) {
     case "application/did":
@@ -137,12 +144,26 @@ app.get("/1.0/identifiers/:identifier", async (req, res) => {
     case "application/did+json":
     case "application/json":
       try {
-        const body = JSON.parse(documentBytes.toString());
-        res.writeHead(200, { "Content-Type": "application/did" });
-        res.json(body);
+        didDocument = JSON.parse(documentBytes.toString());
       } catch (e) {
         res.status(400).send(`Invalid JSON: ${e} `);
       }
+      res.writeHead(200, { "Content-Type": "application/did" });
+      res.json(didDocument);
+      break;
+    case "application/did-resolution":
+      try {
+        didDocument = JSON.parse(documentBytes.toString());
+      } catch (e) {
+        res.status(400).send(`Invalid JSON: ${e} `);
+      }
+
+      const resolution: components["schemas"]["ResolutionResult"] = {
+        didDocument,
+      };
+
+      res.writeHead(200, { "Content-Type": "application/did-resolution" });
+      res.json(resolution);
       break;
     default:
       res
