@@ -154,6 +154,7 @@ jobs:
       - name: Static analysis
         uses: golangci/golangci-lint-action@v3
         with:
+          args: --out-format=colored-line-number
           version: v1.54.2
 
       # Run algokit localnet for tests
