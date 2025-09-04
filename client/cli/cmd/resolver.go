@@ -79,6 +79,7 @@ func runResolverCmd(_ *cobra.Command, _ []string) error {
 	}
 	go srv.Start() // nolint:errcheck
 
+	log.Warning("This resolver service is deprecated and will be removed in future releases. Use the ghcr.io/algorandfoundation/did-algo:main container image instead.")
 	// wait for system signals
 	log.Info("waiting for incoming requests")
 	<-cli.SignalsHandler([]os.Signal{

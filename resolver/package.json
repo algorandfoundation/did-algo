@@ -1,0 +1,23 @@
+{
+  "name": "resolver",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch index.ts",
+    "build:oapi": "openapi-typescript https://raw.githubusercontent.com/decentralized-identity/universal-resolver/refs/tags/0.44.0/openapi/openapi.yaml -o schema.d.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express": "^5.0.3",
+    "openapi-typescript": "^7.9.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@algorandfoundation/algokit-utils": "^9.1.2",
+    "algosdk": "^3.4.0",
+    "express": "^5.1.0"
+  }
+}

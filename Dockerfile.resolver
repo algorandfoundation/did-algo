@@ -1,9 +1,8 @@
-FROM zhield/shell:stable
+FROM oven/bun:latest
 
 EXPOSE 9091/tcp
 
-COPY algoid /usr/bin/algoid
+COPY resolver/ resolver/
+COPY reference_contract/contracts/artifacts/DIDAlgoStorage.arc56.json reference_contract/contracts/artifacts/DIDAlgoStorage.arc56.json
 
-COPY resolver-config.yaml /etc/algoid/config.yaml
-
-ENTRYPOINT ["/usr/bin/algoid", "resolver"]
+ENTRYPOINT ["bun", "resolver"]
