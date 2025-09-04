@@ -21,13 +21,13 @@ import (
 )
 
 // ClientSettings defines the configuration options available when
-// interacting with an AlgoDID network agent.
+// interacting with an DIDAlgoStorage network agent.
 type ClientSettings struct {
 	Profiles []*NetworkProfile `json:"profiles" yaml:"profiles" mapstructure:"profiles"`
 }
 
 // NetworkProfile defines the configuration options to connect to a
-// specific AlgoDID network agent.
+// specific DIDAlgoStorage network agent.
 type NetworkProfile struct {
 	// Profile name.
 	Name string `json:"name" yaml:"name" mapstructure:"name"`
@@ -38,7 +38,7 @@ type NetworkProfile struct {
 	// Algod node access token.
 	NodeToken string `json:"node_token,omitempty" yaml:"node_token,omitempty" mapstructure:"node_token"`
 
-	// Application ID for the AlgoDID storage smart contract.
+	// Application ID for the DIDAlgoStorage smart contract.
 	AppID uint `json:"app_id" yaml:"app_id" mapstructure:"app_id"`
 
 	// Storage contract provider server, if any.
@@ -51,21 +51,21 @@ type NetworkClient struct {
 	algod   *algod.Client
 }
 
-// AlgoDIDClient provides a simplified interface to interact with the
+// DIDAlgoStorageClient provides a simplified interface to interact with the
 // Algorand network.
-type AlgoDIDClient struct {
+type DIDAlgoStorageClient struct {
 	log      xlog.Logger
 	httpC    *http.Client
 	Networks map[string]*NetworkClient
 }
 
 // NewAlgoClient creates a new instance of the AlgoClient.
-func NewAlgoClient(profiles []*NetworkProfile, log xlog.Logger) (*AlgoDIDClient, error) {
+func NewAlgoClient(profiles []*NetworkProfile, log xlog.Logger) (*DIDAlgoStorageClient, error) {
 	if len(profiles) == 0 {
 		return nil, fmt.Errorf("no network profile provided")
 	}
 
-	client := &AlgoDIDClient{
+	client := &DIDAlgoStorageClient{
 		log:      log,
 		httpC:    &http.Client{},
 		Networks: make(map[string]*NetworkClient),
@@ -85,7 +85,7 @@ func NewAlgoClient(profiles []*NetworkProfile, log xlog.Logger) (*AlgoDIDClient,
 	return client, nil
 }
 
-// StorageAppID returns the application ID for the AlgoDID storage.
+// StorageAppID returns the application ID for the DIDAlgoStorage.
 func (c *NetworkClient) StorageAppID() uint {
 	return c.profile.AppID
 }
@@ -110,7 +110,7 @@ func (c *NetworkClient) Ready() bool {
 	return c.algod.HealthCheck().Do(context.TODO()) == nil
 }
 
-// DeployContract creates a new instance of the AlgoDID storage smart contract
+// DeployContract creates a new instance of the DIDAlgoStorage smart contract
 // on the network.
 func (c *NetworkClient) DeployContract(sender *crypto.Account) (uint64, error) {
 	contract := LoadContract()
@@ -120,7 +120,7 @@ func (c *NetworkClient) DeployContract(sender *crypto.Account) (uint64, error) {
 
 // PublishDID sends a new DID document to the network
 // fot on-chain storage.
-func (c *AlgoDIDClient) PublishDID(id *did.Identifier, sender *crypto.Account) error {
+func (c *DIDAlgoStorageClient) PublishDID(id *did.Identifier, sender *crypto.Account) error {
 	c.log.WithFields(map[string]interface{}{
 		"did": id.String(),
 	}).Info("publishing DID document")
@@ -140,7 +140,7 @@ func (c *AlgoDIDClient) PublishDID(id *did.Identifier, sender *crypto.Account) e
 }
 
 // DeleteDID removes a DID document from the network.
-func (c *AlgoDIDClient) DeleteDID(id *did.Identifier, sender *crypto.Account) error {
+func (c *DIDAlgoStorageClient) DeleteDID(id *did.Identifier, sender *crypto.Account) error {
 	c.log.WithFields(map[string]interface{}{
 		"did": id.String(),
 	}).Info("deleting DID document")
@@ -159,7 +159,7 @@ func (c *AlgoDIDClient) DeleteDID(id *did.Identifier, sender *crypto.Account) er
 }
 
 // Resolve retrieves a DID document from the network.
-func (c *AlgoDIDClient) Resolve(id string) (*did.Document, error) {
+func (c *DIDAlgoStorageClient) Resolve(id string) (*did.Document, error) {
 	c.log.WithField("did", id).Info("retrieving DID document")
 
 	// Parse the DID
@@ -188,7 +188,13 @@ func (c *AlgoDIDClient) Resolve(id string) (*did.Document, error) {
 	return doc, nil
 }
 
-func (c *AlgoDIDClient) submitToProvider(network string, pub []byte, appID uint64, method string, doc []byte) error {
+func (c *DIDAlgoStorageClient) submitToProvider(
+	network string,
+	pub []byte,
+	appID uint64,
+	method string,
+	doc []byte,
+) error {
 	networkClient := c.Networks[network]
 
 	c.log.Warning("using provider: ", networkClient.profile.StoreProvider)
@@ -267,11 +273,10 @@ func parseSubjectString(subject string) (pub []byte, network string, appID uint6
 		return pub, network, appID, err
 	}
 
-	app, err := strconv.Atoi(idSegments[2-idxOffset])
+	app, err := strconv.ParseUint(idSegments[2-idxOffset], 10, 64)
 	if err != nil {
 		err = fmt.Errorf("invalid storage app ID in subject identifier")
 		return pub, network, appID, err
 	}
-	appID = uint64(app)
-	return pub, network, appID, err
+	return pub, network, app, err
 }

@@ -42,7 +42,6 @@ linters:
     - godot
     - noctx
     - predeclared
-    - exportloopref
     - whitespace
     - nestif
     - funlen
