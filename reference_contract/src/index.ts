@@ -1,13 +1,13 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import algosdk, { ABIMethod, ABIResult, Address } from "algosdk";
-import { AppCallTransactionResult } from "@algorandfoundation/algokit-utils/types/app";
 import { expect } from "@jest/globals";
 import appSpecJson from "../contracts/artifacts/DIDAlgoStorage.arc56.json";
 import { AppClient } from "@algorandfoundation/algokit-utils/types/app-client";
 import { AlgorandClient, microAlgos } from "@algorandfoundation/algokit-utils";
 import { BoxReference } from "@algorandfoundation/algokit-utils/types/app-manager";
 import { TransactionComposer } from "@algorandfoundation/algokit-utils/types/composer";
+import { DidAlgoStorageClient } from "../contracts/artifacts/DIDAlgoStorageClient";
 
 export const appSpec = JSON.stringify(appSpecJson);
 
@@ -30,8 +30,8 @@ export type Metadata = {
 };
 
 export async function resolveDID(
-  did: string,
-  algorand: AlgorandClient,
+  appClient: DidAlgoStorageClient,
+  did: string
 ): Promise<Buffer> {
   const splitDid = did.split(":");
 
@@ -50,7 +50,7 @@ export async function resolveDID(
     throw new Error(`invalid namespace, expected 'app', got ${nameSpace}`);
   }
 
-  const pubKey = Buffer.from(splitDid[5 - idxOffset], "hex");
+  const pubKey = new Uint8Array(Buffer.from(splitDid[5 - idxOffset], "hex"));
 
   let appID: bigint;
 
@@ -63,25 +63,20 @@ export async function resolveDID(
     );
   }
 
-  const appClient = new AppClient({
-    appId: appID,
-    defaultSender: algorand.account.random(),
-    appSpec,
-    algorand,
-  });
+  // const boxValue = (
+  //   await appClient.getBoxValueFromABIType(
+  //     pubKey,
+  //     algosdk.ABIType.from("(uint64,uint64,uint8,uint64,uint64)"),
+  //   )
+  // ).valueOf() as bigint[];
+  const boxValue: any = await appClient.state.box.metadata.value(algosdk.encodeAddress(pubKey));
 
-  const boxValue = (
-    await appClient.getBoxValueFromABIType(
-      pubKey,
-      algosdk.ABIType.from("(uint64,uint64,uint8,uint64,uint64)"),
-    )
-  ).valueOf() as bigint[];
 
   const metadata: Metadata = {
-    start: boxValue[0],
-    end: boxValue[1],
-    status: boxValue[2],
-    endSize: boxValue[3],
+    start: boxValue["start"],
+    end: boxValue["end"],
+    status: boxValue["status"],
+    endSize: boxValue["endSize"],
   };
 
   if (metadata.status === BigInt(0))
@@ -91,12 +86,12 @@ export async function resolveDID(
 
   const boxPromises = [];
   for (let i = metadata.start; i <= metadata.end; i += 1n) {
-    boxPromises.push(appClient.getBoxValue(algosdk.encodeUint64(i)));
+    boxPromises.push(appClient.state.box.dataBoxes.value(i));
   }
 
   const boxValues = await Promise.all(boxPromises);
 
-  return Buffer.concat(boxValues);
+  return Buffer.concat(boxValues.filter((v): v is Uint8Array => v !== undefined));
 }
 
 /**
@@ -121,10 +116,11 @@ export async function sendTxGroup(
   boxIndex: bigint,
   sender: Address,
   appID: bigint,
-  group: Buffer[],
+  group: Uint8Array[],
 ): Promise<string[]> {
   const composer = algorand.newGroup();
   group.forEach((chunk, i) => {
+
     composer.addAppCallMethodCall({
       method: abiMethod!,
       args: [pubKey, boxIndex, BYTES_PER_CALL * (i + bytesOffset), chunk],
@@ -172,21 +168,15 @@ async function tryExecute(
  * @returns
  */
 export async function uploadDIDDocument(
+  appClient: DidAlgoStorageClient,
   data: Buffer,
   appID: bigint,
   pubKey: Uint8Array,
   sender: Address,
   algorand: AlgorandClient,
 ): Promise<Metadata> {
-  const appClient = new AppClient({
-    appId: appID,
-    defaultSender: sender,
-    appSpec,
-    algorand,
-  });
 
   const ceilBoxes = Math.ceil(data.byteLength / MAX_BOX_SIZE);
-
   const endBoxSize = data.byteLength % MAX_BOX_SIZE;
 
   const totalCost =
@@ -197,98 +187,101 @@ export async function uploadDIDDocument(
     COST_PER_BOX +
     (8 + 8 + 1 + 8 + 32 + 8) * COST_PER_BYTE; // cost of metadata box
 
-  const mbrPayment = algorand.createTransaction.payment({
+  const mbrPayment = appClient.algorand.createTransaction.payment({
     sender,
     receiver: appClient.appAddress,
     amount: microAlgos(totalCost),
   });
 
-  const appCallResult = await appClient.send.call({
-    method: "startUpload",
-    args: [pubKey, ceilBoxes, endBoxSize, mbrPayment],
+  const appCallResult = await appClient.send.startUpload({
+    args: [algosdk.encodeAddress(pubKey), ceilBoxes, endBoxSize, mbrPayment],
     boxReferences: [pubKey],
   });
   expect(appCallResult).toBeDefined();
 
-  const boxValue = (
-    await appClient.getBoxValueFromABIType(
-      pubKey,
-      algosdk.ABIType.from("(uint64,uint64,uint8,uint64,uint64)"),
-    )
-  ).valueOf() as bigint[];
+  // const boxValue = (
+  //   await appClient.getBoxValueFromABIType(
+  //     pubKey,
+  //     algosdk.ABIType.from("(uint64,uint64,uint8,uint64,uint64)"),
+  //   )
+  // ).valueOf() as bigint[];
+
+  // Using ApplicationClient / AppClient state helpers
+  
+  const boxValue: any = await appClient.state.box.metadata.value(algosdk.encodeAddress(pubKey));
 
   const metadata: Metadata = {
-    start: boxValue[0],
-    end: boxValue[1],
-    status: boxValue[2],
-    endSize: boxValue[3],
+    start: boxValue["start"],
+    end: boxValue["end"],
+    status: boxValue["status"],
+    endSize: boxValue["endSize"],
   };
 
   const numBoxes = Math.floor(data.byteLength / MAX_BOX_SIZE);
-  const boxData: Buffer[] = [];
+  const boxData: Uint8Array[] = [];
 
   for (let i = 0; i < numBoxes; i += 1) {
-    const box = data.subarray(i * MAX_BOX_SIZE, (i + 1) * MAX_BOX_SIZE);
+    const box = new Uint8Array(data.subarray(i * MAX_BOX_SIZE, (i + 1) * MAX_BOX_SIZE));
     boxData.push(box);
   }
 
-  boxData.push(data.subarray(numBoxes * MAX_BOX_SIZE, data.byteLength));
-
+  boxData.push(new Uint8Array(data.subarray(numBoxes * MAX_BOX_SIZE, data.byteLength)));
   const boxPromises = boxData.map(async (box, boxIndexOffset) => {
     const boxIndex = metadata.start + BigInt(boxIndexOffset);
     const numChunks = Math.ceil(box.byteLength / BYTES_PER_CALL);
 
-    const chunks: Buffer[] = [];
+    const chunks: Uint8Array[] = [];
 
     for (let i = 0; i < numChunks; i += 1) {
       chunks.push(box.subarray(i * BYTES_PER_CALL, (i + 1) * BYTES_PER_CALL));
     }
-
     const boxRef: BoxReference = {
-      appId: 0n,
+      appId: 0n, // 0 == means self
       name: algosdk.encodeUint64(boxIndex),
     };
-    const boxes: BoxReference[] = new Array(7).fill(boxRef);
 
+    // 7 refs data + 1 metadata
+    const boxes: BoxReference[] = new Array(7).fill(boxRef);
     boxes.push({ appId: 0n, name: pubKey });
 
-    const firstGroup = chunks.slice(0, 8);
-    const secondGroup = chunks.slice(8);
+   const firstGroup = chunks.slice(0, 8);
+   const secondGroup = chunks.slice(8);
 
-    await sendTxGroup(
-      algorand,
-      appClient.getABIMethod("upload")!,
-      0,
-      pubKey,
-      boxes,
-      boxIndex,
-      sender,
-      appID,
-      firstGroup,
-    );
+   await sendTxGroup(
+     algorand,
+     appClient.appClient.getABIMethod("upload")!,
+     0,
+     pubKey,
+     boxes,
+     boxIndex,
+     sender,
+     appID,
+     firstGroup,
+   );
 
-    if (secondGroup.length === 0) return;
+   // In case we need to write the full 32kb of the group, since we need some space for args and can only write 2k per call;
+   // we will need a second group, to fully write the box with 32kb of data
+   if (secondGroup.length === 0) return;
 
-    await sendTxGroup(
-      algorand,
-      appClient.getABIMethod("upload")!,
-      8,
-      pubKey,
-      boxes,
-      boxIndex,
-      sender,
-      appID,
-      secondGroup,
-    );
+   await sendTxGroup(
+     algorand,
+     appClient.appClient.getABIMethod("upload")!,
+     8,
+     pubKey,
+     boxes,
+     boxIndex,
+     sender,
+     appID,
+     secondGroup,
+   );
   });
 
   await Promise.all(boxPromises);
   if (Buffer.concat(boxData).toString("hex") !== data.toString("hex"))
     throw new Error("Data validation failed!");
 
-  await appClient.send.call({
-    method: "finishUpload",
-    args: [pubKey],
+  await appClient.send.finishUpload({
+    args: [algosdk.encodeAddress(pubKey)],
     boxReferences: [pubKey],
   });
 
@@ -399,6 +392,7 @@ export async function deleteDIDDocument(
 }
 
 export async function updateDIDDocument(
+  appClient: DidAlgoStorageClient,
   data: Buffer,
   appID: bigint,
   pubKey: Uint8Array,
@@ -406,5 +400,5 @@ export async function updateDIDDocument(
   algorand: AlgorandClient,
 ): Promise<Metadata> {
   await deleteDIDDocument(appID, pubKey, sender, algorand);
-  return uploadDIDDocument(data, appID, pubKey, sender, algorand);
+  return uploadDIDDocument(appClient, data, appID, pubKey, sender, algorand);
 }
