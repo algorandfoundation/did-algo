@@ -156,11 +156,14 @@ export class DIDAlgoStorage extends Contract {
 
     this.dataBoxes(boxIndex).delete();
 
-    if (boxIndex === metadata.end) this.metadata(pubKey).delete();
-    else metadata.lastDeleted = boxIndex;
-
-    // Since variables are used by reference, we need to clone before modifying so we have the right value
-    this.metadata(pubKey).value = clone(metadata);
+    // If this is the last box, delete the metadata
+    if (boxIndex === metadata.end) {
+      this.metadata(pubKey).delete();
+    // Otherwise, update the last deleted index
+    } else {
+      metadata.lastDeleted = boxIndex;
+      this.metadata(pubKey).value = clone(metadata);
+    }
 
     itxn.payment({
       amount: preMBR - Txn.applicationId.address.minBalance,

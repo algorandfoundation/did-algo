@@ -36,13 +36,13 @@ main_switch_case_next@6:
     err
 
 main_dummy_route@13:
-    // contracts/did-algo-storage.algo.ts:184
+    // contracts/did-algo-storage.algo.ts:185
     // dummy(): void {}
     intc_0 // 1
     return
 
 main_updateApplication_route@5:
-    // contracts/did-algo-storage.algo.ts:174
+    // contracts/did-algo-storage.algo.ts:175
     // updateApplication(): void {
     txn OnCompletion
     pushint 4 // UpdateApplication
@@ -541,29 +541,26 @@ deleteData_after_if_else@7:
     box_del
     pop
     // contracts/did-algo-storage.algo.ts:159
-    // if (boxIndex === metadata.end) this.metadata(pubKey).delete();
+    // if (boxIndex === metadata.end) {
     dig 2
     intc_2 // 8
     extract_uint64
     ==
     bz deleteData_else_body@9
+    // contracts/did-algo-storage.algo.ts:160
+    // this.metadata(pubKey).delete();
     dig 4
     box_del
     pop
 
 deleteData_after_if_else@10:
-    // contracts/did-algo-storage.algo.ts:163
-    // this.metadata(pubKey).value = clone(metadata);
-    dig 4
-    dig 2
-    box_put
-    // contracts/did-algo-storage.algo.ts:165-168
+    // contracts/did-algo-storage.algo.ts:166-169
     // itxn.payment({
     //   amount: preMBR - Txn.applicationId.address.minBalance,
     //   receiver: Txn.sender,
     // }).submit();
     itxn_begin
-    // contracts/did-algo-storage.algo.ts:166
+    // contracts/did-algo-storage.algo.ts:167
     // amount: preMBR - Txn.applicationId.address.minBalance,
     txn ApplicationID
     app_params_get AppAddress
@@ -573,12 +570,12 @@ deleteData_after_if_else@10:
     dig 6
     swap
     -
-    // contracts/did-algo-storage.algo.ts:167
+    // contracts/did-algo-storage.algo.ts:168
     // receiver: Txn.sender,
     txn Sender
     itxn_field Receiver
     itxn_field Amount
-    // contracts/did-algo-storage.algo.ts:165-168
+    // contracts/did-algo-storage.algo.ts:166-169
     // itxn.payment({
     //   amount: preMBR - Txn.applicationId.address.minBalance,
     //   receiver: Txn.sender,
@@ -594,12 +591,13 @@ deleteData_after_if_else@10:
     return
 
 deleteData_else_body@9:
-    // contracts/did-algo-storage.algo.ts:160
-    // else metadata.lastDeleted = boxIndex;
-    dig 1
+    // contracts/did-algo-storage.algo.ts:162-163
+    // metadata.lastDeleted = boxIndex;
+    // this.metadata(pubKey).value = clone(metadata);
     dig 4
-    replace2 25
-    bury 2
+    pushint 25 // 25
+    dig 5
+    box_replace
     b deleteData_after_if_else@10
 
 deleteData_bool_false@4:
@@ -609,13 +607,13 @@ deleteData_bool_false@4:
 
 // contracts/did-algo-storage.algo.ts::DIDAlgoStorage.updateApplication[routing]() -> void:
 updateApplication:
-    // contracts/did-algo-storage.algo.ts:175
+    // contracts/did-algo-storage.algo.ts:176
     // assert(Txn.sender === Txn.applicationId.creator);
     txn Sender
     txn ApplicationID
     app_params_get AppCreator
     assert // application exists
     ==
-    // contracts/did-algo-storage.algo.ts:174
+    // contracts/did-algo-storage.algo.ts:175
     // updateApplication(): void {
     return

@@ -3,7 +3,7 @@
   "sources": [
     "../did-algo-storage.algo.ts"
   ],
-  "mappings": "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",
+  "mappings": "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",
   "op_pc_offset": 0,
   "pc_events": {
     "1": {
@@ -4680,56 +4680,11 @@
         "metadata#0",
         "values%0#0"
       ],
-      "op": "dig 4",
-      "defined_out": [
-        "pubKey#0"
-      ],
-      "stack_out": [
-        "preMBR#0",
-        "pubKey#0",
-        "tmp%1#0",
-        "boxIndex#0",
-        "metadata#0",
-        "values%0#0",
-        "pubKey#0"
-      ]
-    },
-    "574": {
-      "op": "dig 2",
-      "defined_out": [
-        "metadata#0",
-        "pubKey#0"
-      ],
-      "stack_out": [
-        "preMBR#0",
-        "pubKey#0",
-        "tmp%1#0",
-        "boxIndex#0",
-        "metadata#0",
-        "values%0#0",
-        "pubKey#0",
-        "metadata#0"
-      ]
-    },
-    "576": {
-      "op": "box_put",
-      "stack_out": [
-        "preMBR#0",
-        "pubKey#0",
-        "tmp%1#0",
-        "boxIndex#0",
-        "metadata#0",
-        "values%0#0"
-      ]
-    },
-    "577": {
       "op": "itxn_begin"
     },
-    "578": {
+    "573": {
       "op": "txn ApplicationID",
       "defined_out": [
-        "metadata#0",
-        "pubKey#0",
         "tmp%11#0"
       ],
       "stack_out": [
@@ -4742,12 +4697,10 @@
         "tmp%11#0"
       ]
     },
-    "580": {
+    "575": {
       "op": "app_params_get AppAddress",
       "defined_out": [
         "check%3#0",
-        "metadata#0",
-        "pubKey#0",
         "value%3#0"
       ],
       "stack_out": [
@@ -4761,7 +4714,7 @@
         "check%3#0"
       ]
     },
-    "582": {
+    "577": {
       "error": "application exists",
       "op": "assert // application exists",
       "stack_out": [
@@ -4774,12 +4727,10 @@
         "value%3#0"
       ]
     },
-    "583": {
+    "578": {
       "op": "acct_params_get AcctMinBalance",
       "defined_out": [
         "check%4#0",
-        "metadata#0",
-        "pubKey#0",
         "value%4#0"
       ],
       "stack_out": [
@@ -4793,7 +4744,7 @@
         "check%4#0"
       ]
     },
-    "585": {
+    "580": {
       "error": "account funded",
       "op": "assert // account funded",
       "stack_out": [
@@ -4806,12 +4757,10 @@
         "value%4#0"
       ]
     },
-    "586": {
+    "581": {
       "op": "dig 6",
       "defined_out": [
-        "metadata#0",
         "preMBR#0",
-        "pubKey#0",
         "value%4#0"
       ],
       "stack_out": [
@@ -4825,7 +4774,7 @@
         "preMBR#0"
       ]
     },
-    "588": {
+    "583": {
       "op": "swap",
       "stack_out": [
         "preMBR#0",
@@ -4838,13 +4787,11 @@
         "value%4#0"
       ]
     },
-    "589": {
+    "584": {
       "op": "-",
       "defined_out": [
         "inner_txn_params%0%%param_Amount_idx_0#0",
-        "metadata#0",
-        "preMBR#0",
-        "pubKey#0"
+        "preMBR#0"
       ],
       "stack_out": [
         "preMBR#0",
@@ -4856,14 +4803,12 @@
         "inner_txn_params%0%%param_Amount_idx_0#0"
       ]
     },
-    "590": {
+    "585": {
       "op": "txn Sender",
       "defined_out": [
         "inner_txn_params%0%%param_Amount_idx_0#0",
         "inner_txn_params%0%%param_Receiver_idx_0#0",
-        "metadata#0",
-        "preMBR#0",
-        "pubKey#0"
+        "preMBR#0"
       ],
       "stack_out": [
         "preMBR#0",
@@ -4876,7 +4821,7 @@
         "inner_txn_params%0%%param_Receiver_idx_0#0"
       ]
     },
-    "592": {
+    "587": {
       "op": "itxn_field Receiver",
       "stack_out": [
         "preMBR#0",
@@ -4888,7 +4833,7 @@
         "inner_txn_params%0%%param_Amount_idx_0#0"
       ]
     },
-    "594": {
+    "589": {
       "op": "itxn_field Amount",
       "stack_out": [
         "preMBR#0",
@@ -4899,13 +4844,11 @@
         "values%0#0"
       ]
     },
-    "596": {
+    "591": {
       "op": "intc_0 // 1",
       "defined_out": [
         "1",
-        "metadata#0",
-        "preMBR#0",
-        "pubKey#0"
+        "preMBR#0"
       ],
       "stack_out": [
         "preMBR#0",
@@ -4917,7 +4860,7 @@
         "1"
       ]
     },
-    "597": {
+    "592": {
       "op": "itxn_field TypeEnum",
       "stack_out": [
         "preMBR#0",
@@ -4928,13 +4871,11 @@
         "values%0#0"
       ]
     },
-    "599": {
+    "594": {
       "op": "intc_1 // 0",
       "defined_out": [
         "0",
-        "metadata#0",
-        "preMBR#0",
-        "pubKey#0"
+        "preMBR#0"
       ],
       "stack_out": [
         "preMBR#0",
@@ -4946,7 +4887,7 @@
         "0"
       ]
     },
-    "600": {
+    "595": {
       "op": "itxn_field Fee",
       "stack_out": [
         "preMBR#0",
@@ -4957,10 +4898,10 @@
         "values%0#0"
       ]
     },
-    "602": {
+    "597": {
       "op": "itxn_submit"
     },
-    "603": {
+    "598": {
       "op": "intc_0 // 1",
       "stack_out": [
         "preMBR#0",
@@ -4972,7 +4913,7 @@
         "1"
       ]
     },
-    "604": {
+    "599": {
       "op": "return",
       "stack_out": [
         "preMBR#0",
@@ -4983,7 +4924,7 @@
         "values%0#0"
       ]
     },
-    "605": {
+    "600": {
       "block": "deleteData_else_body@9",
       "stack_in": [
         "preMBR#0",
@@ -4993,25 +4934,9 @@
         "metadata#0",
         "values%0#0"
       ],
-      "op": "dig 1",
-      "defined_out": [
-        "metadata#0"
-      ],
-      "stack_out": [
-        "preMBR#0",
-        "pubKey#0",
-        "tmp%1#0",
-        "boxIndex#0",
-        "metadata#0",
-        "values%0#0",
-        "metadata#0"
-      ]
-    },
-    "607": {
       "op": "dig 4",
       "defined_out": [
-        "metadata#0",
-        "tmp%1#0"
+        "pubKey#0"
       ],
       "stack_out": [
         "preMBR#0",
@@ -5020,28 +4945,47 @@
         "boxIndex#0",
         "metadata#0",
         "values%0#0",
-        "metadata#0",
-        "tmp%1#0"
+        "pubKey#0"
       ]
     },
-    "609": {
-      "op": "replace2 25",
-      "stack_out": [
-        "preMBR#0",
-        "pubKey#0",
-        "tmp%1#0",
-        "boxIndex#0",
-        "metadata#0",
-        "values%0#0",
-        "metadata#0"
-      ]
-    },
-    "611": {
-      "op": "bury 2",
+    "602": {
+      "op": "pushint 25 // 25",
       "defined_out": [
+        "25",
+        "pubKey#0"
+      ],
+      "stack_out": [
+        "preMBR#0",
+        "pubKey#0",
+        "tmp%1#0",
+        "boxIndex#0",
         "metadata#0",
+        "values%0#0",
+        "pubKey#0",
+        "25"
+      ]
+    },
+    "604": {
+      "op": "dig 5",
+      "defined_out": [
+        "25",
+        "pubKey#0",
         "tmp%1#0"
       ],
+      "stack_out": [
+        "preMBR#0",
+        "pubKey#0",
+        "tmp%1#0",
+        "boxIndex#0",
+        "metadata#0",
+        "values%0#0",
+        "pubKey#0",
+        "25",
+        "tmp%1#0"
+      ]
+    },
+    "606": {
+      "op": "box_replace",
       "stack_out": [
         "preMBR#0",
         "pubKey#0",
@@ -5051,10 +4995,10 @@
         "values%0#0"
       ]
     },
-    "613": {
+    "607": {
       "op": "b deleteData_after_if_else@10"
     },
-    "616": {
+    "610": {
       "block": "deleteData_bool_false@4",
       "stack_in": [
         "preMBR#0",
@@ -5078,10 +5022,10 @@
         "and_result%0#0"
       ]
     },
-    "617": {
+    "611": {
       "op": "b deleteData_bool_merge@5"
     },
-    "620": {
+    "614": {
       "subroutine": "contracts/did-algo-storage.algo.ts::DIDAlgoStorage.updateApplication[routing]",
       "params": {},
       "block": "updateApplication",
@@ -5094,7 +5038,7 @@
         "tmp%0#0"
       ]
     },
-    "622": {
+    "616": {
       "op": "txn ApplicationID",
       "defined_out": [
         "tmp%0#0",
@@ -5105,7 +5049,7 @@
         "tmp%1#0"
       ]
     },
-    "624": {
+    "618": {
       "op": "app_params_get AppCreator",
       "defined_out": [
         "check%0#0",
@@ -5118,7 +5062,7 @@
         "check%0#0"
       ]
     },
-    "626": {
+    "620": {
       "error": "application exists",
       "op": "assert // application exists",
       "stack_out": [
@@ -5126,7 +5070,7 @@
         "value%0#0"
       ]
     },
-    "627": {
+    "621": {
       "op": "==",
       "defined_out": [
         "tmp%2#0"
@@ -5135,7 +5079,7 @@
         "tmp%2#0"
       ]
     },
-    "628": {
+    "622": {
       "op": "return",
       "defined_out": [],
       "stack_out": []
