@@ -20,7 +20,7 @@ describe("Algorand DID", () => {
    * Large data (> 32k) to simulate a large DID Document
    * that needs to be put into multiple boxes
    */
-  const bigData = fs.readFileSync(`${__dirname}/TEAL.pdf`);
+  const bigData = Uint8Array.from(fs.readFileSync(`${__dirname}/TEAL.pdf`))
 
   /**
    * Small data (< 32k) to simulate a small DID Document
@@ -82,7 +82,7 @@ describe("Algorand DID", () => {
         appClient,
         `did:algo:custom:app:${appId}:${pubkeyHex}`
       );
-      expect(resolvedData.toString("hex")).toEqual(bigData.toString("hex"));
+      expect(resolvedData.toString("hex")).toEqual(Buffer.from(bigData).toString("hex"));
     });
 
     it("(SMALL) DIDocument upload and resolve", async () => {
@@ -91,7 +91,7 @@ describe("Algorand DID", () => {
       // Small upload
       await uploadDIDDocument(
         appClient,
-        Buffer.from(JSON.stringify(smallJSONObject)),
+        Uint8Array.from(JSON.stringify(smallJSONObject)),
         appId,
         smallDataUserKey,
         sender,
@@ -153,7 +153,7 @@ describe("Algorand DID", () => {
 
     it("uploads and resolves new data", async () => {
       // Update the DID Document to be the small data
-      const data = Buffer.from(JSON.stringify(smallJSONObject));
+      const data = Uint8Array.from(JSON.stringify(smallJSONObject));
       await updateDIDDocument(appClient, data, appId, updateDataUserKey, sender, algorand);
 
       const pubkeyHex = Buffer.from(updateDataUserKey).toString("hex");
