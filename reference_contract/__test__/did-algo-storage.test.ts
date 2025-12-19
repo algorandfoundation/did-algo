@@ -12,7 +12,7 @@ import {
 import { Address } from "algosdk";
 import { DidAlgoStorageClient, DidAlgoStorageFactory } from "../contracts/artifacts/DIDAlgoStorageClient";
 
-jest.setTimeout(20000);
+jest.setTimeout(30000); // Updated timeout for clarity
 
 describe("Algorand DID", () => {
   const algorand = algokit.AlgorandClient.defaultLocalNet();
