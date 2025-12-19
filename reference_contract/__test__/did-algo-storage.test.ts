@@ -40,7 +40,6 @@ describe("Algorand DID", () => {
   /** algokti appClient for interacting with the contract */
   let appClient: DidAlgoStorageClient;
 
-  let deployResult: any;
 
   /** The account that will be used to create and call the contract */
   let sender: Address;
@@ -55,18 +54,10 @@ describe("Algorand DID", () => {
         defaultSender: sender,
     });
 
-    const result = await factory.deploy({ onUpdate: 'append', onSchemaBreak: 'append' });
+    const result = await factory.send.create.bare();
     appClient = result.appClient;
-    deployResult = result.result;
 
-    // If app was just created fund the app account
-    if (['create', 'replace'].includes(deployResult.operationPerformed)) {
-        await algorand.send.payment({
-        amount: (1).algo(),
-        sender: sender,
-        receiver: appClient.appAddress,
-       });
-    }
+    await appClient.appClient.fundAppAccount({amount: (100_000).microAlgo(), sender});
     appId = appClient.appId;
   });
 
@@ -127,7 +118,7 @@ describe("Algorand DID", () => {
       await deleteDIDDocumentTest(smallDataUserKey);
     });
 
-    it.skip("returns MBR", async () => {
+    it("returns MBR", async () => {
       const appAmount = (
         await algorand.client.algod
           .accountInformation(appClient.appAddress)
