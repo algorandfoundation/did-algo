@@ -50,9 +50,7 @@ export async function resolveDID(
     throw new Error(`invalid namespace, expected 'app', got ${nameSpace}`);
   }
 
-  // const pubKey = Uint8Array.from(Buffer.from(splitDid[5 - idxOffset], "hex"));
-// decode hex and create a Uint8Array
-  const pubKey = Uint8Array.from(Buffer.from(splitDid[5 - idxOffset], "hex"));
+  const pubKey = new Uint8Array(Buffer.from(splitDid[5 - idxOffset], "hex"));
 
   let appID: bigint;
 
@@ -65,6 +63,12 @@ export async function resolveDID(
     );
   }
 
+  // const boxValue = (
+  //   await appClient.getBoxValueFromABIType(
+  //     pubKey,
+  //     algosdk.ABIType.from("(uint64,uint64,uint8,uint64,uint64)"),
+  //   )
+  // ).valueOf() as bigint[];
   const boxValue: any = await appClient.state.box.metadata.value(algosdk.encodeAddress(pubKey));
 
 
@@ -165,7 +169,7 @@ async function tryExecute(
  */
 export async function uploadDIDDocument(
   appClient: DidAlgoStorageClient,
-  data: Uint8Array,
+  data: Buffer,
   appID: bigint,
   pubKey: Uint8Array,
   sender: Address,
@@ -217,11 +221,11 @@ export async function uploadDIDDocument(
   const boxData: Uint8Array[] = [];
 
   for (let i = 0; i < numBoxes; i += 1) {
-    const box = data.subarray(i * MAX_BOX_SIZE, (i + 1) * MAX_BOX_SIZE);
+    const box = new Uint8Array(data.subarray(i * MAX_BOX_SIZE, (i + 1) * MAX_BOX_SIZE));
     boxData.push(box);
   }
 
-  boxData.push(data.subarray(numBoxes * MAX_BOX_SIZE, data.byteLength));
+  boxData.push(new Uint8Array(data.subarray(numBoxes * MAX_BOX_SIZE, data.byteLength)));
   const boxPromises = boxData.map(async (box, boxIndexOffset) => {
     const boxIndex = metadata.start + BigInt(boxIndexOffset);
     const numChunks = Math.ceil(box.byteLength / BYTES_PER_CALL);
@@ -273,7 +277,7 @@ export async function uploadDIDDocument(
   });
 
   await Promise.all(boxPromises);
-  if (Buffer.concat(boxData).toString("hex") !== Buffer.from(data).toString("hex"))
+  if (Buffer.concat(boxData).toString("hex") !== data.toString("hex"))
     throw new Error("Data validation failed!");
 
   await appClient.send.finishUpload({
@@ -375,7 +379,7 @@ export async function deleteDIDDocument(
           boxIndexRef,
         ],
         sender,
-        note: Uint8Array.from(Buffer.from(`dummy ${i}`)),
+        note: new Uint8Array(Buffer.from(`dummy ${i}`)),
       });
     }
 
@@ -389,7 +393,7 @@ export async function deleteDIDDocument(
 
 export async function updateDIDDocument(
   appClient: DidAlgoStorageClient,
-  data: Uint8Array,
+  data: Buffer,
   appID: bigint,
   pubKey: Uint8Array,
   sender: Address,
