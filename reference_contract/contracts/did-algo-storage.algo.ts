@@ -66,7 +66,7 @@ export class DIDAlgoStorage extends Contract {
       start: startBox, end: endBox, status: UPLOADING, endSize: endBoxSize, lastDeleted: 0,
     };
 
-    // assert(!this.metadata(pubKey).exists);
+    assert(!this.metadata(pubKey).exists);
 
     this.metadata(pubKey).value = clone(metadata);
 
