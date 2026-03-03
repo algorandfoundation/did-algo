@@ -59,8 +59,7 @@ export class DIDAlgoStorage extends Contract {
 
     const startBox: uint64 = this.currentIndex.value;
 
-    const ONE: uint64 = 1;
-    const endBox: uint64 = startBox + numBoxes - ONE;
+    const endBox: uint64 = startBox + numBoxes - 1;
 
     const metadata: Metadata = {
       start: startBox, end: endBox, status: UPLOADING, endSize: endBoxSize, lastDeleted: 0,
