@@ -5,7 +5,7 @@
  * requires: @algorandfoundation/algokit-utils: ^7
  */
 import { type AlgorandClient } from '@algorandfoundation/algokit-utils/types/algorand-client'
-import { ABIReturn, AppReturn, SendAppTransactionResult } from '@algorandfoundation/algokit-utils/types/app'
+import { ABIReturn } from '@algorandfoundation/algokit-utils/types/app'
 import { Arc56Contract, getArc56ReturnValue, getABIStructFromABITuple } from '@algorandfoundation/algokit-utils/types/app-arc56'
 import {
   AppClient as _AppClient,
