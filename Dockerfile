@@ -1,6 +1,6 @@
 FROM zhield/shell:stable
 
-EXPOSE 9090/tcp
+EXPOSE 9091/tcp
 
 VOLUME ["/etc/algoid"]
 
