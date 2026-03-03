@@ -103,7 +103,6 @@ export class DIDAlgoStorage extends Contract {
       this.dataBoxes(boxIndex).create({
         size: boxIndex === metadata.end ? metadata.endSize : MAX_BOX_SIZE
       })
-      // .create(boxIndex === metadata.end ? metadata.endSize : MAX_BOX_SIZE);
     }
 
     this.dataBoxes(boxIndex).replace(offset, data);
