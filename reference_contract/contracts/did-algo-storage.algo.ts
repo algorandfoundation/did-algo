@@ -133,7 +133,7 @@ export class DIDAlgoStorage extends Contract {
 
     metadata.status = DELETING;
     
-    // Since variables are used by reference, we need to clone before modifying so we have the right value
+    // Since variables are assigned by value, we need to clone before modifying so we have the right value
     this.metadata(pubKey).value = clone(metadata);
   }
 
