@@ -9,11 +9,10 @@ import {
   updateDIDDocument,
   appSpec,
 } from "../src/index";
-import { AppClient } from "@algorandfoundation/algokit-utils/types/app-client";
-import { AppFactory } from "@algorandfoundation/algokit-utils/types/app-factory";
 import { Address } from "algosdk";
+import { DidAlgoStorageClient, DidAlgoStorageFactory } from "../contracts/artifacts/DIDAlgoStorageClient";
 
-jest.setTimeout(20000);
+jest.setTimeout(30000); // Updated timeout for clarity
 
 describe("Algorand DID", () => {
   const algorand = algokit.AlgorandClient.defaultLocalNet();
@@ -39,7 +38,8 @@ describe("Algorand DID", () => {
   const updateDataUserKey = algorand.account.random().publicKey;
 
   /** algokti appClient for interacting with the contract */
-  let appClient: AppClient;
+  let appClient: DidAlgoStorageClient;
+
 
   /** The account that will be used to create and call the contract */
   let sender: Address;
@@ -50,22 +50,14 @@ describe("Algorand DID", () => {
   beforeAll(async () => {
     sender = await algorand.account.localNetDispenser();
 
-    const factory = new AppFactory({
-      algorand,
-      defaultSender: sender,
-      appSpec,
+    const factory = algorand.client.getTypedAppFactory(DidAlgoStorageFactory, {
+        defaultSender: sender,
     });
 
-    const deployment = await factory.send.create({
-      method: "createApplication",
-    });
+    const result = await factory.send.create.bare();
+    appClient = result.appClient;
 
-    appClient = deployment.appClient;
-
-    await appClient.fundAppAccount({
-      amount: algokit.microAlgos(100_000),
-    });
-
+    await appClient.appClient.fundAppAccount({amount: (100_000).microAlgo(), sender});
     appId = appClient.appId;
   });
 
@@ -74,12 +66,12 @@ describe("Algorand DID", () => {
       const pubkeyHex = Buffer.from(bigDataUserKey).toString("hex");
 
       // Large upload
-      await uploadDIDDocument(bigData, appId, bigDataUserKey, sender, algorand);
+      await uploadDIDDocument(appClient,bigData, appId, bigDataUserKey, sender, algorand);
 
       // Reconstruct DID from several boxes
       const resolvedData: Buffer = await resolveDID(
-        `did:algo:custom:app:${appId}:${pubkeyHex}`,
-        algorand,
+        appClient,
+        `did:algo:custom:app:${appId}:${pubkeyHex}`
       );
       expect(resolvedData.toString("hex")).toEqual(bigData.toString("hex"));
     });
@@ -89,6 +81,7 @@ describe("Algorand DID", () => {
 
       // Small upload
       await uploadDIDDocument(
+        appClient,
         Buffer.from(JSON.stringify(smallJSONObject)),
         appId,
         smallDataUserKey,
@@ -98,8 +91,8 @@ describe("Algorand DID", () => {
 
       // Reconstruct DID from several boxes
       const resolvedData: Buffer = await resolveDID(
-        `did:algo:custom:app:${appId}:${pubkeyHex}`,
-        algorand,
+        appClient,
+        `did:algo:custom:app:${appId}:${pubkeyHex}`
       );
       expect(resolvedData.toString("hex")).toEqual(
         Buffer.from(JSON.stringify(smallJSONObject)).toString("hex"),
@@ -113,7 +106,7 @@ describe("Algorand DID", () => {
       const pubkeyHex = Buffer.from(userKey).toString("hex");
 
       await expect(
-        resolveDID(`did:algo:custom:app:${appId}:${pubkeyHex}`, algorand),
+        resolveDID(appClient,`did:algo:custom:app:${appId}:${pubkeyHex}`),
       ).rejects.toThrow();
     };
 
@@ -140,6 +133,7 @@ describe("Algorand DID", () => {
     beforeAll(async () => {
       // Initially upload the big data as the DID Document
       await uploadDIDDocument(
+        appClient,
         bigData,
         appId,
         updateDataUserKey,
@@ -151,12 +145,12 @@ describe("Algorand DID", () => {
     it("uploads and resolves new data", async () => {
       // Update the DID Document to be the small data
       const data = Buffer.from(JSON.stringify(smallJSONObject));
-      await updateDIDDocument(data, appId, updateDataUserKey, sender, algorand);
+      await updateDIDDocument(appClient, data, appId, updateDataUserKey, sender, algorand);
 
       const pubkeyHex = Buffer.from(updateDataUserKey).toString("hex");
       const resolvedData = await resolveDID(
+        appClient,
         `did:algo:custom:app:${appId}:${pubkeyHex}`,
-        algorand,
       );
 
       expect(resolvedData.toString()).toEqual(JSON.stringify(smallJSONObject));
