@@ -70,6 +70,7 @@ const apiClient = {
 // initialize state's store
 const { subscribe, update } = writable({
   identifiers: [],
+  datachannel: null,
   wallet: {
     url: '',
     name: '',
@@ -130,5 +131,11 @@ export const appState = {
       this.reload();
     }
     return result;
+  },
+  setDataChannel(dc: RTCDataChannel | null ) {
+    update((st) => {
+      st.datachannel = dc;
+      return st;
+    });
   }
 };
